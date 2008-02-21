@@ -1,3 +1,8 @@
+FEB 21, 2008 - D6 BRANCH
+Massive changes to begin porting this to 6.x
+
+-------------------------------------------------------------------------------
+
 Feb 07, 2008 - ALPHA 2
 ------------
 Minor theme tweaks - Fixed mark as read button & lightened post info background
