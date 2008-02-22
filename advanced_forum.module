@@ -6,6 +6,24 @@
 /*****************************************************************************/
 
 /**
+ * Implementation of hook_init.
+ */
+function advanced_forum_init() {
+  // Find the CSS files for the forums by looking first in the theme and then 
+  // in the module. 
+  $csspath = path_to_theme() . '/' . advanced_forum_get_forum_theme_directory();
+  if (!file_exists($csspath)) {
+    $csspath = drupal_get_path('module', 'advanced_forum') . '/themes/advforum';
+  }
+
+  // Load the structural CSS (heights, floats, padding, margins, etc)
+  drupal_add_css($csspath . '/advanced_forum-structure.css');
+  
+  // Add on the colors and graphics part
+  drupal_add_css($csspath . '/advanced_forum.css');
+}
+
+/**
  * Implementation of hook_menu.
  */
 /*
@@ -67,10 +85,7 @@ function advanced_forum_theme_registry_alter($theme_registry) {
 /*****************************************************************************/
 
 function advanced_forum_preprocess_node(&$vars) {
-  if (_is_forum()) {
-    // Add our CSS
-    advanced_forum_add_css();
-    
+  if (_is_forum('node',$vars)) {
     // Use our combined node/comment template file
     $vars['template_files'][] = 'forum-post';
 
@@ -105,7 +120,7 @@ function advanced_forum_preprocess_node(&$vars) {
 }
 
 function advanced_forum_preprocess_comment(&$vars) {
-  if (_is_forum()) {
+  if (_is_forum('comment',$vars)) {
     // Use our combined node/comment template file
     $vars['template_files'][] = 'forum-post';
     
@@ -146,7 +161,6 @@ function advanced_forum_preprocess_comment(&$vars) {
     if (!empty($vars['comment']->page_url) && !(arg(0) == 'comment' && arg(1) == $vars['comment']->cid)) {
       $variables['page_link'] = l('(permalink)', $vars['comment']->page_url);
     }
-
   }
 }
 
@@ -221,14 +235,16 @@ function template_preprocess_forum_user(&$variables) {
   } 
            
   // Send private message
-  if (module_exists('privatemsg') && ($account->uid != $user->uid) && user_access('access private messages') && 
-  (isset($account->privatemsg_allow) ? $account->privatemsg_allow : 1)) { 
-    $variables['privatemsg_icon'] = theme_image(path_to_theme() . '/' . $themedir . "/images/user_comment.png", 'Private Message', 'Private Message', NULL, TRUE);theme_image(path_to_theme() . '/' . $themedir . "/images/email.png", 'Email', 'Email', NULL, TRUE);
+  if (module_exists('privatemsg') && 
+     ($account->uid != $user->uid) && 
+     user_access('access private messages') && 
+     (isset($account->privatemsg_allow) ? $account->privatemsg_allow : 1)) { 
+    $variables['privatemsg_icon'] = theme_image(path_to_theme() . '/' . $themedir . "/images/user_comment.png", 'Private Message', 'Private Message', NULL, TRUE);
     $variables['privatemsg_text'] = t('Send PM'); 
     $variables['privatemsg_link'] = 'privatemsg/new/'. $accountid;
     $variables['privatemsg'] = '<div class="privatemsg">' . 
-                          l($variables['privatemsg_icon'] . ' '  . $variables['privatemsg_text'], $variables['privatemsg_link'],NULL,NULL,NULL,NULL,TRUE) . 
-                          '</div>';
+      l($variables['privatemsg_icon'] . ' '  . 
+      $variables['privatemsg_text'], $variables['privatemsg_link'],NULL,NULL,NULL,NULL,TRUE) . '</div>';
   } 
 
   // Add / remove from buddylist
@@ -256,7 +272,7 @@ function template_preprocess_forum_user(&$variables) {
   }
  }
 
-/************** Overrides from forum.module **************/
+/********************** FORUM MODULE THEME OVERRIDES *************************/
 
 function advanced_forum_preprocess_forums(&$variables) {
   $variables['template_files'][] = 'forums';
@@ -387,9 +403,47 @@ function advanced_forum_get_last_topic($uid, $tid = NULL, $reset = FALSE) {
 /*****************************************************************************/
 
 
-function _is_forum() {
-//TODO: Ah, if it were only so easy...
-  return TRUE;
+/**
+ * This function returns true if we are in the forums
+ */
+function _is_forum($hook, $vars) {
+  // Setting this static means the check only needs to be done once per page
+  // as long as we haven't hit a non forum node on the page
+  static $forum_node_id;
+  
+  switch ($hook) {
+    case 'node':
+      // Make sure this is a forum node type and that it's not being
+      // shown on some other page (like a view or promoted to front page)
+      if (($vars['node']->type == 'forum') && arg(0) == 'node' && is_numeric(arg(1))) {
+        $forum_node_id = $vars['node']->nid;
+        return true;
+      } else {
+        // In D5, only forum types allowed in the forums so
+        // we know this isn't a forum thread (or that it's not in the forums).
+        // Will need to revisit in D6.
+        unset($forum_node_id);
+        return false;
+      }
+      
+    case 'comment':
+      if (isset($forum_node_id)) {
+        // We already know the node ID of the forum
+        // thread on this page, we just need to see
+        // if this comment goes with it.
+        return $vars['comment']->nid == $forum_node_id;
+      } else {
+        if (arg(0) == 'comment' && is_numeric(arg(1))) {
+          $forum_node_id = $vars['comment']->nid;
+          return true;
+        }
+        return false;
+      }
+    
+    default:
+      // 
+      return false;
+  }  
 }
 
 /**
@@ -414,23 +468,5 @@ function advanced_forum_get_forum_theme_directory() {
   return 'advforum';
 }
 
-/**
- * Adds the theme files for the forums on request.
- */
-function advanced_forum_add_css() {
-//TODO: There needs to be a better way of doing this.
-  // Find the CSS files for the forums by looking first in the theme and then 
-  // in the module. 
-  $csspath = path_to_theme() . '/' . advanced_forum_get_forum_theme_directory();
-  if (!file_exists($csspath)) {
-    $csspath = drupal_get_path('module', 'advanced_forum') . '/themes/advforum';
-  }
-
-  // Load the structural CSS (heights, floats, padding, margins, etc)
-  drupal_add_css($csspath . '/advanced_forum-structure.css');
-  
-  // Add on the colors and graphics part
-  drupal_add_css($csspath . '/advanced_forum.css');
-}
 
 
