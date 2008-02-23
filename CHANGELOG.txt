@@ -1,6 +1,9 @@
-FEB 22, 2008
+Feb 22, 2008
 ------------
-Continued work on the port. Will have better comments here when the dust settles.
+#204281 Fixed indenting on forum overview.
+#219958 Added reply button to top of thread.
+Recreated links on comments so we can theme them better and changed CSS to match.
+Small CSS fixes to adapt to new .tpl files.
 
 FEB 21, 2008 - D6 BRANCH
 Massive changes to begin porting this to 6.x

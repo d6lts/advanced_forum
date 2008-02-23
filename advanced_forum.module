@@ -95,12 +95,20 @@ function advanced_forum_preprocess_node(&$vars) {
     // Node is being shown in the forum (not on the front page or in a view)
     $vars['is_forum'] = TRUE;
     
-    // Change first post from "add comment" to "Reply"
     if (!empty($vars['node']->links) && !empty($vars['node']->links['comment_add'])) {
+      // Change first post from "add comment" to "Reply"
       $vars['node']->links['comment_add']['title'] = t('Reply');
-      $vars['links'] = theme('links', $vars['node']->links, array('class' => 'links inline'));
+      $vars['links'] = theme('links', $vars['node']->links, array('class' => 'links inline forumlinks'));
+      
+      // Make a separate variable for the reply link so it can be put on top of the thread
+      $reply_link = $vars['node']->links['comment_add'];
+      $reply_link['title'] = t("Post Reply");
+      $vars['reply_link'] = theme('links', array('topic_reply'=>$reply_link),array('class' => 'forumlinks'));
     }
     
+    // Make an array version of $links
+    $vars['links_array'] = $vars['node']->links;
+
     // Comment numbering
     static $post_number = 0;
     _topic_nid($vars['node']->nid);
@@ -161,6 +169,20 @@ function advanced_forum_preprocess_comment(&$vars) {
     if (!empty($vars['comment']->page_url) && !(arg(0) == 'comment' && arg(1) == $vars['comment']->cid)) {
       $variables['page_link'] = l('(permalink)', $vars['comment']->page_url);
     }
+    
+    // Because the $links array isn't available here, we recreate it
+    $node = node_load($vars['comment']->nid);
+    $links = module_invoke_all('link', 'comment', $vars['comment'], 1);
+    foreach (module_implements('link_alter') as $module) {
+      $function = $module .'_link_alter';
+      $function($node, $links);
+    }
+    unset($links['comment_parent']);
+    $vars['links'] = theme('links',$links,array('class'=>'links forumlinks'));
+    $vars['links_array'] = $links;   
+    
+    // Since we have to load the node anyway for our links trick, make it avail
+    $vars['node'] = $node;    
   }
 }
 
@@ -276,6 +298,11 @@ function template_preprocess_forum_user(&$variables) {
 
 function advanced_forum_preprocess_forums(&$variables) {
   $variables['template_files'][] = 'forums';
+  if (empty($variables['topics'])) {
+    // We don't want the links on the top of the forum overview
+    $variables['links_orig'] = $variables['links'];
+    $variables['links'] = array();
+  }
   return;
 }
 
