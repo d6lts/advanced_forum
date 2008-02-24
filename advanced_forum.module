@@ -9,18 +9,7 @@
  * Implementation of hook_init.
  */
 function advanced_forum_init() {
-  // Find the CSS files for the forums by looking first in the theme and then 
-  // in the module. 
-  $csspath = path_to_theme() . '/' . advanced_forum_get_forum_theme_directory();
-  if (!file_exists($csspath)) {
-    $csspath = drupal_get_path('module', 'advanced_forum') . '/themes/advforum';
-  }
-
-  // Load the structural CSS (heights, floats, padding, margins, etc)
-  drupal_add_css($csspath . '/advanced_forum-structure.css');
-  
-  // Add on the colors and graphics part
-  drupal_add_css($csspath . '/advanced_forum.css');
+  advanced_forum_add_css();
 }
 
 /**
@@ -297,13 +286,23 @@ function template_preprocess_forum_user(&$variables) {
 /********************** FORUM MODULE THEME OVERRIDES *************************/
 
 function advanced_forum_preprocess_forums(&$variables) {
-  $variables['template_files'][] = 'forums';
   if (empty($variables['topics'])) {
     // We don't want the links on the top of the forum overview
     $variables['links_orig'] = $variables['links'];
     $variables['links'] = array();
   }
-  return;
+
+  // Add in the mark as read link
+  $tid = $variables['tid'];
+  if ($tid) {
+    $title = t('Mark all topics read');
+    $link = "forum/markasread/$tid";
+  } else {
+    $title = t('Mark all forums read');
+    $link = "forum/markasread";  
+  }
+  $variables['links']['markasread'] = array('title'=>$title,'href'=>$link);
+  $variables['links_orig']['markasread'] = array('title'=>$title,'href'=>$link);
 }
 
 function advanced_forum_preprocess_forum_list(&$variables) {
@@ -495,5 +494,19 @@ function advanced_forum_get_forum_theme_directory() {
   return 'advforum';
 }
 
+function advanced_forum_add_css() {
+  // Find the CSS files for the forums by looking first in the theme and then 
+  // in the module. 
+  $csspath = path_to_theme() . '/' . advanced_forum_get_forum_theme_directory();
+  if (!file_exists($csspath)) {
+    $csspath = drupal_get_path('module', 'advanced_forum') . '/themes/advforum';
+  }
+
+  // Load the structural CSS (heights, floats, padding, margins, etc)
+  drupal_add_css($csspath . '/advanced_forum-structure.css');
+  
+  // Add on the colors and graphics part
+  drupal_add_css($csspath . '/advanced_forum.css');
+}
 
 
