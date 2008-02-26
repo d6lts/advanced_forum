@@ -307,12 +307,29 @@ function advanced_forum_preprocess_forums(&$variables) {
 
 function advanced_forum_preprocess_forum_list(&$variables) {
   $variables['template_files'][] = 'forum-list';
-  return;
+  
+  // Add in a link to the last topic in each forum
+  $last_topics = advanced_forum_get_all_last_topics();
+  foreach ($variables['forums'] as $tid => $forum) {
+    $title = truncate_utf8($last_topics[$tid]->nodetitle, 15, TRUE, TRUE);
+    $link = l($title,"node/" . $last_topics[$tid]->nid);
+    $forum->last_post->nodetitle = $title;
+    $forum->last_reply = $link . '<br />' . $forum->last_reply;
+  }
 }
 
 function advanced_forum_preprocess_forum_topic_list(&$variables) {
+  // Make shadow copy point to actual thread and tell you new the forum name
   $variables['template_files'][] = 'forum-topic-list';
-  return;
+  if (!empty($variables['topics'])) {
+    $row = 0;
+    foreach ($variables['topics'] as $id => $topic) {
+      if ($variables['topics'][$id]->moved == TRUE) {
+        $term = taxonomy_get_term($topic->forum_tid);
+        $variables['topics'][$id]->message = l(t('This topic has been moved to ') . $term->name, "node/$topic->nid");
+      }
+    }
+  }
 }
 
 function advanced_forum_preprocess_forum_icon(&$variables) {
@@ -329,19 +346,15 @@ function advanced_forum_preprocess_forum_icon(&$variables) {
     }
   }
   $variables['iconpath'] = $iconpath;
-  
-  return;
 }
 
 // This one is exclusive to advanced forum
 function advanced_forum_preprocess_forum_post(&$variables) {
   $variables['template_files'][] = 'forum-post';
-  return;
 }
 
 function advanced_forum_preprocess_forum_submitted(&$variables) {
   $variables['template_files'][] = 'forum-submitted';
-  return;
 }
 
 /*****************************************************************************/
@@ -387,41 +400,23 @@ function advanced_forum_markasread() {
 }
 
 /**
- * Returns information about the last updated topic in a forum.
+ * Returns information about the last updated topics in all forums.
  */
-function advanced_forum_get_last_topic($uid, $tid = NULL, $reset = FALSE) {
-  if (!$reset && ($cache = cache_get('advanced_forum_lasttopic'.$tid)) && !empty($cache->data)) {
-    $topic = unserialize($cache->data);
-  } else {
+function advanced_forum_get_all_last_topics($reset = FALSE) {
+//  if (!$reset && ($cache = cache_get('advanced_forum_alllasttopics')) && !empty($cache->data)) {
+//    $topics = unserialize($cache->data);
+//  } else {
     // Query the info about the latest topic for the given forum    
-    $query = "SELECT
-     N.title AS nodeTitle,
-     RES.title AS resTitle,
-     RES.created,
-     RES.type AS resType,
-     N.type AS nodeType,
-     N.nid AS nid,
-     T.tid,
-     RES.cid AS cid
-     FROM node AS N INNER JOIN
-     (SELECT title, created, nid, uid, type, 'cid' AS cid FROM node
-     UNION SELECT subject, timestamp, nid, uid, 'comment', cid
-     FROM comments ORDER BY created DESC)
-     AS RES ON N.nid=RES.nid
-     INNER JOIN term_node AS T ON N.nid = T.nid
-     WHERE RES.uid = %d";
+    $query = "SELECT n.title AS nodetitle, res.title AS restitle, res.created, res.type AS restype, n.type AS nodetype, n.nid AS nid, t.tid, res.cid AS cid FROM node AS n INNER JOIN (SELECT title, created, nid, uid, type, 'cid' AS cid FROM node UNION SELECT subject, timestamp, nid, uid, 'comment', cid FROM comments ORDER BY created DESC) AS res ON n.nid=res.nid INNER JOIN term_node AS t ON n.nid = t.nid GROUP BY tid;";
 
-    if($tid != NULL) {
-      $query .= " AND T.tid = %d";
-    }
-    
-    $query .= " LIMIT 0,1";
     $result = db_query( $query, $uid, $tid);
-    $topic = db_fetch_object($result);
-
-    cache_set('advanced_forum_lasttopic'.$tid, 'cache', serialize($topic), time() + 60);
-  }
-  return $topic;
+    $topics = array();
+    while ($topic = db_fetch_object($result)) {
+    	$topics[$topic->tid] = $topic;
+    }   
+//    cache_set('advanced_forum_alllasttopics', 'cache', serialize($topics), time() + 60);
+//  }
+  return $topics;
 }
 
 /*****************************************************************************/
