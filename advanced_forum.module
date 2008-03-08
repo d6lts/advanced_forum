@@ -163,7 +163,7 @@ function advanced_forum_preprocess_comment(&$vars) {
     $query = ($page_number) ? 'page=' . $page_number : NULL;
     $linktext = '#' . (($page_number * $post_per_page) + $post_number);
     $linkpath = 'node/' . _topic_nid();
-    $vars['comment_link'] = l($linktext, $linkpath, array('query' => $query, 'fragment' => $fragment));
+    $vars['comment_link'] = l($linktext, $linkpath, array('query' => $query, 'fragment' => $fragment));;
 
     // Link to page created by Comment Page module, if it exists
     if (!empty($vars['comment']->page_url) && !(arg(0) == 'comment' && arg(1) == $vars['comment']->cid)) {
@@ -258,7 +258,7 @@ function template_preprocess_forum_user(&$variables) {
     $variables['contact_text'] = t('Email'); 
     $variables['contact_link'] = 'user/'. $accountid . '/contact';
     $variables['contact'] = '<div class="contact">' . 
-                          l($variables['contact_icon'] . ' '  . $variables['contact_text'], $variables['contact_link'],NULL,NULL,NULL,NULL,TRUE) . 
+                          l($variables['contact_icon'] . ' '  . $variables['contact_text'], $variables['contact_link'], array('absolute' => TRUE, 'html' => TRUE)) . 
                           '</div>';
   } 
            
@@ -272,7 +272,7 @@ function template_preprocess_forum_user(&$variables) {
     $variables['privatemsg_link'] = 'privatemsg/new/'. $accountid;
     $variables['privatemsg'] = '<div class="privatemsg">' . 
       l($variables['privatemsg_icon'] . ' '  . 
-      $variables['privatemsg_text'], $variables['privatemsg_link'],NULL,NULL,NULL,NULL,TRUE) . '</div>';
+      $variables['privatemsg_text'], $variables['privatemsg_link'], array('absolute' => TRUE, 'html' => TRUE)) . '</div>';
   } 
 
   // Add / remove from buddylist
@@ -295,7 +295,7 @@ function template_preprocess_forum_user(&$variables) {
     }
     
     $variables['buddylist'] = '<div class="' . $variables['buddylist_class'] . '">' . 
-                         l($variables['buddylist_icon'] . ' '  . $variables['buddylist_text'], $variables['buddylist_link'],NULL,NULL,NULL,NULL,TRUE) . 
+                         l($variables['buddylist_icon'] . ' '  . $variables['buddylist_text'], $variables['buddylist_link'], array('absolute' => TRUE, 'html' => TRUE)) . 
                          '</div>';
   }
  }
