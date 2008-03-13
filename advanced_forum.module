@@ -98,9 +98,17 @@ function advanced_forum_preprocess_node(&$vars) {
     // Make an array version of $links
     $vars['links_array'] = $vars['node']->links;
 
+    // Load the signature since Drupal doesn't put it on nodes
+    if (variable_get('user_signatures', 0) {
+      $author = user_load(array('uid' => $vars['node']->uid));
+      $vars['signature'] = check_markup($author->signature, $vars['node']->format);
+    }
+    
     // User information
-    $vars['accountid'] = $vars['node']->uid;
+    $vars['accountid'] = $author->uid;
     $vars['user_info_pane'] = theme('forum_user', $vars['accountid']);
+    
+    
   }
 }
 
