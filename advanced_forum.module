@@ -99,7 +99,7 @@ function advanced_forum_preprocess_node(&$vars) {
     $vars['links_array'] = $vars['node']->links;
 
     // Load the signature since Drupal doesn't put it on nodes
-    if (variable_get('user_signatures', 0) {
+    if (variable_get('user_signatures', 0)) {
       $author = user_load(array('uid' => $vars['node']->uid));
       $vars['signature'] = check_markup($author->signature, $vars['node']->format);
     }
