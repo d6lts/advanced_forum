@@ -20,6 +20,7 @@
  * @see theme_forum_submitted()
  */
 ?>
+
 <?php if ($time): ?>
   <?php if ($topiclink): ?>
     <?php print t(

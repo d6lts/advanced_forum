@@ -1,3 +1,15 @@
+$Id$
+
+March 22, 2008
+--------------
+Fixed remaining issues with advanced_forum_get_all_last_topics (I hope!)
+Updated README.txt and CHANGELOG.txt
+Fixed $Id$ at the tops of all the files.
+
+March 18, 2008
+--------------
+#222212 #235749 Removed caching from advanced_forum_get_all_last_topics due to too many problems.
+
 March 3, 2008
 -------------
 Added some tweaks to the user info pane

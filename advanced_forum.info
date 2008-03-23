@@ -1,4 +1,5 @@
+$Id$
 name = Advanced Forum
-description = Enhances the core forum module.
+description = Add extra theming and functionality to core forums.
 dependencies[] = forum
 core = 6.x
