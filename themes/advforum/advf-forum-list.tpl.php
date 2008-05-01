@@ -41,9 +41,36 @@
     </tr>
   </thead>
   <tbody>
+  <?php 
+  $num_forums = count($forums); 
+  $forum_num = 0;
+  ?>
   <?php foreach ($forums as $child_id => $forum): ?>
-    <tr id="forum-list-<?php print $child_id; ?>" class="<?php print $forum->zebra; ?>">
-      <td <?php print $forum->is_container ? 'colspan="4" class="container"' : 'class="forum"'; ?>>
+    <?php 
+    // Counter to label the rows by position
+    $forum_num++;
+    switch ($forum_num) {
+      case "1":
+        $position = 'first_row';
+        break;
+      case $num_forums:
+        $position = 'last_row';
+        break;
+      default:
+        $position = 'middle_row';
+    }
+    ?>
+    <tr id="forum-list-<?php print $child_id; ?>" class="<?php print $forum->zebra; ?> <?php print $position;?>">
+    <td <?php 
+        if( $forum->is_container) {
+          print 'colspan="4" class="container"';
+          } elseif ($forum->new_topics) {
+            // Special class when the forum has new topics for changing icon
+            print 'class="forum forum-list-new"';
+          }else{
+            print 'class="forum"';
+          }
+        ?>>        
         <?php /* Enclose the contents of this cell with X divs, where X is the
                * depth this forum resides at. This will allow us to use CSS
                * left-margin for indenting.

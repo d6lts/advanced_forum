@@ -15,25 +15,19 @@ function advanced_forum_init() {
 /**
  * Implementation of hook_menu.
  */
-/*
-//TODO: Update this to work with the D6 menu.
-function advanced_forum_menu($may_cache) {
-  $items = array();
-  if ($may_cache) {
-    global $user;
-    $items[] = array(
-               'path' => "forum/markasread",
-               'title' => 'Helper page to mark forums read.',
-               'callback' => 'advanced_forum_markasread',
-               'access' => user_access('access content') && $user->uid,
-               'type' => MENU_CALLBACK,
-               );
-  }
-  
-  return $items;
-}
-*/
+function advanced_forum_menu() {
+  global $user;
+  $items['forum/markasread'] = array(
+    'title' => 'Helper page to mark forums read.',
+    'page callback' => 'advanced_forum_markasread',
+    'access callback' => 'user_access',
+    'access arguments' => array('access content') && $user->uid,
+    'type' => MENU_CALLBACK,
+  );
 
+   return $items;
+}
+ 
 /**
  * Implementation of hook_theme.
  * Registers theme('forum_user')
@@ -105,10 +99,14 @@ function advanced_forum_preprocess_node(&$vars) {
     }
     
     // User information
-    $vars['accountid'] = $author->uid;
-    $vars['user_info_pane'] = theme('forum_user', $vars['accountid']);
+    $vars['account'] = user_load(array('uid' => $vars['node']->uid));
+    $vars['user_info_pane'] = theme('forum_user', $vars['account']);   
     
-    
+    // Load the signature since Drupal doesn't put it on nodes
+    if (variable_get('user_signatures', 0)) {
+      $vars['signature'] = check_markup($vars['account']->signature, $vars['node']->format);
+    }
+        
   }
 }
 
@@ -139,8 +137,8 @@ function advanced_forum_preprocess_comment(&$vars) {
     $vars['content'] = $vars['comment']->comment;
       
     // User information
-    $vars['accountid'] = $vars['comment']->uid;
-    $vars['user_info_pane'] = theme('forum_user', $vars['accountid']);
+    $vars['account'] = user_load(array('uid' => $vars['comment']->uid));
+    $vars['user_info_pane'] = theme('forum_user', $vars['account']);   
           
     // Because the $links array isn't available here, we recreate it
     $node = node_load($vars['comment']->nid);
@@ -177,16 +175,16 @@ function advanced_forum_preprocess_comment(&$vars) {
 
     // Link to page created by Comment Page module, if it exists
     if (!empty($vars['comment']->page_url) && !(arg(0) == 'comment' && arg(1) == $vars['comment']->cid)) {
-      $variables['page_link'] = l('(permalink)', $vars['comment']->page_url);
+      $vars['page_link'] = l('(permalink)', $vars['comment']->page_url);
     }
     
   }
 }
 
 function template_preprocess_forum_user(&$variables) {
-  // The passed in $variables['accountid'] refers to the user who's info is in the pane.
-  $accountid = $variables['accountid'];
-  $account = user_load($accountid);
+  // The passed in $variables['account'] refers to the user who's info is in the pane.
+  $account = $variables['accountid'];
+  $accountid = $account->uid;
   
   // Get a reference to the currently logged in user.
   global $user;
@@ -459,33 +457,34 @@ function advanced_forum_preprocess_forum_post(&$variables) {
  */
 function advanced_forum_markasread() {
   global $user;
-  $tid = arg(2);
+  $tids = arg(2);
 
-  $sql = 'REPLACE INTO {history} (uid,nid,timestamp)'
-         .' SELECT %d, n.nid, %d FROM {node} n'
-         .($tid ? ' INNER JOIN {term_node} r ON n.nid=r.nid' : '')
-         .' INNER JOIN {node_comment_statistics} l ON l.nid=n.nid'
-         .' WHERE (n.created > %d'
-         .' OR l.last_comment_timestamp > %d)';
-  $args = array($user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT);
+  if (empty($tids)) {
+    // Not for single forum - get all forum tid's
+    $vid = variable_get('forum_nav_vocabulary', '');
+    $tids = db_query('SELECT tid WHERE vid = %d', $vid);
+  }
+  else {
+    $forumid = $tids;
+   }
+     
+  while ($tid = drupal_fetch_array($tids)) {
+    $sql = 'REPLACE INTO {history} (uid,nid,timestamp)'
+           .' SELECT %d, n.nid, %d FROM {node} n'
+           .($tid ? ' INNER JOIN {term_node} r ON n.nid=r.nid' : '')
+           .' INNER JOIN {node_comment_statistics} l ON l.nid=n.nid'
+           .' WHERE (n.created > %d'
+           .' OR l.last_comment_timestamp > %d) AND r.tid = %d';
+    $args = array($user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $tid);
 
-  if ($tid) {
-    $sql .= ' AND r.tid = %d';
-    $args[] = $tid;
+    db_query($sql, $args);
   }
   
-  //*D6* Need to change this for all forum types
-  $type = 'forum';
-  $sql .= ' AND n.type = \'%s\'';
-  $args[] = $type;
-
-  db_query($sql, $args);
-  
-  if ($tid) {
-    drupal_set_message(t('All topics in forum marked as read'));
-    drupal_goto('forum/'.$tid);
+  if (isset($forumid)) {
+    drupal_set_message(t('All content in this forum has been marked as read'));
+    drupal_goto('forum/'.$forumid);  
   } else {
-    drupal_set_message(t('All forum posts have been marked as read'));
+    drupal_set_message(t('All forum content been marked as read'));
     drupal_goto('forum');
   }
   
