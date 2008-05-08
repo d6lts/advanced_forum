@@ -1,5 +1,11 @@
 $Id$
 
+****************************** DRUPAL 6 BRANCH ********************************
+
+May 7, 2008
+-----------
+#254892 Added variable for forum description to forum topic list. Theme changes: advf-forums.tpl.php - Added description. advf-forum-topic-list.tpl.php - Updated variable list to include $forum_description. advf-forum-topic-list.tpl.php - padding around new class.
+
 May 1, 2008
 -----------
 Ported some small fixes that were done for D5 but not D6.
