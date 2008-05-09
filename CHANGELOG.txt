@@ -2,6 +2,16 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+May 8, 2008
+-----------
+#238125 Removed the sql rewrite since it doesn't work with subqueries.
+#248652 Fixed PHP 4 incompatibility in showing last post in forum. Thanks jamix.
+#249651 Added check that contact module is enabled.
+#254051 Fixed error in mark as read menu item.
+#256174 Added Swedish translation. Thanks seals.
+Ported settings page from 5.x.
+#241071 Got mark as read partially working. Still an error.
+
 May 7, 2008
 -----------
 #254892 Added variable for forum description to forum topic list. Theme changes: advf-forums.tpl.php - Added description. advf-forum-topic-list.tpl.php - Updated variable list to include $forum_description. advf-forum-topic-list.tpl.php - padding around new class.
@@ -51,7 +61,7 @@ Small CSS fixes to adapt to new .tpl files.
 FEB 21, 2008 - D6 BRANCH
 Massive changes to begin porting this to 6.x
 
--------------------------------------------------------------------------------
+----------------------- Pre-Port -----------------------------------------------
 
 Feb 07, 2008 - ALPHA 2
 ------------

@@ -17,14 +17,24 @@ function advanced_forum_init() {
  */
 function advanced_forum_menu() {
   global $user;
-  $items['forum/markasread'] = array(
-    'title' => 'Helper page to mark forums read.',
-    'page callback' => 'advanced_forum_markasread',
-    'access callback' => 'user_access',
-    'access arguments' => array('access content') && $user->uid,
-    'type' => MENU_CALLBACK,
-  );
+  if ($user->uid) { 
+    $items['forum/markasread'] = array(
+      'title' => 'Helper page to mark forums read.',
+      'page callback' => 'advanced_forum_markasread',
+      'access callback' => 'user_access',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
+    );
+  }
 
+  // Add menu entry for settings page
+  $items['admin/settings/advanced-forum'] = array(
+         'title' => 'Advanced Forum',
+         'page callback' => 'drupal_get_form',
+         'page arguments' => array('advanced_forum_settings_page'),
+         'access callback' => 'user_access',
+         'access arguments' => array('administer advanced forum'),
+    );
    return $items;
 }
  
@@ -64,6 +74,34 @@ function advanced_forum_theme_registry_alter($theme_registry) {
 }
 
 /*****************************************************************************/
+/************************* SETTINGS PAGE *************************************/
+/*****************************************************************************/
+
+/**
+ * Define settings form
+ */
+function advanced_forum_settings_page() {
+  $form['advanced_forum_themedir'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Advanced forum theme directory'),
+    '#size' => 25,
+    '#description' => t('Path from site theme directory to advanced forum theme directory. Defaults to "advforum"'),
+    '#default_value' => variable_get('advanced_forum_themedir','advforum'),
+  );
+  
+  $form['advanced_forum_theme_all_comments'] = array(
+    '#type' => 'radios',
+    '#title' => t('Treat all site comments like forum comments'),
+    '#options' => array("No","Yes"),
+    '#description' => t('Choosing yes causes advanced forum to consider every comment a forum comment and attempt to theme it that way. Some changes to your theme may be required.'),
+    '#default_value' => variable_get('advanced_forum_theme_all_comments',0),
+  );
+
+  // Send our form to Drupal to make a settings page
+  return system_settings_form($form);
+} 
+
+/*****************************************************************************/
 /******************* TEMPLATE PREPROCESS *************************************/
 /*****************************************************************************/
 
@@ -92,12 +130,6 @@ function advanced_forum_preprocess_node(&$vars) {
     // Make an array version of $links
     $vars['links_array'] = $vars['node']->links;
 
-    // Load the signature since Drupal doesn't put it on nodes
-    if (variable_get('user_signatures', 0)) {
-      $author = user_load(array('uid' => $vars['node']->uid));
-      $vars['signature'] = check_markup($author->signature, $vars['node']->format);
-    }
-    
     // User information
     $vars['account'] = user_load(array('uid' => $vars['node']->uid));
     $vars['user_info_pane'] = theme('forum_user', $vars['account']);   
@@ -105,8 +137,7 @@ function advanced_forum_preprocess_node(&$vars) {
     // Load the signature since Drupal doesn't put it on nodes
     if (variable_get('user_signatures', 0)) {
       $vars['signature'] = check_markup($vars['account']->signature, $vars['node']->format);
-    }
-        
+    }        
   }
 }
 
@@ -137,9 +168,20 @@ function advanced_forum_preprocess_comment(&$vars) {
     $vars['content'] = $vars['comment']->comment;
       
     // User information
-    $vars['account'] = user_load(array('uid' => $vars['comment']->uid));
+    $accountid = $vars['comment']->uid;
+    if ($accountid == 0) {
+      // Anonymous user. Make a fake user object for theme_username
+      $vars['account']->name = $vars['comment']->name;
+      $vars['account']->homepage = $vars['comment']->homepage;
+    }
+    else {
+      // Load up the real user object
+      $vars['account'] = user_load(array('uid' => $vars['comment']->uid));
+    }
+    
+    // Create the user info pane
     $vars['user_info_pane'] = theme('forum_user', $vars['account']);   
-          
+                       
     // Because the $links array isn't available here, we recreate it
     $node = node_load($vars['comment']->nid);
     $links = module_invoke_all('link', 'comment', $vars['comment'], 1);
@@ -260,7 +302,7 @@ function template_preprocess_forum_user(&$variables) {
   }
 
   // Contact user
-  if (($account->contact) && ($account->uid != $user->uid) && ($user->uid != 0)) {
+  if (module_exists('contact') && ($account->contact) && ($account->uid != $user->uid) && ($user->uid != 0)) {
     $variables['contact_class'] = "contact";
     $variables['contact_icon'] = theme_image(path_to_theme() . '/' . $themedir . "/images/email.png", 'Email', 'Email', NULL, TRUE);
     $variables['contact_text'] = t('Email');
@@ -317,8 +359,12 @@ function advanced_forum_preprocess_forums($variables) {
     // We don't want the links on the top of the forum overview
     $variables['links_orig'] = $variables['links'];
     $variables['links'] = array();
+  } else {
+    // Grab the forum description and make it available to the template file
+    $forum = taxonomy_get_term($variables['tid']);
+    $variables['forum_description'] = $forum->description;
   }
-
+  
   // Add in the mark as read link
   $tid = $variables['tid'];
   if ($tid) {
@@ -339,7 +385,7 @@ function advanced_forum_preprocess_forum_list(&$variables) {
   $last_topics = advanced_forum_get_all_last_topics();
   foreach ($variables['forums'] as $tid => $forum) {
     // In the forum overview, we want to overwrite the last reply with our custom one
-    $forum->last_reply = theme('forum_submitted', $last_topics[$tid]);
+     $variables['forums'][$tid]->last_reply = theme('forum_submitted', $last_topics[$tid]);
   }
 }
 
@@ -357,6 +403,10 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
   // Take control of the template file.
   $variables['template_files'][] = 'advf-forum-topic-list';
   
+  // Grab the forum description and make it available to the template file
+  $forum = taxonomy_get_term($variables['topic_id']);
+  $variables['forum_description'] = $forum->description;
+
   // Do our own topic processing.
   if (!empty($variables['topics'])) {
     $row = 0;
@@ -457,18 +507,24 @@ function advanced_forum_preprocess_forum_post(&$variables) {
  */
 function advanced_forum_markasread() {
   global $user;
-  $tids = arg(2);
+  $current_forum_id = arg(2);
 
-  if (empty($tids)) {
-    // Not for single forum - get all forum tid's
-    $vid = variable_get('forum_nav_vocabulary', '');
-    $tids = db_query('SELECT tid WHERE vid = %d', $vid);
+  if (empty($current_forum_id)) {
+    // We are on the forum overview, requesting all forums be marked read
+    $forum_vocabulary_id = variable_get('forum_nav_vocabulary', '');
+    if (empty($forum_vocabulary_id)) {
+      // Sanity check. Can't do this if the forum vocabulary is undefined.
+      drupal_set_message(t('No forums defined.'));
+      return;
+    }
+    
+    $forum_term_ids = db_query('SELECT tid FROM {term_data} WHERE vid = %d', $forum_vocabulary_id);
   }
   else {
-    $forumid = $tids;
-   }
+    $forum_term_ids = array($current_forum_id);
+  }
      
-  while ($tid = drupal_fetch_array($tids)) {
+  while ($tid = db_fetch_array($forum_term_ids)) {
     $sql = 'REPLACE INTO {history} (uid,nid,timestamp)'
            .' SELECT %d, n.nid, %d FROM {node} n'
            .($tid ? ' INNER JOIN {term_node} r ON n.nid=r.nid' : '')
@@ -535,7 +591,7 @@ function advanced_forum_get_all_last_topics() {
       WHERE n.status = 1 
       GROUP BY tid;";
 
-  $result = db_query(db_rewrite_sql($query), COMMENT_PUBLISHED);
+  $result = db_query($query, COMMENT_PUBLISHED);
   $topics = array();
   while ($topic = db_fetch_object($result)) {
     $topics[$topic->tid] = $topic;
