@@ -16,16 +16,13 @@ function advanced_forum_init() {
  * Implementation of hook_menu.
  */
 function advanced_forum_menu() {
-  global $user;
-  if ($user->uid) { 
-    $items['forum/markasread'] = array(
-      'title' => 'Helper page to mark forums read.',
-      'page callback' => 'advanced_forum_markasread',
-      'access callback' => 'user_access',
-      'access arguments' => array('access content'),
-      'type' => MENU_CALLBACK,
-    );
-  }
+  // Mark as read functionality
+  $items['forum/markasread'] = array(
+         'title' => 'Helper page to mark forums read.',
+         'page callback' => 'advanced_forum_markasread',
+         'access callback' => 'advanced_forum_markasread_access',
+         'type' => MENU_CALLBACK,
+         );
 
   // Add menu entry for settings page
   $items['admin/settings/advanced-forum'] = array(
@@ -365,17 +362,19 @@ function advanced_forum_preprocess_forums($variables) {
     $variables['forum_description'] = $forum->description;
   }
   
-  // Add in the mark as read link
-  $tid = $variables['tid'];
-  if ($tid) {
-    $title = t('Mark all topics read');
-    $link = "forum/markasread/$tid";
-  } else {
-    $title = t('Mark all forums read');
-    $link = "forum/markasread";
+  // Add in the mark as read link if user has access
+  if (advanced_forum_markasread_access()) {
+    $tid = $variables['tid'];
+    if ($tid) {
+      $title = t('Mark all topics read');
+      $link = "forum/markasread/$tid";
+    } else {
+      $title = t('Mark all forums read');
+      $link = "forum/markasread";
+    }
+    $variables['links']['markasread'] = array('title' => $title, 'href'=>$link);
+    $variables['links_orig']['markasread'] = array('title' => $title, 'href'=>$link);
   }
-  $variables['links']['markasread'] = array('title' => $title, 'href'=>$link);
-  $variables['links_orig']['markasread'] = array('title' => $title, 'href'=>$link);
 }
 
 function advanced_forum_preprocess_forum_list(&$variables) {
@@ -507,45 +506,55 @@ function advanced_forum_preprocess_forum_post(&$variables) {
  */
 function advanced_forum_markasread() {
   global $user;
+  
+  // See if we're on a forum or on the forum overview
+  // Path will be /forum/markasread or /forum/markasread/tid
   $current_forum_id = arg(2);
+ 
+  if ($current_forum_id) {
+    // we combine INSERT with SELECT+SUBSELECT that will return rows that is not present on history table, marking all unreaded nodes as readed
+    $sql = 'INSERT INTO {history} (uid,nid,timestamp)'
+           .' SELECT %d, n.nid, %d FROM {node} AS n'
+           .' INNER JOIN {term_node} AS tn ON n.nid=tn.nid'
+           .' INNER JOIN {node_comment_statistics} AS ncs ON ncs.nid=n.nid'
+           .' WHERE (n.created > %d OR ncs.last_comment_timestamp > %d)'
+           .' AND tn.tid = %d'
+           .' and n.nid not in ( SELECT nid FROM {history} AS h WHERE h.nid = n.nid AND h.uid = %d)';
+    
+    $args = array($user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $current_forum_id, $user->uid);
 
-  if (empty($current_forum_id)) {
+	 drupal_set_message(sprintf($sql, $user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $current_forum_id, $user->uid));
+    drupal_set_message(db_affected_rows());
+    db_query($sql, $args);
+
+    drupal_set_message(t('All content in this forum has been marked as read'));
+    drupal_goto('forum/'.$current_forum_id);    
+  } else {
     // We are on the forum overview, requesting all forums be marked read
     $forum_vocabulary_id = variable_get('forum_nav_vocabulary', '');
-    if (empty($forum_vocabulary_id)) {
-      // Sanity check. Can't do this if the forum vocabulary is undefined.
-      drupal_set_message(t('No forums defined.'));
-      return;
-    }
-    
-    $forum_term_ids = db_query('SELECT tid FROM {term_data} WHERE vid = %d', $forum_vocabulary_id);
-  }
-  else {
-    $forum_term_ids = array($current_forum_id);
-  }
-     
-  while ($tid = db_fetch_array($forum_term_ids)) {
-    $sql = 'REPLACE INTO {history} (uid,nid,timestamp)'
-           .' SELECT %d, n.nid, %d FROM {node} n'
-           .($tid ? ' INNER JOIN {term_node} r ON n.nid=r.nid' : '')
-           .' INNER JOIN {node_comment_statistics} l ON l.nid=n.nid'
-           .' WHERE (n.created > %d'
-           .' OR l.last_comment_timestamp > %d) AND r.tid = %d';
-    $args = array($user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $tid);
+ 
+    // we combine INSERT with SELECT+SUBSELECT that will return rows that is not present on history table, marking all unreaded nodes as readed
+    // and a another subselect was inserted to get all forums
+    $sql = 'INSERT INTO {history} (uid,nid,timestamp)'
+           .' SELECT %d, n.nid, %d FROM {node} AS n'
+           .' INNER JOIN {term_node} AS tn ON n.nid=tn.nid' 
+           .' INNER JOIN {node_comment_statistics} AS ncs ON ncs.nid=n.nid'
+           .' WHERE (n.created > %d OR ncs.last_comment_timestamp > %d)'
+           .' and n.nid not in ( SELECT nid FROM {history} AS h WHERE h.nid = n.nid AND h.uid = %d)'
+           .' AND tn.tid in (SELECT tid FROM {term_data} WHERE vid = %d)';
+      
+    $args = array($user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $user->uid, $forum_vocabulary_id);
+ 
+	 drupal_set_message(sprintf($sql, $user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $user->uid, $forum_vocabulary_id));
+    drupal_set_message(db_affected_rows());
 
     db_query($sql, $args);
-  }
-  
-  if (isset($forumid)) {
-    drupal_set_message(t('All content in this forum has been marked as read'));
-    drupal_goto('forum/'.$forumid);  
-  } else {
+ 
     drupal_set_message(t('All forum content been marked as read'));
-    drupal_goto('forum');
+    drupal_goto('forum'); 
   }
-  
-  drupal_goto('forum');
 }
+
 
 /**
  * Returns information about the last updated topics in all forums.
@@ -684,4 +693,10 @@ function advanced_forum_add_css() {
   drupal_add_css($csspath . '/advanced_forum.css');
 }
 
-
+function advanced_forum_markasread_access() {
+  // This separate function is needed because the new menu system doesn't run
+  // hook_menu() every time and the logged in status of the user can get cached
+  // and re-used for other users.
+  global $user;
+  return user_access('access content') && $user->uid;
+}

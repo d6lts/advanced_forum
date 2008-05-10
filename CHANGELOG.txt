@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+May 9, 2008
+-----------
+#241071 Mark as read function rewritten by afeijo (with some early help from konfuzed) on IRC. Thanks for the late night debugging to get this working.
+
 May 8, 2008
 -----------
 #238125 Removed the sql rewrite since it doesn't work with subqueries.
