@@ -89,7 +89,7 @@ function advanced_forum_settings_page() {
   $form['advanced_forum_theme_all_comments'] = array(
     '#type' => 'radios',
     '#title' => t('Treat all site comments like forum comments'),
-    '#options' => array("No","Yes"),
+    '#options' => array(t("No"),t("Yes")),
     '#description' => t('Choosing yes causes advanced forum to consider every comment a forum comment and attempt to theme it that way. Some changes to your theme may be required.'),
     '#default_value' => variable_get('advanced_forum_theme_all_comments',0),
   );
@@ -103,7 +103,7 @@ function advanced_forum_settings_page() {
 /*****************************************************************************/
 
 function advanced_forum_preprocess_node(&$vars) {
-  if (_is_forum('node', $vars)) {
+  if (advanced_forum_treat_as_forum_post('node', $vars)) {
     // Use our combined node/comment template file
     $vars['template_files'][] = 'advf-forum-post';
 
@@ -123,7 +123,25 @@ function advanced_forum_preprocess_node(&$vars) {
       $reply_link['title'] = t("Post Reply");
       $vars['reply_link'] = theme('links', array('topic_reply' => $reply_link), array('class' => 'forumlinks'));
     }
+      
+    // Jump to first unread comment
+    $comment_count = $vars['comment_count'];
+    if ($comment_count > 0) {
+      $nid = $vars['node']->nid;
+      $current_page = $_GET['page'];
+      $number_new_comments = comment_num_new($nid);
+      
+      if ($number_new_comments > 0) {
+        $page_of_first_new = comment_new_page_count($comment_count, $number_new_comments, $vars['node']);  
+        $cid_of_first_new = advanced_forum_first_new_comment($nid);   
+        $link_text = format_plural($number_new_comments, '1 new reply', '@count replies');
+        $vars['jump_first_new'] = l($link_text, 
+                                    'node/' . $nid, 
+                                    array('query' => $page_of_first_new, 'fragment' => "comment-$cid_of_first_new"));
+      }
+    }
     
+
     // Make an array version of $links
     $vars['links_array'] = $vars['node']->links;
 
@@ -139,7 +157,7 @@ function advanced_forum_preprocess_node(&$vars) {
 }
 
 function advanced_forum_preprocess_comment(&$vars) {
-  if (_is_forum('comment', $vars)) {
+  if (advanced_forum_treat_as_forum_post('comment', $vars)) {
     // Use our combined node/comment template file
     $vars['template_files'][] = 'advf-forum-post';
     
@@ -197,7 +215,7 @@ function advanced_forum_preprocess_comment(&$vars) {
     if (!isset($post_number)) {
       static $post_number = 0;
     }
-    _topic_nid($vars['node']->nid);
+    _advanced_forum_topic_nid($vars['node']->nid);
 
     $post_per_page = _comment_get_display_setting('comments_per_page', $vars['node']);
     $page_number = $_GET['page'];
@@ -209,7 +227,7 @@ function advanced_forum_preprocess_comment(&$vars) {
     $fragment = 'comment-' . $vars['comment']->cid;
     $query = ($page_number) ? 'page=' . $page_number : NULL;
     $linktext = '#' . (($page_number * $post_per_page) + $post_number);
-    $linkpath = 'node/' . _topic_nid();
+    $linkpath = 'node/' . _advanced_forum_topic_nid();
     $vars['comment_link'] = l($linktext, $linkpath, array('query' => $query, 'fragment' => $fragment));;
 
     // Link to page created by Comment Page module, if it exists
@@ -252,12 +270,12 @@ function template_preprocess_forum_user(&$variables) {
   // Online status
   if (round((time()-$account->access)/60) < 15) {
     $variables['online_class'] = 'user-online';
-    $variables['online_icon'] = theme_image(path_to_theme() . '/' . $themedir . '/images/status_online.png', 'User is online', 'User is online', NULL, TRUE);
+    $variables['online_icon'] = theme('image', advanced_forum_theme_path() . '/' . $themedir . '/images/status_online.png', 'User is online', 'User is online', NULL, TRUE);
     $variables['online_text'] = t('Online');
     $variables['online_status'] = '<div class="user-online">' . $variables['online_icon'] . ' ' . $variables['online_text'] . '</div>';
   } else {
     $variables['online_class'] = 'user-offline';
-    $variables['online_icon'] = theme_image(path_to_theme() . '/' . $themedir . '/images/status_offline.png', 'User is offline', 'User is offline', NULL, TRUE);
+    $variables['online_icon'] = theme('image', advanced_forum_theme_path() . '/' . $themedir . '/images/status_offline.png', 'User is offline', 'User is offline', NULL, TRUE);
     $variables['online_text'] = t('Offline');
     $variables['online_status'] = '<div class="user-offline">' . $variables['online_icon'] . ' ' . $variables['online_text'] . '</div>';
   }
@@ -301,7 +319,7 @@ function template_preprocess_forum_user(&$variables) {
   // Contact user
   if (module_exists('contact') && ($account->contact) && ($account->uid != $user->uid) && ($user->uid != 0)) {
     $variables['contact_class'] = "contact";
-    $variables['contact_icon'] = theme_image(path_to_theme() . '/' . $themedir . "/images/email.png", 'Email', 'Email', NULL, TRUE);
+    $variables['contact_icon'] = theme('image', advanced_forum_theme_path() . '/' . $themedir . "/images/email.png", 'Email', 'Email', NULL, TRUE);
     $variables['contact_text'] = t('Email');
     $variables['contact_link'] = 'user/'. $accountid . '/contact';
     $variables['contact'] = '<div class="contact">' . 
@@ -314,7 +332,7 @@ function template_preprocess_forum_user(&$variables) {
      ($account->uid != $user->uid) &&
      user_access('access private messages') &&
      (isset($account->privatemsg_allow) ? $account->privatemsg_allow : 1)) {
-    $variables['privatemsg_icon'] = theme_image(path_to_theme() . '/' . $themedir . "/images/user_comment.png", 'Private Message', 'Private Message', NULL, TRUE);
+    $variables['privatemsg_icon'] = theme('image', advanced_forum_theme_path() . '/' . $themedir . "/images/user_comment.png", 'Private Message', 'Private Message', NULL, TRUE);
     $variables['privatemsg_text'] = t('Send PM');
     $variables['privatemsg_link'] = 'privatemsg/new/'. $accountid;
     $variables['privatemsg'] = '<div class="privatemsg">' . 
@@ -328,14 +346,14 @@ function template_preprocess_forum_user(&$variables) {
     if (user_access('maintain buddy list') && @in_array($accountid, array_keys(buddylist_get_buddies($user->uid)))) {
       // Remove buddy
       $variables['buddylist_class'] = "buddy-remove";
-      $variables['buddylist_icon'] = theme_image(path_to_theme() . '/' . $themedir . "/images/group_delete.png", 'Remove Buddy', 'Remove Buddy', NULL, TRUE);
+      $variables['buddylist_icon'] = theme('image', advanced_forum_theme_path() . '/' . $themedir . "/images/group_delete.png", 'Remove Buddy', 'Remove Buddy', NULL, TRUE);
       $variables['buddylist_text'] = t('Remove buddy'); 
       $variables['buddylist_link'] = 'buddy/delete/'. $accountid;
     } else {
       // Add buddy
       if ($accountid != $user->uid && user_access('maintain buddy list')) {
         $variables['buddylist_class'] = "buddy-add";
-        $variables['buddylist_icon'] = theme_image(path_to_theme() . '/' . $themedir . "/images/group_add.png", 'Add to buddy list', 'Add to buddy list', NULL, TRUE);
+        $variables['buddylist_icon'] = theme('image', advanced_forum_theme_path() . '/' . $themedir . "/images/group_add.png", 'Add to buddy list', 'Add to buddy list', NULL, TRUE);
         $variables['buddylist_text'] = t('Add buddy');
         $variables['buddylist_link'] = 'buddy/add/'. $accountid;
       }
@@ -483,7 +501,7 @@ function advanced_forum_preprocess_forum_icon(&$variables) {
   // to go through the process for each icon on the page.
   static $iconpath;
   if (!isset($iconpath)) {
-    $iconpath = path_to_theme() . '/' . advanced_forum_get_forum_theme_directory() . '/images';
+    $iconpath = advanced_forum_theme_path() . '/' . advanced_forum_get_forum_theme_directory() . '/images';
     if (!file_exists($iconpath)) {
       $iconpath = drupal_get_path('module', 'advanced_forum') . '/themes/advforum/images';
     }
@@ -498,7 +516,7 @@ function advanced_forum_preprocess_forum_post(&$variables) {
 
 
 /*****************************************************************************/
-/*********************** ADDED FUNCTIONALITY *********************************/
+/************************** MARK AS READ *************************************/
 /*****************************************************************************/
 
 /**
@@ -555,6 +573,18 @@ function advanced_forum_markasread() {
   }
 }
 
+function advanced_forum_markasread_access() {
+  // This separate function is needed because the new menu system doesn't run
+  // hook_menu() every time and the logged in status of the user can get cached
+  // and re-used for other users.
+  global $user;
+  return user_access('access content') && $user->uid;
+}
+
+
+/*****************************************************************************/
+/********************** LAST UPDATE TOPIC ************************************/
+/*****************************************************************************/
 
 /**
  * Returns information about the last updated topics in all forums.
@@ -617,7 +647,7 @@ function advanced_forum_get_all_last_topics() {
 /**
  * This function returns true if we are in the forums
  */
-function _is_forum($hook, $vars) {
+function advanced_forum_treat_as_forum_post($hook, $vars) {
   // Setting this static means the check only needs to be done once per page
   // as long as we haven't hit a non forum node on the page
   static $forum_node_id;
@@ -660,7 +690,7 @@ function _is_forum($hook, $vars) {
  * Helper function to hold the node ID of the thread we are on.
  * Used for linking the comment numbers.
  */
-function _topic_nid($nodeid = 0) {
+function _advanced_forum_topic_nid($nodeid = 0) {
   static $nid;
   
   if (!empty($nodeid)) {
@@ -681,7 +711,7 @@ function advanced_forum_get_forum_theme_directory() {
 function advanced_forum_add_css() {
   // Find the CSS files for the forums by looking first in the theme and then
   // in the module.
-  $csspath = path_to_theme() . '/' . advanced_forum_get_forum_theme_directory();
+  $csspath = advanced_forum_theme_path() . '/' . advanced_forum_get_forum_theme_directory();
   if (!file_exists($csspath)) {
     $csspath = drupal_get_path('module', 'advanced_forum') . '/themes/advforum';
   }
@@ -693,10 +723,48 @@ function advanced_forum_add_css() {
   drupal_add_css($csspath . '/advanced_forum.css');
 }
 
-function advanced_forum_markasread_access() {
-  // This separate function is needed because the new menu system doesn't run
-  // hook_menu() every time and the logged in status of the user can get cached
-  // and re-used for other users.
+function advanced_forum_theme_path() {
+  // Create this as a static variable since it's used a lot on one page
+  static $advanced_forum_theme_path;
+  
+  // If we already stored the path, just send it back
+  if (isset($advanced_forum_theme_path)) {
+    return $advanced_forum_theme_path;
+  }
+  
+  // Check first if there is a subtheme. This function is defined in Zen
+  // and potentially may exist in other themes with subthemes.
+  init_theme();
+  if (function_exists("path_to_subtheme")) {
+    $advanced_forum_theme_path = path_to_subtheme();
+  }
+  
+  // If we had no luck finding a subtheme, find the theme path
+  // the normal way.
+  if (empty($advanced_forum_theme_path)) {
+    $advanced_forum_theme_path = path_to_theme();
+  }
+  return $advanced_forum_theme_path;
+}
+
+function advanced_forum_first_new_comment($nid, $timestamp = 0) {
   global $user;
-  return user_access('access content') && $user->uid;
+
+  if ($user->uid) {
+    // Retrieve the timestamp at which the current user last viewed the
+    // specified node.
+    if (!$timestamp) {
+      $timestamp = node_last_viewed($nid);
+    }
+    $timestamp = ($timestamp > NODE_NEW_LIMIT ? $timestamp : NODE_NEW_LIMIT);
+
+    // Use the timestamp to retrieve the oldest new comment.
+    $result = db_result(db_query('SELECT c.cid FROM {node} n INNER JOIN {comments} c ON n.nid = c.nid WHERE n.nid = %d AND timestamp > %d AND c.status = %d ORDER BY c.cid LIMIT 1', $nid, $timestamp, COMMENT_PUBLISHED));
+
+    return $result;
+  }
+  else {
+    return 0;
+  }
+
 }
