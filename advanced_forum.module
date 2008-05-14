@@ -530,7 +530,8 @@ function advanced_forum_markasread() {
   $current_forum_id = arg(2);
  
   if ($current_forum_id) {
-    // we combine INSERT with SELECT+SUBSELECT that will return rows that is not present on history table, marking all unreaded nodes as readed
+    // Combine INSERT with SELECT+SUBSELECT that will return rows that are not
+    // present in the history table, marking all unread nodes as read
     $sql = 'INSERT INTO {history} (uid,nid,timestamp)'
            .' SELECT %d, n.nid, %d FROM {node} AS n'
            .' INNER JOIN {term_node} AS tn ON n.nid=tn.nid'
@@ -541,8 +542,6 @@ function advanced_forum_markasread() {
     
     $args = array($user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $current_forum_id, $user->uid);
 
-	 drupal_set_message(sprintf($sql, $user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $current_forum_id, $user->uid));
-    drupal_set_message(db_affected_rows());
     db_query($sql, $args);
 
     drupal_set_message(t('All content in this forum has been marked as read'));
@@ -551,8 +550,9 @@ function advanced_forum_markasread() {
     // We are on the forum overview, requesting all forums be marked read
     $forum_vocabulary_id = variable_get('forum_nav_vocabulary', '');
  
-    // we combine INSERT with SELECT+SUBSELECT that will return rows that is not present on history table, marking all unreaded nodes as readed
-    // and a another subselect was inserted to get all forums
+    // Combine INSERT with SELECT+SUBSELECT that will return rows that are not
+    // present in the history table, marking all unread nodes as read.
+    // This version adds another subselect to get all forums
     $sql = 'INSERT INTO {history} (uid,nid,timestamp)'
            .' SELECT %d, n.nid, %d FROM {node} AS n'
            .' INNER JOIN {term_node} AS tn ON n.nid=tn.nid' 
@@ -563,9 +563,6 @@ function advanced_forum_markasread() {
       
     $args = array($user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $user->uid, $forum_vocabulary_id);
  
-	 drupal_set_message(sprintf($sql, $user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $user->uid, $forum_vocabulary_id));
-    drupal_set_message(db_affected_rows());
-
     db_query($sql, $args);
  
     drupal_set_message(t('All forum content been marked as read'));
@@ -645,7 +642,8 @@ function advanced_forum_get_all_last_topics() {
 
 
 /**
- * This function returns true if we are in the forums
+ * This function returns true if the node/comment should be themed and 
+ * otherwise treated as a forum post.
  */
 function advanced_forum_treat_as_forum_post($hook, $vars) {
   // Setting this static means the check only needs to be done once per page

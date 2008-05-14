@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+May 13, 2008
+------------
+Removed debug code left in MAR and cleaned up comments. Thanks afeijo.
+
 May 12, 2008
 ------------
 Port from D5: #255949 Added link to top of forum threads that lists the number of unread comments and links to the first one. This links to the comment id and so will work across pages. (Theme changes: advf-forum-post.tpl.php - Added $jump_first_new)
