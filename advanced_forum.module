@@ -104,8 +104,15 @@ function advanced_forum_settings_page() {
 
 function advanced_forum_preprocess_node(&$vars) {
   if (advanced_forum_treat_as_forum_post('node', $vars)) {
-    // Use our combined node/comment template file
-    $vars['template_files'][] = 'advf-forum-post';
+    if ($_GET['page'] > 0) { 
+      // This is the repeated node on the top of subsequent pages.
+      // We send this to a special .tpl so people can wipe it out or whatever
+      $vars['template_files'][] = "advf-forum-repeat-post";
+    }
+    else {
+      // Use our combined node/comment template file
+      $vars['template_files'][] = "advf-forum-post";
+    }
 
     // The node is the first post, aka topic
     $vars['top_post'] = TRUE;
@@ -420,6 +427,28 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
   // Take control of the template file.
   $variables['template_files'][] = 'advf-forum-topic-list';
   
+  // Redo the table header so we can add in views. This is mostly copied from
+  // core with just the views bit stuck in.
+  global $forum_topic_list_header;
+
+  $forum_topic_list_header = array(
+    array('data' => '&nbsp;', 'field' => NULL),
+    array('data' => t('Topic'), 'field' => 'n.title'),
+    array('data' => t('Replies'), 'field' => 'l.comment_count'),
+    array('data' =>t('Views'), 'field' => NULL),
+    array('data' => t('Created'), 'field' => 'n.created'),
+    array('data' => t('Last reply'), 'field' => 'l.last_comment_timestamp'),
+  );
+  
+  // Create the tablesorting header.
+  $ts = tablesort_init($forum_topic_list_header);
+  $header = '';
+  foreach ($forum_topic_list_header as $cell) {
+    $cell = tablesort_header($cell, $forum_topic_list_header, $ts);
+    $header .= _theme_table_cell($cell, TRUE);
+  }
+  $variables['header'] = $header;
+
   // Grab the forum description and make it available to the template file
   $forum = taxonomy_get_term($variables['topic_id']);
   $variables['forum_description'] = $forum->description;
@@ -433,64 +462,92 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
     $max_pages_to_display = variable_get('advforum_topic_pager_max', 5);
     
     foreach ($variables['topics'] as $id => $topic) {
-      
-      // Find the number of comments per page for the node type of the topic.
-      // It's the same for all types in D5, but varies in D6.
-      $comments_per_page = _comment_get_display_setting('comments_per_page', $topic);
-      
-      if ($max_pages_to_display > 0 && $topic->num_comments > $comments_per_page) {
-        // Topic has more than one page and a pager is wanted. Start off the
-        // first page because that doesn't have a query.
-        $pager_array = array();
-        $current_display_page = 1;
-        $pager_array[] = l('1', "node/$topic->nid");
-        
-        // Find the ending point. The pager URL is always 1 less than
-        // the number being displayed because the first page is 0.
-        $last_display_page = ceil($topic->num_comments / $comments_per_page);
-        $last_pager_page = $last_display_page - 1;
-        
-        // Add pages until we run out or until we hit the max to show.
-        while (($current_display_page < $last_display_page) && ($current_display_page < $max_pages_to_display)) {
-          // Move to the next page
-          $current_display_page++;
-          
-          // The page number we link to is 1 less than what's displayed
-          $link_to_page = $current_display_page - 1;
-          
-          // Add the link to the array
-          $pager_array[] =  l($current_display_page, "node/$topic->nid", array('query' => 'page=' . $link_to_page));
-        }
-        
-        // Move to the next page
-        $current_display_page++;
-            
-        if ($current_display_page == $last_display_page) {
-          // We are one past the max to display, but it's the last page,
-          // so putting the ...last is silly. Just display it normally.
-          $link_to_page = $current_display_page - 1;
-          $pager_array[] =  l($current_display_page, "node/$topic->nid", array('query' => 'page=' . $link_to_page));
-        }
-
-        $pager_last = '';
-        if ($current_display_page < $last_display_page) {
-          // We are one past the max to display and still aren't
-          // on the last page, so put in ... Last Page(N)
-          $text = t('Last Page') . '(' . $last_display_page . ')';
-          $pager_last = ' &hellip; ' . l($text, "node/$topic->nid", array('query' => 'page=' . $last_pager_page));
-        }
-            
-        // Put it all together
-        $variables['topics'][$id]->pager = '[' . t('Page') . ' '. implode(", ", $pager_array) . $pager_last . ']';
-      }
+      // Get a pager to add to the topic, if there is one
+      $variables['topics'][$id]->pager = _advanced_forum_create_topic_pager($max_pages_to_display, $topic);
           
       // Make shadow copy point to actual thread and tell you new the forum name
       if ($variables['topics'][$id]->moved == TRUE) {
         $term = taxonomy_get_term($topic->tid);
         $variables['topics'][$id]->message = l(t('This topic has been moved to ') . $term->name, "node/$topic->nid");
       }
+      
+      // Send the NID into the icon theme code so it can be linked to the topic
+      $variables['topics'][$id]->icon = theme('forum_icon', $topic->new, $topic->num_comments, $topic->comment_mode, $topic->sticky, $topic->nid);
+
+      // Add in the number of views
+      $variables['topics'][$id]->views =  _advanced_forum_get_topic_views_count($topic->nid);
     }
   }
+}
+
+function _advanced_forum_create_topic_pager($max_pages_to_display, $topic) {
+  // Find the number of comments per page for the node type of the topic.
+  // It's the same for all types in D5, but varies in D6.
+  $comments_per_page = _comment_get_display_setting('comments_per_page', $topic);
+  
+  if ($max_pages_to_display > 0 && $topic->num_comments > $comments_per_page) {
+    // Topic has more than one page and a pager is wanted. Start off the
+    // first page because that doesn't have a query.
+    $pager_array = array();
+    $current_display_page = 1;
+    $pager_array[] = l('1', "node/$topic->nid");
+  
+    // Find the ending point. The pager URL is always 1 less than
+    // the number being displayed because the first page is 0.
+    $last_display_page = ceil($topic->num_comments / $comments_per_page);
+    $last_pager_page = $last_display_page - 1;
+  
+    // Add pages until we run out or until we hit the max to show.
+    while (($current_display_page < $last_display_page) && ($current_display_page < $max_pages_to_display)) {
+      // Move to the next page
+      $current_display_page++;
+    
+      // The page number we link to is 1 less than what's displayed
+      $link_to_page = $current_display_page - 1;
+    
+      // Add the link to the array
+      $pager_array[] =  l($current_display_page, "node/$topic->nid", array('query' => 'page=' . $link_to_page));
+    }
+  
+    // Move to the next page
+    $current_display_page++;
+    
+    if ($current_display_page == $last_display_page) {
+      // We are one past the max to display, but it's the last page,
+      // so putting the ...last is silly. Just display it normally.
+      $link_to_page = $current_display_page - 1;
+      $pager_array[] =  l($current_display_page, "node/$topic->nid", array('query' => 'page=' . $link_to_page));
+    }
+
+    $pager_last = '';
+    if ($current_display_page < $last_display_page) {
+      // We are one past the max to display and still aren't
+      // on the last page, so put in ... Last Page(N)
+      $text = t('Last Page') . '(' . $last_display_page . ')';
+      $pager_last = ' &hellip; ' . l($text, "node/$topic->nid", array('query' => 'page=' . $last_pager_page));
+    }
+    
+    // Put it all together
+    return '[' . t('Page') . ' '. implode(", ", $pager_array) . $pager_last . ']';
+  }
+}
+
+/**
+* Retrieves a forum topic's "views count".
+*
+* @param $nid
+*   node ID
+*
+* @return
+*   - totalcount: count of the total number of times that node has been viewed.
+*/
+function _advanced_forum_get_topic_views_count($nid) {
+
+  if ($nid > 0) {
+    $views_count = db_result(db_query('SELECT totalcount FROM {node_counter} WHERE nid = %d', $nid));
+  }
+
+  return $views_count;
 }
 
 function advanced_forum_preprocess_forum_icon(&$variables) {
@@ -646,40 +703,61 @@ function advanced_forum_get_all_last_topics() {
  * otherwise treated as a forum post.
  */
 function advanced_forum_treat_as_forum_post($hook, $vars) {
-  // Setting this static means the check only needs to be done once per page
-  // as long as we haven't hit a non forum node on the page
+  // Setting this static means the check only needs to be done once per thread
   static $forum_node_id;
-  
+
   switch ($hook) {
     case 'node':
-      // Make sure this is a forum node type and that it's not being
-      // shown on some other page (like a view or promoted to front page)
-      if (($vars['node']->type == 'forum') && arg(0) == 'node' && is_numeric(arg(1))) {
+      $vid = variable_get('forum_nav_vocabulary', '');
+      $vocabulary = taxonomy_vocabulary_load($vid);
+      if (empty($vocabulary) || !in_array($vars['node']->type, $vocabulary->nodes)) {
+        // No forum vocabulary or the node type cannot be used in the forums
+        unset($forum_node_id);
+        return false;
+      }
+
+      // Get a list of the terms attached to this node
+      $terms = taxonomy_node_get_terms_by_vocabulary($vars['node'], $vid);
+      if (count($terms) > 0 && arg(0) == 'node' && is_numeric(arg(1))) {
+        // The node has at least one forum term attached to it and is not being
+        // shown on some other page (like a view or promoted to front page)
         $forum_node_id = $vars['node']->nid;
         return true;
-      } else {
-        // In D5, only forum types allowed in the forums so
-        // we know this isn't a forum thread (or that it's not in the forums).
-        // Will need to revisit in D6.
+      } 
+      else {
+        // We've hit a non forum node
         unset($forum_node_id);
         return false;
       }
       
     case 'comment':
-      if (isset($forum_node_id)) {
-        // We already know the node ID of the forum
-        // thread on this page, we just need to see
-        // if this comment goes with it.
-        return $vars['comment']->nid == $forum_node_id;
-      } else {
+      if (isset($forum_node_id) && ($vars['comment']->nid == $forum_node_id)) {
+        // We already know this comment is either part of a forum thread
+        // or that comments on this thread are known exceptions.
+        return true;
+      } 
+      else {
+        // Not part of a forum thread. Check for exceptions.
+        if (variable_get("advanced_forum_theme_all_comments", 0) == 1) {
+          // This site wants all comments to use the forum comment template
+          $forum_node_id = $vars['comment']->nid;
+          return true;
+        } 
+        
         if (arg(0) == 'comment' && is_numeric(arg(1))) {
+          // Comment is being shown alone via the comment_page module
+          // For now, assume those should be themed like the forums.
+          // TODO: Possibly add a setting for this?
           $forum_node_id = $vars['comment']->nid;
           return true;
         }
+        
+        // Comment is not part of a forum thread and there are no exceptions.
         return false;
       }
-    
+     
     default:
+      // We only deal with nodes and comments
       return false;
   }
 }
