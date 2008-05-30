@@ -1,0 +1,190 @@
+# $Id$
+#
+# Swedish translation of Drupal (advanced_forum)
+# Copyright 2008 Magnus Gunnarsson <seals@passagen.se>
+# Generated from files:
+#  advanced_forum.module,v 1.21.2.23 2008/05/14 03:49:04 michellec
+#  advanced_forum.info,v 1.4.2.4 2008/05/01 20:57:43 michellec
+#  advf-forum-list.tpl.php,v 1.1.2.5 2008/05/13 04:15:55 michellec
+#  advf-forum-post.tpl.php,v 1.1.2.8 2008/05/13 04:15:55 michellec
+#  advf-forum-submitted.tpl.php,v 1.1.2.5 2008/05/13 04:15:55 michellec
+#  advf-forum-topic-list.tpl.php,v 1.1.2.7 2008/05/13 04:15:55 michellec
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Advanced Forum 6.x\n"
+"POT-Creation-Date: 2008-05-14 17:43+0200\n"
+"PO-Revision-Date: 2008-05-28 22:50+0100\n"
+"Last-Translator: Magnus Gunnarsson <seals@passagen.se>\n"
+"Language-Team: drupalsverige.se\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: advanced_forum.module:83
+msgid "Advanced forum theme directory"
+msgstr "Temakatalog för Advanced Forum"
+
+#: advanced_forum.module:85
+msgid "Path from site theme directory to advanced forum theme directory. Defaults to \"advforum\""
+msgstr "Sökväg från webbplatsen temakatalog till temakatalogen för Advanced Forums. Som standard är detta \"advforum\"."
+
+#: advanced_forum.module:91
+msgid "Treat all site comments like forum comments"
+msgstr "Behandla samtliga kommentarer på webbplatsen som kommentarer i forum"
+
+#: advanced_forum.module:92
+msgid "No"
+msgstr "Nej"
+
+#: advanced_forum.module:92
+msgid "Yes"
+msgstr "Ja"
+
+#: advanced_forum.module:93
+msgid "Choosing yes causes advanced forum to consider every comment a forum comment and attempt to theme it that way. Some changes to your theme may be required."
+msgstr "Genom att välja ja kommer Advanced Forum att behandla alla kommentarer som kommentarer i ett forum och försöka använda temats utseende på dem. Några ändringar i ditt schema kan behövas."
+
+#: advanced_forum.module:118
+msgid "Reply"
+msgstr "Besvara"
+
+#: advanced_forum.module:123
+msgid "Post Reply"
+msgstr "Skicka svar"
+
+#: advanced_forum.module:265
+msgid "Joined: "
+msgstr "Medlem: "
+
+#: advanced_forum.module:268
+msgid "Member since: "
+msgstr "Medlem sedan: "
+
+#: advanced_forum.module:274
+msgid "Online"
+msgstr "Uppkopplad"
+
+#: advanced_forum.module:279
+msgid "Offline"
+msgstr "Nedkopplad"
+
+#: advanced_forum.module:291
+msgid "Points: "
+msgstr "Poäng: "
+
+#: advanced_forum.module:297
+msgid "Posts: "
+msgstr "Inlägg: "
+
+#: advanced_forum.module:303
+msgid "IP: "
+msgstr "IP: "
+
+#: advanced_forum.module:323
+msgid "Email"
+msgstr "Kontakta"
+
+#: advanced_forum.module:336
+msgid "Send PM"
+msgstr "Skicka PM"
+
+#: advanced_forum.module:350
+msgid "Remove buddy"
+msgstr "Ta bort kompis"
+
+#: advanced_forum.module:357
+msgid "Add buddy"
+msgstr "Lägg till kompis"
+
+#: advanced_forum.module:387
+msgid "Mark all topics read"
+msgstr "Märk alla ämnen som lästa"
+
+#: advanced_forum.module:390
+msgid "Mark all forums read"
+msgstr "Märk alla forum som lästa"
+
+#: advanced_forum.module:479
+msgid "Last Page"
+msgstr "Senaste inlägg"
+
+#: advanced_forum.module:484
+msgid "Page"
+msgstr "Sida"
+
+#: advanced_forum.module:490
+msgid "This topic has been moved to "
+msgstr "Den här ämnet har flyttats till"
+
+#: advanced_forum.module:547
+msgid "All content in this forum has been marked as read"
+msgstr "Allt innehåll i detta forum har blivit märkts som läst"
+
+#: advanced_forum.module:568
+msgid "All forum content been marked as read"
+msgstr "Allt foruminnehåll märkts som läst"
+
+#: advanced_forum.module:137
+msgid "1 new reply"
+msgid_plural "@count replies"
+msgstr[0] "1 nytt svar"
+msgstr[1] "@count nya svar"
+
+#: advanced_forum.module:21
+msgid "Helper page to mark forums read."
+msgstr "Hjälpsida för att markera forum som lästa."
+
+#: advanced_forum.module:29
+#: advanced_forum.info:0
+msgid "Advanced Forum"
+msgstr "Advanced Forum"
+
+#: advanced_forum.module:0
+msgid "advanced_forum"
+msgstr "advanced_forum"
+
+#: advanced_forum.info:0
+msgid "Add extra theming and functionality to core forums."
+msgstr "Lägger till extra temahantering och funktionalitet till kärnans forum."
+
+#: themes/advforum/advf-forum-list.tpl.php:37
+msgid "Forum"
+msgstr "Forum"
+
+#: themes/advforum/advf-forum-list.tpl.php:38
+msgid "Topics"
+msgstr "Ämnen"
+
+#: themes/advforum/advf-forum-list.tpl.php:39
+msgid "Posts"
+msgstr "Inlägg"
+
+#: themes/advforum/advf-forum-list.tpl.php:40
+msgid "Last post"
+msgstr "Senaste inlägg"
+
+#: themes/advforum/advf-forum-post.tpl.php:38
+msgid "Posted on: "
+msgstr "Skrivet: "
+
+#: themes/advforum/advf-forum-submitted.tpl.php:26
+msgid "!title<br />@time ago<br />by !author"
+msgstr "!title<br />@time sedan<br />av !author"
+
+#: themes/advforum/advf-forum-submitted.tpl.php:33
+msgid "@time ago<br />by !author"
+msgstr "@time sedan<br />av !author"
+
+#: themes/advforum/advf-forum-submitted.tpl.php:40
+msgid "n/a"
+msgstr "inte tillgänglig"
+
+#: themes/advforum/advf-forum-topic-list.tpl.php:48
+msgid "Sticky"
+msgstr "Klistrad"
+
