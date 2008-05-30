@@ -1,9 +1,22 @@
 $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
+May 30, 2008
+------------
+#241982 by Michelle with tons of help from litwol and neclimdul: Updated install file to create the new table.
+#241982 by Michelle (based on idea from Bdragon): Use a table to store reference to last posts in forum to replace the monster query.
+
+Still to do: Account for deleted/unpublished comments and nodes. Write something in the install file to backfill table with existing posts. More testing.
+
+Theme changes:
+advf-forum-submitted.tpl.php - Added an extra section for adding more info when a comment is the latest.
+
+#No issue by Michelle, Added some doxygen comments and moved around some functions for better readability.
+
 May 27, 2008
 ------------
 #263943 by SkoalFyfan: Changed template name from forums to advf-forums in preprocess code.
+#256174 by seals: Swedish translation update.
 
 May 27, 2008
 ------------
