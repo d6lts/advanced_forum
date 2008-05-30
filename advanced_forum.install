@@ -3,7 +3,31 @@
 // $Id$
 
 function advanced_forum_install() {
-  db_query("UPDATE {system} SET weight = 10 WHERE name = 'advanced_forum'");
+  drupal_install_schema('advanced_forum');
+  db_query("UPDATE {system} SET weight = 10 WHERE name = 'advanced_forum'");  
+}
+
+/**
+* Implementation of hook_schema().
+*/
+function advanced_forum_schema() {
+  $schema['advforum_last_post'] = array(
+    'fields' => array(
+      'tid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'nid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'cid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+    ),
+    'primary key' => array('tid'),
+  );
+
+  return $schema;
+}
+
+function advanced_forum_uninstall() {
+  drupal_uninstall_schema('advanced_forum');
+  variable_del('advanced_forum_themedir');
+  variable_del('advanced_forum_theme_all_comments');
+  variable_del('advforum_topic_pager_max');
 }
 
 function advanced_forum_update_5000() {
@@ -12,3 +36,19 @@ function advanced_forum_update_5000() {
   return $ret;
 }
 
+function advanced_forum_update_5001() {
+  $ret = array();
+
+  // Create the current version of the table.
+  $schema['advforum_last_post'] = array(
+    'fields' => array(
+      'tid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'nid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'cid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+    ),
+    'primary key' => array('tid'),
+  );
+  db_create_table($ret, 'advforum_last_post', $schema['advforum_last_post']);
+
+  return $ret;
+}
