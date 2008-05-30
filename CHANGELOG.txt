@@ -1,13 +1,16 @@
 $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
+May 27, 2008
+------------
+#263943 by SkoalFyfan: Changed template name from forums to advf-forums in preprocess code.
 
 May 27, 2008
 ------------
 Fixed up function advanced_forum_treat_as_forum_post() to be better commented, more logical, #232513 allow other content types (thanks nbz for the starter code), and fix #260640 comment theming not defaulting to off.
 #217194 Added template file to theme the repeated node on paginated forum threads. Thanks, Morbus. (Theme changes: advf-forum-repeat-post.tpl.php)
 Pulled creating the 'topic pager' out of advanced_forum_preprocess_forum_topic_list to simplify it.
-#242527 Added number of views to the topic listing page. Thanks Zandroc. (Theme changes: advf-forum-topic-list.tpl.php, advanced_forum-structure.css)
+#242527 Added number of views to the topic listing page. Thanks to Zandroc for the starter code. (Theme changes: advf-forum-topic-list.tpl.php, advanced_forum-structure.css)
 Removed some unused CSS from advanced_forum.css
 
 May 13, 2008

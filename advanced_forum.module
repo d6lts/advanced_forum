@@ -375,7 +375,7 @@ function template_preprocess_forum_user(&$variables) {
 /********************** FORUM MODULE THEME OVERRIDES *************************/
 
 function advanced_forum_preprocess_forums($variables) {
-  $variables['template_files'][] = 'forums';
+  $variables['template_files'][] = 'advf-forums';
 
   if (empty($variables['topics'])) {
     // We don't want the links on the top of the forum overview
