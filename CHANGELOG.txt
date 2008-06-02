@@ -1,6 +1,11 @@
 $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
+
+June 2, 2008
+------------
+#241982 by Michelle: Added checking to see if last topic has been deleted or unpublished.
+
 May 30, 2008
 ------------
 #241982 by Michelle with tons of help from litwol and neclimdul: Updated install file to create the new table.
