@@ -172,6 +172,9 @@ function advanced_forum_preprocess_node(&$vars) {
       $vars['reply_link'] = theme('links', array('topic_reply' => $reply_link), array('class' => 'forumlinks'));
     }
       
+    // Make an array version of $links
+    $vars['links_array'] = $vars['node']->links;
+
     // Jump to first unread comment
     $comment_count = $vars['comment_count'];
     if ($comment_count > 0) {
@@ -189,10 +192,6 @@ function advanced_forum_preprocess_node(&$vars) {
       }
     }
     
-
-    // Make an array version of $links
-    $vars['links_array'] = $vars['node']->links;
-
     // User information
     $vars['account'] = user_load(array('uid' => $vars['node']->uid));
     $vars['user_info_pane'] = theme('forum_user', $vars['account']);   
@@ -246,15 +245,17 @@ function advanced_forum_preprocess_comment(&$vars) {
     $vars['user_info_pane'] = theme('forum_user', $vars['account']);   
                        
     // Because the $links array isn't available here, we recreate it
-    $node = node_load($vars['comment']->nid);
-    $links = module_invoke_all('link', 'comment', $vars['comment'], 1);
-    foreach (module_implements('link_alter') as $module) {
-      $function = $module .'_link_alter';
-      $function($node, $links);
+    if (arg(1) != 'reply') {
+      $node = node_load($vars['comment']->nid);
+      $links = module_invoke_all('link', 'comment', $vars['comment'], 1);
+      foreach (module_implements('link_alter') as $module) {
+        $function = $module .'_link_alter';
+        $function($node, $links);
+      }
+      unset($links['comment_parent']);
+      $vars['links'] = theme('links', $links,array('class' => 'links forumlinks'));
+      $vars['links_array'] = $links;
     }
-    unset($links['comment_parent']);
-    $vars['links'] = theme('links', $links,array('class' => 'links forumlinks'));
-    $vars['links_array'] = $links;
     
     // Since we have to load the node anyway for our links trick, make it avail
     $vars['node'] = $node;
@@ -597,7 +598,7 @@ function advanced_forum_treat_as_forum_post($hook, $vars) {
 
       // Get a list of the terms attached to this node
       $terms = taxonomy_node_get_terms_by_vocabulary($vars['node'], $vid);
-      if (count($terms) > 0 && arg(0) == 'node' && is_numeric(arg(1))) {
+      if (count($terms) > 0 && (arg(0) == 'node' && is_numeric(arg(1)) || arg(0) == 'comment')) {
         // The node has at least one forum term attached to it and is not being
         // shown on some other page (like a view or promoted to front page)
         $forum_node_id = $vars['node']->nid;
