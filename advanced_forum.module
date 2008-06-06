@@ -461,6 +461,8 @@ function advanced_forum_preprocess_forum_submitted(&$variables) {
   // This check makes sure we only do the extra variables when this function is
   // called by advforum and not by core forum.
   if ($variables['topic']->topic_id) {
+    $nid = $variables['topic']->topic_id;
+
     // Format the node title with a link
     $short_topic_title =  truncate_utf8($variables['topic']->topic_title, 15, TRUE, TRUE);
     $variables['topic_link'] = l($short_topic_title, "node/" . $variables['topic']->topic_id);
@@ -469,8 +471,22 @@ function advanced_forum_preprocess_forum_submitted(&$variables) {
     if (!empty($variables['topic']->reply_title)) {
       $short_reply_title =  truncate_utf8($variables['topic']->reply_title, 15, TRUE, TRUE);
       $comment_fragment = 'comment-' . $variables['topic']->reply_id;
+      
+      // Figure out the link to the last comment
+      $fake_node = new stdClass(); 
+      $fake_node->type = $variables['topic']->topic_type;
+      $posts_per_page = _comment_get_display_setting('comments_per_page', $fake_node);
+      $comment_count = db_result(db_query('SELECT COUNT(cid) FROM {comments} WHERE nid = %d', $nid));
+      $last_page = ceil($comment_count / $posts_per_page) - 1;
+
+      if ($last_page > 0) { 
+        $pager = 'page=' . $last_page;
+      }
+      else {
+        $pager = NULL;
+      }
       $variables['reply_link'] = l($short_reply_title, "node/" . $variables['topic']->topic_id, 
-                                   array('fragmemt' => $comment_fragment));
+                                   array('query' => $pager, 'fragment' => $comment_fragment));
     }
     
     // Format the time ago of the last post (node or comment)
