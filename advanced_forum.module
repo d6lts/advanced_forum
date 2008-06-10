@@ -3,20 +3,11 @@
 
 /**
  * @file
- * Add on module for Drupal's forum that provides a standard forum experience.
- *
- * Provides a default forum theme that looks similar to stand alone forum 
- * software. Also adds additional features traditionally found in forums 
- * including:
- * - Mark all read
- * - Jump links to more easily navigate forums
- * - More information such as the last post in a forum and view count on topics
- * - Extra user information such as join date, post count, 
- *   and much more using other contrib modules
+ * Enables the look and feel of other popular forum software.
  */
 
 /*****************************************************************************/
-/******************************** HOOKS **************************************/
+/*** DRUPAL HOOKS ************************************************************/
 /*****************************************************************************/
 
 /**
@@ -49,7 +40,6 @@ function advanced_forum_menu() {
    return $items;
 }
 
-
 /**
  * Implementation of hook_nodeapi().
  */
@@ -77,8 +67,6 @@ function advanced_forum_comment($a1, $op){
  
 /**
  * Implementation of hook_theme().
- *
- * Registers theme('forum_user')
  */
 function advanced_forum_theme() {
   $items = array();
@@ -86,7 +74,7 @@ function advanced_forum_theme() {
       'template' => 'advf-forum-user',
       'path' => drupal_get_path('module', 'advanced_forum') . '/themes/advforum',
       'arguments' => array('accountid' => NULL),
-    );
+  );
   return $items;
 }
 
@@ -100,7 +88,7 @@ function advanced_forum_theme_registry_alter($theme_registry) {
       unset($theme_registry['forum_topic_navigation']['preprocess functions'][$key]);
     }
   }
-  
+
   // Convince the registry that advforum in the module directory is a theme
   // so our templates are found.
   $templates = array('node', 'comment', 'forums', 'forum_list', 'forum_topic_list', 'forum_icon', 'forum_submitted');
@@ -112,7 +100,7 @@ function advanced_forum_theme_registry_alter($theme_registry) {
 }
 
 /*****************************************************************************/
-/************************* SETTINGS PAGE *************************************/
+/*** SETTINGS PAGE ***********************************************************/
 /*****************************************************************************/
 
 /**
@@ -140,7 +128,7 @@ function advanced_forum_settings_page() {
 } 
 
 /*****************************************************************************/
-/******************* TEMPLATE PREPROCESS *************************************/
+/*** TEMPLATE PREPROCESS *****************************************************/
 /*****************************************************************************/
 
 function advanced_forum_preprocess_node(&$vars) {
@@ -157,21 +145,21 @@ function advanced_forum_preprocess_node(&$vars) {
 
     // The node is the first post, aka topic
     $vars['top_post'] = TRUE;
-    
+
     // Node is being shown in the forum (not on the front page or in a view)
     $vars['is_forum'] = TRUE;
-    
+
     if (!empty($vars['node']->links) && !empty($vars['node']->links['comment_add'])) {
       // Change first post from "add comment" to "Reply"
       $vars['node']->links['comment_add']['title'] = t('Reply');
       $vars['links'] = theme('links', $vars['node']->links, array('class' => 'links inline forumlinks'));
-      
+
       // Make a separate variable for the reply link so it can be put on top of the thread
       $reply_link = $vars['node']->links['comment_add'];
       $reply_link['title'] = t("Post Reply");
       $vars['reply_link'] = theme('links', array('topic_reply' => $reply_link), array('class' => 'forumlinks'));
     }
-      
+
     // Make an array version of $links
     $vars['links_array'] = $vars['node']->links;
 
@@ -181,9 +169,9 @@ function advanced_forum_preprocess_node(&$vars) {
       $nid = $vars['node']->nid;
       $current_page = $_GET['page'];
       $number_new_comments = comment_num_new($nid);
-      
+
       if ($number_new_comments > 0) {
-        $page_of_first_new = comment_new_page_count($comment_count, $number_new_comments, $vars['node']);  
+        $page_of_first_new = comment_new_page_count($comment_count, $number_new_comments, $vars['node']);
         $cid_of_first_new = advanced_forum_first_new_comment($nid);   
         $link_text = format_plural($number_new_comments, '1 new reply', '@count replies');
         $vars['jump_first_new'] = l($link_text, 
@@ -191,15 +179,15 @@ function advanced_forum_preprocess_node(&$vars) {
                                     array('query' => $page_of_first_new, 'fragment' => "comment-$cid_of_first_new"));
       }
     }
-    
+
     // User information
     $vars['account'] = user_load(array('uid' => $vars['node']->uid));
-    $vars['user_info_pane'] = theme('forum_user', $vars['account']);   
-    
+    $vars['user_info_pane'] = theme('forum_user', $vars['account']);
+
     // Load the signature since Drupal doesn't put it on nodes
     if (variable_get('user_signatures', 0)) {
       $vars['signature'] = check_markup($vars['account']->signature, $vars['node']->format);
-    }        
+    }
   }
 }
 
@@ -207,10 +195,10 @@ function advanced_forum_preprocess_comment(&$vars) {
   if (advanced_forum_treat_as_forum_post('comment', $vars)) {
     // Use our combined node/comment template file
     $vars['template_files'][] = 'advf-forum-post';
-    
+
     // Thread is being shown in the forum (not on the front page or in a view)
     $vars['is_forum'] = TRUE;
-    
+
     // This is a comment, not the node.
     $vars['top_post'] = FALSE;
 
@@ -222,13 +210,13 @@ function advanced_forum_preprocess_comment(&$vars) {
       // Assign the subject to the title variable for consistancy with nodes.
       $vars['title'] = check_plain($vars['comment']->subject);
     }
-    
+
     // Just use the date for the submitted on.
     $vars['submitted'] = format_date($vars['comment']->timestamp);
 
     // Assign the comment to the content variable for consistancy with nodes.
     $vars['content'] = $vars['comment']->comment;
-      
+
     // User information
     $accountid = $vars['comment']->uid;
     if ($accountid == 0) {
@@ -240,10 +228,10 @@ function advanced_forum_preprocess_comment(&$vars) {
       // Load up the real user object
       $vars['account'] = user_load(array('uid' => $vars['comment']->uid));
     }
-    
+
     // Create the user info pane
-    $vars['user_info_pane'] = theme('forum_user', $vars['account']);   
-                       
+    $vars['user_info_pane'] = theme('forum_user', $vars['account']);
+
     // Because the $links array isn't available here, we recreate it
     if (arg(1) != 'reply') {
       $node = node_load($vars['comment']->nid);
@@ -256,7 +244,7 @@ function advanced_forum_preprocess_comment(&$vars) {
       $vars['links'] = theme('links', $links,array('class' => 'links forumlinks'));
       $vars['links_array'] = $links;
     }
-    
+
     // Since we have to load the node anyway for our links trick, make it avail
     $vars['node'] = $node;
 
@@ -271,7 +259,7 @@ function advanced_forum_preprocess_comment(&$vars) {
     if (!$page_number) {
       $page_number = 0;
     }
-    
+
     $post_number++;
     $fragment = 'comment-' . $vars['comment']->cid;
     $query = ($page_number) ? 'page=' . $page_number : NULL;
@@ -283,7 +271,7 @@ function advanced_forum_preprocess_comment(&$vars) {
     if (!empty($vars['comment']->page_url) && !(arg(0) == 'comment' && arg(1) == $vars['comment']->cid)) {
       $vars['page_link'] = l('(permalink)', $vars['comment']->page_url);
     }
-    
+
   }
 }
 
@@ -291,14 +279,14 @@ function template_preprocess_forum_user(&$variables) {
   // The passed in $variables['account'] refers to the user who's info is in the pane.
   $account = $variables['accountid'];
   $accountid = $account->uid;
-  
+
   // Get a reference to the currently logged in user.
   global $user;
-  
+
   // Username
   $variables['name_raw'] =  theme('username', $account);
   $variables['name'] =  '<div class="username">' .$variables['name_raw'] . '</div>';
-  
+
   // Avatar
   $variables['picture'] = theme('user_picture', $account);
 
@@ -306,7 +294,7 @@ function template_preprocess_forum_user(&$variables) {
   if ($accountid == 0) {
     return;
   }
-  
+
   $themedir =  advanced_forum_get_forum_theme_directory();
 
   // Join date / since
@@ -315,7 +303,7 @@ function template_preprocess_forum_user(&$variables) {
 
   $variables['member_since_raw'] = format_interval(time() - $account->created);
   $variables['member_since'] = '<div class="account-member-since">' . t('Member since: ') . $variables['member_since_raw'] . '</div>';
-  
+
   // Online status
   if (round((time()-$account->access)/60) < 15) {
     $variables['online_class'] = 'user-online';
@@ -333,7 +321,7 @@ function template_preprocess_forum_user(&$variables) {
   if (module_exists('profile')) {
     $variables['profile'] = profile_view_profile($account);
   }
-  
+
   // Points
   if (module_exists('userpoints')) {
     $variables['points_raw'] = userpoints_get_current_points($accountid);
@@ -344,7 +332,7 @@ function template_preprocess_forum_user(&$variables) {
   if (module_exists('user_stats')) {
     $variables['posts_raw'] = user_stats_get_stats('post_count', $accountid);
     $variables['posts'] = '<div class="user-posts"><strong>' . t('Posts: ') . '</strong>' . $variables['posts_raw'] . '</div>';
-    
+
     // IP is only visible if the viewer has access, so do an extra check
     $ip = user_stats_get_stats('ip_address', $accountid);
     if (!empty($ip)) {
@@ -352,7 +340,7 @@ function template_preprocess_forum_user(&$variables) {
       $variables['ip'] = '<div class="user-ip"><strong>' . t('IP: ') . '</strong>' . $variables['ip_raw'] . '</div>';
     }
   }
- 
+
   // Title
   if (module_exists('user_titles')) {
     $variables['user_title_raw'] = user_titles_get_user_title($accountid);
@@ -375,7 +363,7 @@ function template_preprocess_forum_user(&$variables) {
                           l($variables['contact_icon'] . ' '  . $variables['contact_text'], $variables['contact_link'], array('absolute' => TRUE, 'html' => TRUE)) . 
                           '</div>';
   }
-           
+
   // Send private message
   if (module_exists('privatemsg') &&
      ($account->uid != $user->uid) &&
@@ -391,7 +379,7 @@ function template_preprocess_forum_user(&$variables) {
 
   // Add / remove from buddylist
   if (module_exists('buddylist')) {
-  
+
     if (user_access('maintain buddy list') && @in_array($accountid, array_keys(buddylist_get_buddies($user->uid)))) {
       // Remove buddy
       $variables['buddylist_class'] = "buddy-remove";
@@ -407,14 +395,16 @@ function template_preprocess_forum_user(&$variables) {
         $variables['buddylist_link'] = 'buddy/add/'. $accountid;
       }
     }
-    
+
     $variables['buddylist'] = '<div class="' . $variables['buddylist_class'] . '">' . 
                          l($variables['buddylist_icon'] . ' '  . $variables['buddylist_text'], $variables['buddylist_link'], array('absolute' => TRUE, 'html' => TRUE)) . 
                          '</div>';
   }
- }
+}
 
-/********************** FORUM MODULE THEME OVERRIDES *************************/
+/*****************************************************************************/
+/*** FORUM MODULE THEME OVERRIDES ********************************************/
+/*****************************************************************************/
 
 function advanced_forum_preprocess_forums($variables) {
   $variables['template_files'][] = 'advf-forums';
@@ -428,7 +418,7 @@ function advanced_forum_preprocess_forums($variables) {
     $forum = taxonomy_get_term($variables['tid']);
     $variables['forum_description'] = $forum->description;
   }
-  
+
   // Add in the mark as read link if user has access
   if (advanced_forum_markasread_access()) {
     $tid = $variables['tid'];
@@ -446,7 +436,7 @@ function advanced_forum_preprocess_forums($variables) {
 
 function advanced_forum_preprocess_forum_list(&$variables) {
   $variables['template_files'][] = 'advf-forum-list';
-  
+
   // Add in a link to the last topic in each forum
   $last_topics = advanced_forum_get_all_last_topics();
   foreach ($variables['forums'] as $tid => $forum) {
@@ -457,21 +447,21 @@ function advanced_forum_preprocess_forum_list(&$variables) {
 
 function advanced_forum_preprocess_forum_submitted(&$variables) {
   $variables['template_files'][] = 'advf-forum-submitted';
-  
+
   // This check makes sure we only do the extra variables when this function is
   // called by advforum and not by core forum.
   if ($variables['topic']->topic_id) {
     $nid = $variables['topic']->topic_id;
 
     // Format the node title with a link
-    $short_topic_title =  truncate_utf8($variables['topic']->topic_title, 15, TRUE, TRUE);
+    $short_topic_title = truncate_utf8($variables['topic']->topic_title, 15, TRUE, TRUE);
     $variables['topic_link'] = l($short_topic_title, "node/" . $variables['topic']->topic_id);
-    
+
     // Format the comment title with a link (if there is a comment)
     if (!empty($variables['topic']->reply_title)) {
       $short_reply_title =  truncate_utf8($variables['topic']->reply_title, 15, TRUE, TRUE);
       $comment_fragment = 'comment-' . $variables['topic']->reply_id;
-      
+
       // Figure out the link to the last comment
       $fake_node = new stdClass(); 
       $fake_node->type = $variables['topic']->topic_type;
@@ -487,8 +477,14 @@ function advanced_forum_preprocess_forum_submitted(&$variables) {
       }
       $variables['reply_link'] = l($short_reply_title, "node/" . $variables['topic']->topic_id, 
                                    array('query' => $pager, 'fragment' => $comment_fragment));
+
+      // Create a linked icon to be used with or instead of the comment title
+      advanced_forum_preprocess_forum_icon($icon);
+      $image = theme('image', $icon['iconpath'] . "/newest_comment.gif");
+      $variables['reply_icon'] = l($image, "node/" . $variables['topic']->topic_id, 
+                                   array('query' => $pager, 'fragment' => $comment_fragment, 'html' => true));
     }
-    
+
     // Format the time ago of the last post (node or comment)
     if ($variables['topic']->reply_timestamp > 0) {
       $variables['time'] =  format_interval(time() - $variables['topic']->reply_timestamp);
@@ -496,7 +492,7 @@ function advanced_forum_preprocess_forum_submitted(&$variables) {
     else {
       $variables['time'] =  format_interval(time() - $variables['topic']->topic_timestamp);
     }
-    
+
     // Format the author of the last post (node or comment)
     $author = new stdClass(); 
     if (!empty($variables['topic']->reply_author_id)) {
@@ -507,15 +503,15 @@ function advanced_forum_preprocess_forum_submitted(&$variables) {
       $author->uid = $variables['topic']->topic_author_id;
       $author->name = $variables['topic']->topic_author_name;
     }
-    
-    $variables['author'] = theme('username',$author);   
+
+    $variables['author'] = theme('username', $author);
   }
 }
 
 function advanced_forum_preprocess_forum_topic_list(&$variables) {
   // Take control of the template file.
   $variables['template_files'][] = 'advf-forum-topic-list';
-  
+
   // Redo the table header so we can add in views. This is mostly copied from
   // core with just the views bit stuck in.
   global $forum_topic_list_header;
@@ -528,7 +524,7 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
     array('data' => t('Created'), 'field' => 'n.created'),
     array('data' => t('Last reply'), 'field' => 'l.last_comment_timestamp'),
   );
-  
+
   // Create the tablesorting header.
   $ts = tablesort_init($forum_topic_list_header);
   $header = '';
@@ -545,21 +541,21 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
   // Do our own topic processing.
   if (!empty($variables['topics'])) {
     $row = 0;
-      
+
     // Find out how many pages to show on the topic pager. We do this outside
     // the loop because it will be the same for all topics.
     $max_pages_to_display = variable_get('advforum_topic_pager_max', 5);
-    
+
     foreach ($variables['topics'] as $id => $topic) {
       // Get a pager to add to the topic, if there is one
       $variables['topics'][$id]->pager = _advanced_forum_create_topic_pager($max_pages_to_display, $topic);
-          
+
       // Make shadow copy point to actual thread and tell you new the forum name
       if ($variables['topics'][$id]->moved == TRUE) {
         $term = taxonomy_get_term($topic->tid);
         $variables['topics'][$id]->message = l(t('This topic has been moved to ') . $term->name, "node/$topic->nid");
       }
-      
+
       // Send the NID into the icon theme code so it can be linked to the topic
       $variables['topics'][$id]->icon = theme('forum_icon', $topic->new, $topic->num_comments, $topic->comment_mode, $topic->sticky, $topic->nid);
 
@@ -571,7 +567,7 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
 
 function advanced_forum_preprocess_forum_icon(&$variables) {
   $variables['template_files'][] = 'advf-forum-icon';
-  
+
   // Find the icons for the forums by looking first in the theme and then
   // in the module. Use a static variable to hold the path so we don't need
   // to go through the process for each icon on the page.
@@ -591,7 +587,7 @@ function advanced_forum_preprocess_forum_post(&$variables) {
 }
 
 /*****************************************************************************/
-/***************************** THEME RELATED *********************************/
+/*** THEME RELATED ***********************************************************/
 /*****************************************************************************/
 
 /**
@@ -619,13 +615,13 @@ function advanced_forum_treat_as_forum_post($hook, $vars) {
         // shown on some other page (like a view or promoted to front page)
         $forum_node_id = $vars['node']->nid;
         return true;
-      } 
+      }
       else {
         // We've hit a non forum node
         unset($forum_node_id);
         return false;
       }
-      
+
     case 'comment':
       if (isset($forum_node_id) && ($vars['comment']->nid == $forum_node_id)) {
         // We already know this comment is either part of a forum thread
@@ -638,8 +634,8 @@ function advanced_forum_treat_as_forum_post($hook, $vars) {
           // This site wants all comments to use the forum comment template
           $forum_node_id = $vars['comment']->nid;
           return true;
-        } 
-        
+        }
+
         if (arg(0) == 'comment' && is_numeric(arg(1))) {
           // Comment is being shown alone via the comment_page module
           // For now, assume those should be themed like the forums.
@@ -647,11 +643,11 @@ function advanced_forum_treat_as_forum_post($hook, $vars) {
           $forum_node_id = $vars['comment']->nid;
           return true;
         }
-        
+
         // Comment is not part of a forum thread and there are no exceptions.
         return false;
       }
-     
+
     default:
       // We only deal with nodes and comments
       return false;
@@ -675,7 +671,7 @@ function advanced_forum_add_css() {
 
   // Load the structural CSS (heights, floats, padding, margins, etc)
   drupal_add_css($csspath . '/advanced_forum-structure.css');
-  
+
   // Add on the colors and graphics part
   drupal_add_css($csspath . '/advanced_forum.css');
 }
@@ -683,19 +679,19 @@ function advanced_forum_add_css() {
 function advanced_forum_theme_path() {
   // Create this as a static variable since it's used a lot on one page
   static $advanced_forum_theme_path;
-  
+
   // If we already stored the path, just send it back
   if (isset($advanced_forum_theme_path)) {
     return $advanced_forum_theme_path;
   }
-  
+
   // Check first if there is a subtheme. This function is defined in Zen
   // and potentially may exist in other themes with subthemes.
   init_theme();
   if (function_exists("path_to_subtheme")) {
     $advanced_forum_theme_path = path_to_subtheme();
   }
-  
+
   // If we had no luck finding a subtheme, find the theme path
   // the normal way.
   if (empty($advanced_forum_theme_path)) {
@@ -732,7 +728,7 @@ function _advanced_forum_get_last_topic($tid) {
             LIMIT 1";
             
   $node = db_fetch_object(db_query(db_rewrite_sql($query)));
-  
+
   // Get the latest published comment in the forum
   $query = "SELECT $tid AS tid,
                    c.nid, 
@@ -751,7 +747,7 @@ function _advanced_forum_get_last_topic($tid) {
   }
   else {
     return $comment;
-  }      
+  }
 }
 
 /**
@@ -777,9 +773,9 @@ function advanced_forum_get_all_last_topics() {
     LEFT JOIN {node} AS n ON alp.nid = n.nid
     LEFT JOIN {users} AS u ON u.uid = n.uid
     LEFT JOIN {comments} AS c ON alp.cid = c.cid";
-           
+
   $result = db_query(db_rewrite_sql($query));
-  
+
   $topics = array();
   while ($topic = db_fetch_object($result)) {
     // If the topic title is empty, the node has been deleted
@@ -793,29 +789,29 @@ function advanced_forum_get_all_last_topics() {
         $topic->topic_status == 0 || 
         $topic->reply_status == 1) {
       $bad_topic_found = true;
-      
+
       $new_topic = _advanced_forum_get_last_topic($topic->tid);
       _advanced_forum_update_last_post($new_topic->tid, $new_topic->nid, $new_topic->cid);
-    } 
+    }
     else {
       $topics[$topic->tid] = $topic;
     }
   }
-  
+
   if ($bad_topic_found) {
     // One or more of the topics was out of date, so rerun the query
     $result = db_query(db_rewrite_sql($query));
     $topics = array();
     while ($topic = db_fetch_object($result)) {
       $topics[$topic->tid] = $topic;
-    }   
+    }
   }
-  
+
   return $topics;
 }
 
 /*****************************************************************************/
-/************************** MARK AS READ *************************************/
+/*** MARK AS READ ************************************************************/
 /*****************************************************************************/
 
 /**
@@ -823,11 +819,11 @@ function advanced_forum_get_all_last_topics() {
  */
 function advanced_forum_markasread() {
   global $user;
-  
+
   // See if we're on a forum or on the forum overview
   // Path will be /forum/markasread or /forum/markasread/tid
   $current_forum_id = arg(2);
- 
+
   if ($current_forum_id) {
     // Combine INSERT with SELECT+SUBSELECT that will return rows that are not
     // present in the history table, marking all unread nodes as read
@@ -838,13 +834,13 @@ function advanced_forum_markasread() {
            .' WHERE (n.created > %d OR ncs.last_comment_timestamp > %d)'
            .' AND tn.tid = %d'
            .' and n.nid not in ( SELECT nid FROM {history} AS h WHERE h.nid = n.nid AND h.uid = %d)';
-    
+
     $args = array($user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $current_forum_id, $user->uid);
 
     db_query($sql, $args);
 
     drupal_set_message(t('All content in this forum has been marked as read'));
-    drupal_goto('forum/'.$current_forum_id);    
+    drupal_goto('forum/'. $current_forum_id);
   } else {
     // We are on the forum overview, requesting all forums be marked read
     $forum_vocabulary_id = variable_get('forum_nav_vocabulary', '');
@@ -859,13 +855,13 @@ function advanced_forum_markasread() {
            .' WHERE (n.created > %d OR ncs.last_comment_timestamp > %d)'
            .' and n.nid not in ( SELECT nid FROM {history} AS h WHERE h.nid = n.nid AND h.uid = %d)'
            .' AND tn.tid in (SELECT tid FROM {term_data} WHERE vid = %d)';
-      
+
     $args = array($user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $user->uid, $forum_vocabulary_id);
- 
+
     db_query($sql, $args);
- 
+
     drupal_set_message(t('All forum content been marked as read'));
-    drupal_goto('forum'); 
+    drupal_goto('forum');
   }
 }
 
@@ -878,7 +874,7 @@ function advanced_forum_markasread_access() {
 }
 
 /*****************************************************************************/
-/************************* GENERAL FUNCTIONS *********************************/
+/*** GENERAL FUNCTIONS *******************************************************/
 /*****************************************************************************/
 
 /**
@@ -891,11 +887,11 @@ function advanced_forum_markasread_access() {
  */
 function _advanced_forum_topic_nid($nodeid = 0) {
   static $nid;
-  
+
   if (!empty($nodeid)) {
     $nid = $nodeid;
   }
-  
+
   return $nid;
 }
 
@@ -944,34 +940,34 @@ function _advanced_forum_create_topic_pager($max_pages_to_display, $topic) {
   // Find the number of comments per page for the node type of the topic.
   // It's the same for all types in D5, but varies in D6.
   $comments_per_page = _comment_get_display_setting('comments_per_page', $topic);
-  
+
   if ($max_pages_to_display > 0 && $topic->num_comments > $comments_per_page) {
     // Topic has more than one page and a pager is wanted. Start off the
     // first page because that doesn't have a query.
     $pager_array = array();
     $current_display_page = 1;
     $pager_array[] = l('1', "node/$topic->nid");
-  
+
     // Find the ending point. The pager URL is always 1 less than
     // the number being displayed because the first page is 0.
     $last_display_page = ceil($topic->num_comments / $comments_per_page);
     $last_pager_page = $last_display_page - 1;
-  
+
     // Add pages until we run out or until we hit the max to show.
     while (($current_display_page < $last_display_page) && ($current_display_page < $max_pages_to_display)) {
       // Move to the next page
       $current_display_page++;
-    
+
       // The page number we link to is 1 less than what's displayed
       $link_to_page = $current_display_page - 1;
-    
+
       // Add the link to the array
       $pager_array[] =  l($current_display_page, "node/$topic->nid", array('query' => 'page=' . $link_to_page));
     }
-  
+
     // Move to the next page
     $current_display_page++;
-    
+
     if ($current_display_page == $last_display_page) {
       // We are one past the max to display, but it's the last page,
       // so putting the ...last is silly. Just display it normally.
@@ -986,12 +982,11 @@ function _advanced_forum_create_topic_pager($max_pages_to_display, $topic) {
       $text = t('Last Page') . '(' . $last_display_page . ')';
       $pager_last = ' &hellip; ' . l($text, "node/$topic->nid", array('query' => 'page=' . $last_pager_page));
     }
-    
+
     // Put it all together
     return '[' . t('Page') . ' '. implode(", ", $pager_array) . $pager_last . ']';
   }
 }
-
 
 /**
  * Retrieves a forum topic's "views count".
@@ -1002,11 +997,13 @@ function _advanced_forum_create_topic_pager($max_pages_to_display, $topic) {
  *   Total number of times that node has been viewed.
  */
 function _advanced_forum_get_topic_views_count($nid) {
-  $views_count = 0;
-
   if ($nid > 0) {
     $views_count = db_result(db_query('SELECT totalcount FROM {node_counter} WHERE nid = %d', $nid));
   }
 
+  // Make sure it's 0, not blank, for better display.
+  if (empty($views_count)) {
+    $views_count = 0;
+  }
   return $views_count;
 }
