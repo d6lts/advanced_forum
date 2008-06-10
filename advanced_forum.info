@@ -1,5 +1,5 @@
 ; $Id$
 name = Advanced Forum
-description = Add extra theming and functionality to core forums.
+description = Enables the look and feel of other popular forum software.
 dependencies[] = forum
 core = 6.x

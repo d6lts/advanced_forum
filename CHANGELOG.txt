@@ -5,6 +5,7 @@ $Id$
 June 9, 2008
 ------------
 #268680 by Morbus: Whitespace / comment cleanup.
+Code cleanup and syncing the branches.
 
 June 6, 2008 - ALPHA 1
 ------------

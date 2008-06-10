@@ -3,31 +3,10 @@
 // $Id$
 
 function advanced_forum_install() {
-  drupal_install_schema('advanced_forum');
-  
-  _advanced_forum_fill_last_topic_table();
-  
   db_query("UPDATE {system} SET weight = 10 WHERE name = 'advanced_forum'");  
 }
 
-/**
-* Implementation of hook_schema().
-*/
-function advanced_forum_schema() {
-  $schema['advforum_last_post'] = array(
-    'fields' => array(
-      'tid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
-      'nid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
-      'cid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
-    ),
-    'primary key' => array('tid'),
-  );
-
-  return $schema;
-}
-
 function advanced_forum_uninstall() {
-  drupal_uninstall_schema('advanced_forum');
   variable_del('advanced_forum_themedir');
   variable_del('advanced_forum_theme_all_comments');
   variable_del('advforum_topic_pager_max');
@@ -39,72 +18,16 @@ function advanced_forum_update_5000() {
   return $ret;
 }
 
+/* Removed these as they were a bad idea 
 function advanced_forum_update_5001() {
-  $ret = array();
-
-  // Create the current version of the table.
-  $schema['advforum_last_post'] = array(
-    'fields' => array(
-      'tid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
-      'nid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
-      'cid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
-    ),
-    'primary key' => array('tid'),
-  );
-  db_create_table($ret, 'advforum_last_post', $schema['advforum_last_post']);
-
-  return $ret;
 }
 
 function advanced_forum_update_5002() {
+}
+*/
+
+function advanced_forum_update_5003() {
   $ret = array();
-  $ret = _advanced_forum_fill_last_topic_table();
+  $ret[] = update_sql('DROP TABLE {advforum_last_post}');
   return $ret;
 }
-
-function _advanced_forum_fill_last_topic_table() {
-  $ret = array();
-  $tree = taxonomy_get_tree($vid = variable_get('forum_nav_vocabulary', ''));
-  if ($tree) {
-    $containers = variable_get('forum_containers', array());
-    foreach ($tree as $term) {
-      $tid = $term->tid;
-      if (!in_array($tid, $containers)) {
-        // Get the latest published node in the forum
-        $query = "SELECT n.nid, 
-                         n.created
-                  FROM {node} n
-                  INNER JOIN {term_node} tn on n.nid = tn.nid
-                  WHERE tn.tid = $tid AND n.status = 1
-                  ORDER BY n.created DESC";
-            
-        $node = db_fetch_object(db_query_range(db_rewrite_sql($query), array(), 0, 1));
-
-        // Get the latest published comment in the forum
-        $query = "SELECT c.nid, 
-                         c.cid,
-                         c.timestamp
-                  FROM {comments} c
-                  INNER JOIN {term_node} tn ON c.nid = tn.nid
-                  INNER JOIN {node} n ON c.nid = n.nid
-                  WHERE tn.tid = $tid AND n.status = 1 AND c.status = 0
-                  ORDER BY c.timestamp DESC";
-        $comment = db_fetch_object(db_query_range(db_rewrite_sql($query), array(), 0, 1));
-
-        // Update the table with the last node/comment (whichever is later)
-        if ($node->created >= $comment->timestamp) {
-            $ret[] = update_sql("DELETE FROM {advforum_last_post} WHERE tid = $tid");
-            $ret[] = update_sql("INSERT INTO {advforum_last_post} (tid, nid, cid) VALUES($tid, $node->nid, 0)");
-
-        }
-        else {
-            $ret[] = update_sql("DELETE FROM {advforum_last_post} WHERE tid = $tid");
-            $ret[] = update_sql("INSERT INTO {advforum_last_post} (tid, nid, cid) VALUES($tid, $comment->nid, $comment->cid)");
-        }      
-      }
-    }
-  }
-
-  return $ret;
-}
- 
