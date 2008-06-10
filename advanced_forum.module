@@ -21,7 +21,21 @@ function advanced_forum_perm() {
  * Implementation of hook_init().
  */
 function advanced_forum_init() {
-  advanced_forum_add_css();
+  // Find the CSS files for the forums by looking first in the theme and then
+  // in the module.
+  $css_file = path_to_theme() . '/' . advanced_forum_get_forum_theme_directory() . '/advanced_forum-structure.css';
+  if (!file_exists($css_file)) {
+    $css_file = drupal_get_path('module', 'advanced_forum') . '/themes/advforum/advanced_forum-structure.css';
+  }
+  
+  drupal_add_css($css_file);
+
+  $css_file = path_to_theme() . '/' . advanced_forum_get_forum_theme_directory() . '/advanced_forum.css';
+  if (!file_exists($css_file)) {
+    $css_file = drupal_get_path('module', 'advanced_forum') . '/themes/advforum/advanced_forum.css';
+  }
+  
+  drupal_add_css($css_file);
 }
 
 /**
@@ -94,15 +108,23 @@ function advanced_forum_settings_page() {
     '#title' => t('Advanced forum theme directory'),
     '#size' => 25,
     '#description' => t('Path from site theme directory to advanced forum theme directory. Defaults to "advforum"'),
-    '#default_value' => variable_get('advanced_forum_themedir','advforum'),
+    '#default_value' => variable_get('advanced_forum_themedir', 'advforum'),
   );
   
+  $form['advanced_forum_use_supplied_icons'] = array(
+    '#type' => 'radios',
+    '#title' => t('Use icons in module directory'),
+    '#options' => array(t("No"), t("Yes")),
+    '#description' => t('If you select "No", advanced forum will look for icons in a directory called "images" under the advanced forum theme directory.'),
+    '#default_value' => variable_get('advanced_forum_theme_all_comments', 1),
+  );
+
   $form['advanced_forum_theme_all_comments'] = array(
     '#type' => 'radios',
     '#title' => t('Treat all site comments like forum comments'),
-    '#options' => array(t("No"),t("Yes")),
+    '#options' => array(t("No"), t("Yes")),
     '#description' => t('Choosing yes causes advanced forum to consider every comment a forum comment and attempt to theme it that way. Some changes to your theme may be required.'),
-    '#default_value' => variable_get('advanced_forum_theme_all_comments',0),
+    '#default_value' => variable_get('advanced_forum_theme_all_comments', 0),
   );
 
   // Send our form to Drupal to make a settings page
@@ -299,13 +321,13 @@ function template_preprocess_forum_user(&$variables) {
   // Online status
   if (round((time()-$account->access)/60) < 15) {
     $variables['online_class'] = 'user-online';
-    $variables['online_icon'] = theme('image', advanced_forum_theme_path() . '/' . $themedir . '/images/status_online.png', 'User is online', 'User is online', NULL, TRUE);
+    $variables['online_icon'] = theme('image', advanced_forum_get_icon_directory() . 'status_online.png', 'User is online', 'User is online', NULL, TRUE);
     $variables['online_text'] = t('Online');
     $variables['online_status'] = '<div class="user-online">' . $variables['online_icon'] . ' ' . $variables['online_text'] . '</div>';
   } 
   else {
     $variables['online_class'] = 'user-offline';
-    $variables['online_icon'] = theme('image', advanced_forum_theme_path() . '/' . $themedir . '/images/status_offline.png', 'User is offline', 'User is offline', NULL, TRUE);
+    $variables['online_icon'] = theme('image', advanced_forum_get_icon_directory() . 'status_offline.png', 'User is offline', 'User is offline', NULL, TRUE);
     $variables['online_text'] = t('Offline');
     $variables['online_status'] = '<div class="user-offline">' . $variables['online_icon'] . ' ' . $variables['online_text'] . '</div>';
   }
@@ -349,7 +371,7 @@ function template_preprocess_forum_user(&$variables) {
   // Contact user
   if (module_exists('contact') && ($account->contact) && ($account->uid != $user->uid) && ($user->uid != 0)) {
     $variables['contact_class'] = "contact";
-    $variables['contact_icon'] = theme('image', advanced_forum_theme_path() . '/' . $themedir . "/images/email.png", 'Email', 'Email', NULL, TRUE);
+    $variables['contact_icon'] = theme('image', advanced_forum_get_icon_directory() . 'email.png', 'Email', 'Email', NULL, TRUE);
     $variables['contact_text'] = t('Email');
     $variables['contact_link'] = 'user/'. $accountid . '/contact';
     $variables['contact'] = '<div class="contact">' . 
@@ -362,7 +384,7 @@ function template_preprocess_forum_user(&$variables) {
      ($account->uid != $user->uid) &&
      user_access('access private messages') &&
      (isset($account->privatemsg_allow) ? $account->privatemsg_allow : 1)) {
-    $variables['privatemsg_icon'] = theme('image', advanced_forum_theme_path() . '/' . $themedir . "/images/user_comment.png", 'Private Message', 'Private Message', NULL, TRUE);
+    $variables['privatemsg_icon'] = theme('image', advanced_forum_get_icon_directory() . 'user_comment.png', 'Private Message', 'Private Message', NULL, TRUE);
     $variables['privatemsg_text'] = t('Send PM');
     $variables['privatemsg_link'] = 'privatemsg/new/'. $accountid;
     $variables['privatemsg'] = '<div class="privatemsg">' . 
@@ -376,7 +398,7 @@ function template_preprocess_forum_user(&$variables) {
     if (user_access('maintain buddy list') && @in_array($accountid, array_keys(buddylist_get_buddies($user->uid)))) {
       // Remove buddy
       $variables['buddylist_class'] = "buddy-remove";
-      $variables['buddylist_icon'] = theme('image', advanced_forum_theme_path() . '/' . $themedir . "/images/group_delete.png", 'Remove Buddy', 'Remove Buddy', NULL, TRUE);
+      $variables['buddylist_icon'] = theme('image', advanced_forum_get_icon_directory() . 'group_delete.png', 'Remove Buddy', 'Remove Buddy', NULL, TRUE);
       $variables['buddylist_text'] = t('Remove buddy'); 
       $variables['buddylist_link'] = 'buddy/delete/'. $accountid;
     } 
@@ -384,7 +406,7 @@ function template_preprocess_forum_user(&$variables) {
       // Add buddy
       if ($accountid != $user->uid && user_access('maintain buddy list')) {
         $variables['buddylist_class'] = "buddy-add";
-        $variables['buddylist_icon'] = theme('image', advanced_forum_theme_path() . '/' . $themedir . "/images/group_add.png", 'Add to buddy list', 'Add to buddy list', NULL, TRUE);
+        $variables['buddylist_icon'] = theme('image', advanced_forum_get_icon_directory() . 'group_add.png', 'Add to buddy list', 'Add to buddy list', NULL, TRUE);
         $variables['buddylist_text'] = t('Add buddy');
         $variables['buddylist_link'] = 'buddy/add/'. $accountid;
       }
@@ -578,17 +600,7 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
 function advanced_forum_preprocess_forum_icon(&$variables) {
   $variables['template_files'][] = 'advf-forum-icon';
 
-  // Find the icons for the forums by looking first in the theme and then
-  // in the module. Use a static variable to hold the path so we don't need
-  // to go through the process for each icon on the page.
-  static $iconpath;
-  if (!isset($iconpath)) {
-    $iconpath = advanced_forum_theme_path() . '/' . advanced_forum_get_forum_theme_directory() . '/images';
-    if (!file_exists($iconpath)) {
-      $iconpath = drupal_get_path('module', 'advanced_forum') . '/themes/advforum/images';
-    }
-  }
-  $variables['iconpath'] = $iconpath;
+  $variables['iconpath'] = advanced_forum_get_icon_directory();
 }
 
 // This one is exclusive to advanced forum
@@ -668,50 +680,20 @@ function advanced_forum_treat_as_forum_post($hook, $vars) {
  * Returns the directory of the forum theme files.
  */
 function advanced_forum_get_forum_theme_directory() {
-  return variable_get('advanced_forum_themedir','advforum');
+  return variable_get('advanced_forum_themedir', 'advforum');
 }
 
 /**
- * Loads the CSS files that come with advanced forum.
+ * Returns the directory of the forum icon files.
  */
-function advanced_forum_add_css() {
-  // Find the CSS files for the forums by looking first in the theme and then
-  // in the module.
-  $csspath = advanced_forum_theme_path() . '/' . advanced_forum_get_forum_theme_directory();
-  if (!file_exists($csspath)) {
-    $csspath = drupal_get_path('module', 'advanced_forum') . '/themes/advforum';
+function advanced_forum_get_icon_directory() {
+  if (variable_get('advanced_forum_use_supplied_icons', 1)) {
+    return drupal_get_path('module', 'advanced_forum') . '/themes/advforum/images/';
   }
-
-  // Load the structural CSS (heights, floats, padding, margins, etc)
-  drupal_add_css($csspath . '/advanced_forum-structure.css');
-
-  // Add on the colors and graphics part
-  drupal_add_css($csspath . '/advanced_forum.css');
-}
-
-function advanced_forum_theme_path() {
-  // Create this as a static variable since it's used a lot on one page
-  static $advanced_forum_theme_path;
-
-  // If we already stored the path, just send it back
-  if (isset($advanced_forum_theme_path)) {
-    return $advanced_forum_theme_path;
+  else {
+    // Use the icons in the forum theme
+    return path_to_theme() . "/" . advanced_forum_get_forum_theme_directory() . "/images/";
   }
-
-  // Check first if there is a subtheme. This function is defined in Zen
-  // and potentially may exist in other themes with subthemes.
-  init_theme();
-  if (function_exists("path_to_subtheme")) {
-    $advanced_forum_theme_path = path_to_subtheme();
-  }
-
-  // If we had no luck finding a subtheme, find the theme path
-  // the normal way.
-  if (empty($advanced_forum_theme_path)) {
-    $advanced_forum_theme_path = path_to_theme();
-  }
-  
-  return $advanced_forum_theme_path;
 }
 
 /*****************************************************************************/
