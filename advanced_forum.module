@@ -473,7 +473,7 @@ function advanced_forum_preprocess_forum_submitted(&$variables) {
     $nid = $variables['topic']->nid;
   
     // Make a fake node object to avoid the node load
-    $node = new stdClass;
+    $node = new stdClass();
     $node->nid = $nid;
     $node->type = $variables['topic']->type;
 
@@ -929,7 +929,7 @@ function advanced_forum_get_forums($tid = 0) {
     // This query does not use full ANSI syntax since MySQL 3.x does not support
     // table1 INNER JOIN table2 INNER JOIN table3 ON table2_criteria ON table3_criteria
     // used to join node_comment_statistics to users.
-    $sql = "SELECT n.title, n.nid, n.type,
+    $sql = "SELECT n.nid, n.title, n.type,
                    ncs.last_comment_timestamp, 
                    IF (ncs.last_comment_uid != 0, u2.name, ncs.last_comment_name) AS last_comment_name, 
                    ncs.last_comment_uid 
