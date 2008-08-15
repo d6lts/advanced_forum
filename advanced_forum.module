@@ -16,15 +16,9 @@
 function advanced_forum_init() {
   // load in the advanced forum theme if we're in a forum, or viewing a node.
   if (arg(0) == 'forum' || ($node = menu_get_object())) {
-    foreach (array('advanced_forum-structure.css', 'advanced_forum.css') as $filename) {
-      $css_file = path_to_theme() . '/' . advanced_forum_get_forum_theme_directory() . '/' . $filename;
-
-      if (!file_exists($css_file)) {
-        $css_file = drupal_get_path('module', 'advanced_forum') . '/themes/advforum/' . $filename;
-      }
-
-      drupal_add_css($css_file);
-    }
+    $style_directory = advanced_forum_path_to_style();
+    drupal_add_css("$style_directory/advanced_forum-structure.css" );
+    drupal_add_css("$style_directory/advanced_forum.css" );
   }
 }
 
@@ -70,8 +64,8 @@ function advanced_forum_menu_alter(&$callbacks) {
 function advanced_forum_theme() {
   $items['forum_user'] = array(
       'template' => 'advf-forum-user',
-      'path' => drupal_get_path('module', 'advanced_forum') . '/themes/advforum',
-      'arguments' => array('accountid' => NULL),
+      'path' => advanced_forum_path_to_style(),
+      'arguments' => array('account' => NULL),
   );
   
   return $items;
@@ -88,13 +82,15 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
     }
   }
 
-  // Convince the registry that advforum in the module directory is a theme
-  // so our templates are found.
-  $templates = array('node', 'comment', 'forums', 'forum_list', 'forum_topic_list', 'forum_icon', 'forum_submitted');
-  foreach ($templates as $template) {
-    $originalpath = array_shift($theme_registry[$template]['theme paths']);
-    $modulepath = drupal_get_path('module', 'advanced_forum') . '/themes/advforum';
-    array_unshift($theme_registry[$template]['theme paths'], $originalpath, $modulepath);
+  if (!advanced_forum_style_in_theme()) {
+    // Convince the registry that advforum in the module directory is a theme
+    // so our templates are found.
+    $templates = array('node', 'comment', 'forums', 'forum_list', 'forum_topic_list', 'forum_icon', 'forum_submitted');
+    foreach ($templates as $template) {
+      $originalpath = array_shift($theme_registry[$template]['theme paths']);
+      $modulepath = advanced_forum_path_to_style();
+      array_unshift($theme_registry[$template]['theme paths'], $originalpath, $modulepath);
+    }
   }
 }
 
@@ -102,20 +98,12 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
  * Defines the Advanced Forum settings form.
  */
 function advanced_forum_settings_page() {
-  $form['advanced_forum_themedir'] = array(
+  $form['advanced_forum_style'] = array(
     '#type' => 'textfield',
-    '#title' => t('Advanced forum theme directory'),
+    '#title' => t('Advanced forum style'),
     '#size' => 25,
-    '#description' => t('Path from site theme directory to advanced forum theme directory. Defaults to "advforum"'),
-    '#default_value' => variable_get('advanced_forum_themedir', 'advforum'),
-  );
-
-  $form['advanced_forum_use_supplied_icons'] = array(
-    '#type' => 'radios',
-    '#title' => t('Use icons in module directory'),
-    '#options' => array(t("No"), t("Yes")),
-    '#description' => t('If you select "No", advanced forum will look for icons in a directory called "images" under the advanced forum theme directory.'),
-    '#default_value' => variable_get('advanced_forum_theme_all_comments', 1),
+    '#description' => t('Name of advanced forum style. Defaults to "advforum"'),
+    '#default_value' => variable_get('advanced_forum_style', 'advforum'),
   );
 
   $form['advanced_forum_theme_all_comments'] = array(
@@ -310,8 +298,6 @@ function template_preprocess_forum_user(&$variables) {
     return;
   }
 
-  $themedir =  advanced_forum_get_forum_theme_directory();
-
   // Join date / since
   $variables['joined_raw'] = format_date($account->created, 'custom', 'Y-m-d');
   $variables['joined'] = '<div class="account-joined"><strong>' . t('Joined: ') . '</strong>' . $variables['joined_raw'] . '</div>';
@@ -322,13 +308,13 @@ function template_preprocess_forum_user(&$variables) {
   // Online status
   if (round((time()-$account->access)/60) < 15) {
     $variables['online_class'] = 'user-online';
-    $variables['online_icon'] = theme('image', advanced_forum_get_icon_directory() . 'status_online.png', 'User is online', 'User is online', NULL, TRUE);
+    $variables['online_icon'] = theme('image', advanced_forum_path_to_images() . '/status_online.png', 'User is online', 'User is online', NULL, TRUE);
     $variables['online_text'] = t('Online');
     $variables['online_status'] = '<div class="user-online">' . $variables['online_icon'] . ' ' . $variables['online_text'] . '</div>';
   } 
   else {
     $variables['online_class'] = 'user-offline';
-    $variables['online_icon'] = theme('image', advanced_forum_get_icon_directory() . 'status_offline.png', 'User is offline', 'User is offline', NULL, TRUE);
+    $variables['online_icon'] = theme('image', advanced_forum_path_to_images() . '/status_offline.png', 'User is offline', 'User is offline', NULL, TRUE);
     $variables['online_text'] = t('Offline');
     $variables['online_status'] = '<div class="user-offline">' . $variables['online_icon'] . ' ' . $variables['online_text'] . '</div>';
   }
@@ -372,7 +358,7 @@ function template_preprocess_forum_user(&$variables) {
   // Contact user
   if (module_exists('contact') && ($account->contact) && ($account->uid != $user->uid) && ($user->uid != 0)) {
     $variables['contact_class'] = "contact";
-    $variables['contact_icon'] = theme('image', advanced_forum_get_icon_directory() . 'email.png', 'Email', 'Email', NULL, TRUE);
+    $variables['contact_icon'] = theme('image', advanced_forum_path_to_images() . '/email.png', 'Email', 'Email', NULL, TRUE);
     $variables['contact_text'] = t('Email');
     $variables['contact_link'] = 'user/'. $accountid . '/contact';
     $variables['contact'] = '<div class="contact">' . 
@@ -385,7 +371,7 @@ function template_preprocess_forum_user(&$variables) {
      ($account->uid != $user->uid) &&
      user_access('access private messages') &&
      (isset($account->privatemsg_allow) ? $account->privatemsg_allow : 1)) {
-    $variables['privatemsg_icon'] = theme('image', advanced_forum_get_icon_directory() . 'user_comment.png', 'Private Message', 'Private Message', NULL, TRUE);
+    $variables['privatemsg_icon'] = theme('image', advanced_forum_path_to_images() . '/user_comment.png', 'Private Message', 'Private Message', NULL, TRUE);
     $variables['privatemsg_text'] = t('Send PM');
     $variables['privatemsg_link'] = 'privatemsg/new/'. $accountid;
     $variables['privatemsg'] = '<div class="privatemsg">' . 
@@ -399,7 +385,7 @@ function template_preprocess_forum_user(&$variables) {
     if (user_access('maintain buddy list') && @in_array($accountid, array_keys(buddylist_get_buddies($user->uid)))) {
       // Remove buddy
       $variables['buddylist_class'] = "buddy-remove";
-      $variables['buddylist_icon'] = theme('image', advanced_forum_get_icon_directory() . 'group_delete.png', 'Remove Buddy', 'Remove Buddy', NULL, TRUE);
+      $variables['buddylist_icon'] = theme('image', advanced_forum_path_to_images() . '/group_delete.png', 'Remove Buddy', 'Remove Buddy', NULL, TRUE);
       $variables['buddylist_text'] = t('Remove buddy'); 
       $variables['buddylist_link'] = 'buddy/delete/'. $accountid;
     } 
@@ -407,7 +393,7 @@ function template_preprocess_forum_user(&$variables) {
       // Add buddy
       if ($accountid != $user->uid && user_access('maintain buddy list')) {
         $variables['buddylist_class'] = "buddy-add";
-        $variables['buddylist_icon'] = theme('image', advanced_forum_get_icon_directory() . 'group_add.png', 'Add to buddy list', 'Add to buddy list', NULL, TRUE);
+        $variables['buddylist_icon'] = theme('image', advanced_forum_path_to_images() . '/group_add.png', 'Add to buddy list', 'Add to buddy list', NULL, TRUE);
         $variables['buddylist_text'] = t('Add buddy');
         $variables['buddylist_link'] = 'buddy/add/'. $accountid;
       }
@@ -555,7 +541,7 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
 function advanced_forum_preprocess_forum_icon(&$variables) {
   $variables['template_files'][] = 'advf-forum-icon';
 
-  $variables['iconpath'] = advanced_forum_get_icon_directory();
+  $variables['iconpath'] = advanced_forum_path_to_images();
 }
 
 // This one is exclusive to advanced forum
@@ -634,21 +620,62 @@ function advanced_forum_treat_as_forum_post($hook, $vars) {
 /**
  * Returns the directory of the forum theme files.
  */
-function advanced_forum_get_forum_theme_directory() {
-  return variable_get('advanced_forum_themedir', 'advforum');
+function advanced_forum_get_style() {
+  return variable_get('advanced_forum_style', 'advforum');
 }
 
 /**
- * Returns the directory of the forum icon files.
+ * Returns the path to the advanced forum theme, including the theme name
  */
-function advanced_forum_get_icon_directory() {
-  if (variable_get('advanced_forum_use_supplied_icons', 1)) {
-    return drupal_get_path('module', 'advanced_forum') . '/themes/advforum/images/';
+function advanced_forum_path_to_style() {
+  static $style_path;
+  
+  if (!$style_path) {
+    $style = advanced_forum_get_style();
+  
+    // Look for it in the theme directory
+    $path = path_to_theme() . '/' . $style;
+    if (file_exists($path)) {
+      $style_path = $path;
+      advanced_forum_style_in_theme(TRUE);
+    } else {
+      // Look for the style in the module directory
+      $path = drupal_get_path('module', 'advanced_forum') . "/themes/$style/";
+      if (file_exists($path)) {
+        $style_path = $path;
+        advanced_forum_style_in_theme(FALSE);
+      } else {
+        // Fall back to a known style
+        $style_path = drupal_get_path('module', 'advanced_forum') . "/themes/advforum/";
+        advanced_forum_style_in_theme(FALSE);
+      }
+    }
   }
-  else {
-    // Use the icons in the forum theme
-    return path_to_theme() . "/" . advanced_forum_get_forum_theme_directory() . "/images/";
+  
+  return $style_path;
+}
+
+/**
+ * Keeps track of whether the style was found in the theme or the module
+ */
+function advanced_forum_style_in_theme($in_theme = NULL) {
+  static $is_in_theme;
+  
+  if ($in_theme != NULL) {
+    $is_in_theme = $in_theme;
   }
+  
+  return $is_in_theme;
+}
+
+function advanced_forum_path_to_images() {
+  static $image_path;
+  
+  if (!$image_path) {
+    $image_path = advanced_forum_path_to_style() . '/images';
+  }
+  
+  return $image_path;
 }
 
 /*****************************************************************************/
