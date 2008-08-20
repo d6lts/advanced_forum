@@ -201,16 +201,6 @@ function advanced_forum_preprocess_comment(&$vars) {
     // This is a comment, not the node.
     $vars['top_post'] = FALSE;
 
-    // Title
-    if (variable_get('comment_subject_field', 1) == 0) {
-      // if comment titles are disabled, don't display it.
-      $vars['title'] = '';
-    } 
-    else {
-      // Assign the subject to the title variable for consistancy with nodes.
-      $vars['title'] = check_plain($vars['comment']->subject);
-    }
-
     // Just use the date for the submitted on.
     $vars['submitted'] = format_date($vars['comment']->timestamp);
 
@@ -247,6 +237,16 @@ function advanced_forum_preprocess_comment(&$vars) {
 
     // Since we have to load the node anyway for our links trick, make it avail
     $vars['node'] = $node;
+
+    // Title
+    if (variable_get('comment_subject_field_' . $node->type, 1) == 0) {
+      // if comment titles are disabled, don't display it.
+      $vars['title'] = '';
+    } 
+    else {
+      // Assign the subject to the title variable for consistancy with nodes.
+      $vars['title'] = check_plain($vars['comment']->subject);
+    }
 
     // Comment number with link
     if (!isset($post_number)) {
@@ -542,6 +542,10 @@ function advanced_forum_preprocess_forum_icon(&$variables) {
   $variables['template_files'][] = 'advf-forum-icon';
 
   $variables['iconpath'] = advanced_forum_path_to_images();
+}
+
+function advanced_forum_preprocess_comment_wrapper(&$variables) {
+  dsm("COMMENT WRAPPER");
 }
 
 // This one is exclusive to advanced forum
