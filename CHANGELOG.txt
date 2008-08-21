@@ -1,6 +1,11 @@
 $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
+
+August 21, 2008
+---------------
+#295562 by catch: Make 'views' column in topic list statistics.module dependent.
+
 August 20, 2008
 ---------------
 #268684 by merlinofchaos, sdboyer, and a tiny bit Michelle: Adapted panels plug in system to allow any module to add styles to advanced forum. This paves the way for offering multiple styles with the module as well as letting others contribute styles. Also 'renamed' themes directory to styles so much moving around of files. (Theme changes: The default advforum style as well as any customized themes won't work at this point. Instructions coming once this stabalizes.)

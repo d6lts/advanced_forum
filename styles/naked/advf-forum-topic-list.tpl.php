@@ -75,8 +75,9 @@
           <div class="num num-new-replies"><a href="<?php print $topic->new_url; ?>"><?php print $topic->new_text; ?></a></div>
         <?php endif; ?>
       </td>
-      <td class="num views"><?php print $topic->views;?></td>
-      <td class="created"><?php print $topic->created; ?></td>
+      <?php if (module_exists('statistics')): ?> 
+        <td class="views"><?php print $topic->views;?> </td>
+      <?php endif; ?>      <td class="created"><?php print $topic->created; ?></td>
       <td class="last-reply"><?php print $topic->last_reply; ?></td>
     <?php endif; ?>
     </tr>
