@@ -1,9 +1,17 @@
 $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
+August 20, 2008
+---------------
+#268684 by merlinofchaos, sdboyer, and a tiny bit Michelle: Adapted panels plug in system to allow any module to add styles to advanced forum. This paves the way for offering multiple styles with the module as well as letting others contribute styles. Also 'renamed' themes directory to styles so much moving around of files. (Theme changes: The default advforum style as well as any customized themes won't work at this point. Instructions coming once this stabalizes.)
 
 August 15, 2008
 ---------------
+#297227 by Michelle: Missed spot affected by D6's change to per type comment settings.
+
+August 15, 2008
+---------------
+#268684 by stephthegeek: Added new "naked" style. This completely revamped basic style will be the base for future styles.
 #268684 by Michelle: Simplified style switching / icon finding to pave the way for this issue. This is a temporary measure until the new style plugin system is written. (Theme changes: Themes are now styles and these notes will be called "Style changes" after this. As of this change, you need to set the name of the style on the options page. Advf will look for a directory by that name first in the active theme and then in the module. If you want to customize a style, copy the entire directory into your theme and make changes there.)
 
 August 1, 2008

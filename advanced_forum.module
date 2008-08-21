@@ -82,15 +82,13 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
     }
   }
 
-  if (!advanced_forum_style_in_theme()) {
-    // Convince the registry that advforum in the module directory is a theme
-    // so our templates are found.
-    $templates = array('node', 'comment', 'forums', 'forum_list', 'forum_topic_list', 'forum_icon', 'forum_submitted');
-    foreach ($templates as $template) {
-      $originalpath = array_shift($theme_registry[$template]['theme paths']);
-      $modulepath = advanced_forum_path_to_style();
-      array_unshift($theme_registry[$template]['theme paths'], $originalpath, $modulepath);
-    }
+  // Convince the theme registry that the style directory is a theme 
+  // so the template files are found.
+  $templates = array('node', 'comment', 'forums', 'forum_list', 'forum_topic_list', 'forum_icon', 'forum_submitted');
+  foreach ($templates as $template) {
+    $originalpath = array_shift($theme_registry[$template]['theme paths']);
+    $modulepath = advanced_forum_path_to_style();
+    array_unshift($theme_registry[$template]['theme paths'], $originalpath, $modulepath);
   }
 }
 
@@ -544,10 +542,6 @@ function advanced_forum_preprocess_forum_icon(&$variables) {
   $variables['iconpath'] = advanced_forum_path_to_images();
 }
 
-function advanced_forum_preprocess_comment_wrapper(&$variables) {
-  dsm("COMMENT WRAPPER");
-}
-
 // This one is exclusive to advanced forum
 function advanced_forum_preprocess_forum_post(&$variables) {
   $variables['template_files'][] = 'advf-forum-post';
@@ -556,6 +550,53 @@ function advanced_forum_preprocess_forum_post(&$variables) {
 /*****************************************************************************/
 /*** THEME RELATED ***********************************************************/
 /*****************************************************************************/
+
+
+include_once drupal_get_path('module', 'advanced_forum') . '/advf-plugins.inc';
+
+function advanced_forum_advforum_styles() {
+  $items = array();
+  $items['naked'] = array(
+    'directory' => 'styles/naked',
+  );
+
+  return $items;
+}
+
+/**
+ * Returns the name of the forum style to use.
+ */
+function advanced_forum_get_current_style() {
+  return variable_get('advanced_forum_style', 'naked');
+}
+
+/**
+ * Returns the path to the advanced forum style, including the style name
+ */
+function advanced_forum_path_to_style() {
+  static $style_path;
+  
+  if (!$style_path) {
+    // Retrieve the style name 
+    $style = advanced_forum_get_current_style();
+    
+    // Get the path information
+    $style_info = advanced_forum_get_style($style);
+    $style_path = $style_info['path'];
+  }
+
+  return $style_path;
+}
+
+function advanced_forum_path_to_images() {
+  static $image_path;
+  
+  if (!$image_path) {
+    $image_path = advanced_forum_path_to_style() . '/images';
+  }
+  
+  return $image_path;
+}
 
 /**
  * This function returns true if the node/comment should be themed and 
@@ -577,7 +618,7 @@ function advanced_forum_treat_as_forum_post($hook, $vars) {
 
       // Get a list of the terms attached to this node
       $terms = taxonomy_node_get_terms_by_vocabulary($vars['node'], $vid);
-      if (count($terms) > 0 && (arg(0) == 'node' && is_numeric(arg(1)) || arg(0) == 'comment')) {
+      if (count($terms) > 0 && (arg(0) == 'node' && is_numeric(arg(1)) && arg(1) == $vars['node']->nid || arg(0) == 'comment')) {
         // The node has at least one forum term attached to it and is not being
         // shown on some other page (like a view or promoted to front page)
         $forum_node_id = $vars['node']->nid;
@@ -619,67 +660,6 @@ function advanced_forum_treat_as_forum_post($hook, $vars) {
       // We only deal with nodes and comments
       return false;
   }
-}
-
-/**
- * Returns the directory of the forum theme files.
- */
-function advanced_forum_get_style() {
-  return variable_get('advanced_forum_style', 'advforum');
-}
-
-/**
- * Returns the path to the advanced forum theme, including the theme name
- */
-function advanced_forum_path_to_style() {
-  static $style_path;
-  
-  if (!$style_path) {
-    $style = advanced_forum_get_style();
-  
-    // Look for it in the theme directory
-    $path = path_to_theme() . '/' . $style;
-    if (file_exists($path)) {
-      $style_path = $path;
-      advanced_forum_style_in_theme(TRUE);
-    } else {
-      // Look for the style in the module directory
-      $path = drupal_get_path('module', 'advanced_forum') . "/themes/$style/";
-      if (file_exists($path)) {
-        $style_path = $path;
-        advanced_forum_style_in_theme(FALSE);
-      } else {
-        // Fall back to a known style
-        $style_path = drupal_get_path('module', 'advanced_forum') . "/themes/advforum/";
-        advanced_forum_style_in_theme(FALSE);
-      }
-    }
-  }
-  
-  return $style_path;
-}
-
-/**
- * Keeps track of whether the style was found in the theme or the module
- */
-function advanced_forum_style_in_theme($in_theme = NULL) {
-  static $is_in_theme;
-  
-  if ($in_theme != NULL) {
-    $is_in_theme = $in_theme;
-  }
-  
-  return $is_in_theme;
-}
-
-function advanced_forum_path_to_images() {
-  static $image_path;
-  
-  if (!$image_path) {
-    $image_path = advanced_forum_path_to_style() . '/images';
-  }
-  
-  return $image_path;
 }
 
 /*****************************************************************************/
