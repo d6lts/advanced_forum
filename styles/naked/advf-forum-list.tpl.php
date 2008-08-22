@@ -32,6 +32,7 @@
  */
 ?>
 <table id="forum-<?php print $forum_id; ?>" class="forum-table">
+  
   <thead class="forum-header">
     <tr>
       <th class="forum-name"><?php print t('Forum'); ?></th>
@@ -40,14 +41,16 @@
       <th class="forum-last-post"><?php print t('Last post'); ?></th>
     </tr>
   </thead>
+  
   <tbody>
-  <?php 
-  $num_forums = count($forums); 
-  $forum_num = 0;
-  ?>
-  <?php foreach ($forums as $child_id => $forum): ?>
     <?php 
-    // Counter to label the rows by position
+    $num_forums = count($forums); 
+    $forum_num = 0;
+    ?>
+  
+    <?php foreach ($forums as $child_id => $forum): ?>
+      <?php 
+      // Counter to label the rows by position
     $forum_num++;
     switch ($forum_num) {
       case "1":
@@ -90,8 +93,16 @@
             <div class="num num-new-topics"><a href="<?php print $forum->new_url; ?>"><?php print $forum->new_text; ?></a></div>
           <?php endif; ?>
         </td>
-        <td class="num posts"><?php print $forum->num_posts ?></td>
-        <td class="last-reply"><?php print $forum->last_reply ?></td>
+        
+        <td class="num posts">
+          <?php print $forum->num_posts ?>
+          <?php if ($forum->new_posts): ?>
+              <br />
+              <a href="<?php print $forum->new_url_posts; ?>"><?php print $forum->new_text_posts; ?></a>
+          <?php endif; ?>        
+       </td>
+        
+      <td class="last-reply"><?php print $forum->last_reply ?></td>
       <?php endif; ?>
     </tr>
   <?php endforeach; ?>

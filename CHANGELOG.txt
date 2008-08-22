@@ -5,6 +5,10 @@ $Id$
 August 21, 2008
 ---------------
 #295562 by catch: Make 'views' column in topic list statistics.module dependent.
+#268684 by Michelle: Cleaned up advf-forum-topic-list.tpl.php and moved some logic into the preprocess.
+#268684 by Michelle: Added classes to table header for topic list and cleaned up empty fields.
+Made hidden setting for turning off created column. May move this into settings at some point.
+#238668 by ixeft, Michelle: Added N new posts to forum overview. Query is slow and this may get removed again.
 
 August 20, 2008
 ---------------
