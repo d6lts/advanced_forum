@@ -6,9 +6,7 @@
  * Enables the look and feel of other popular forum software.
  */
 
-/*****************************************************************************/
-/*** DRUPAL HOOKS ************************************************************/
-/*****************************************************************************/
+// DRUPAL HOOKS **************************************************************/
 
 /**
  * Implementation of hook_init().
@@ -91,6 +89,8 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
   }
 }
 
+// SETTINGS PAGE *************************************************************/
+
 /**
  * Defines the Advanced Forum settings form.
  */
@@ -122,9 +122,7 @@ variable_get('advforum_get_new_comments', TRUE);
   return system_settings_form($form);
 }
 
-/*****************************************************************************/
-/*** TEMPLATE PREPROCESS *****************************************************/
-/*****************************************************************************/
+// TEMPLATE PREPROCESS *******************************************************/
 
 /**
  * Preprocesses template variables for the node template.
@@ -362,12 +360,14 @@ function template_preprocess_forum_user(&$variables) {
   }
 }
 
-/*****************************************************************************/
-/*** FORUM MODULE THEME OVERRIDES ********************************************/
-/*****************************************************************************/
+function advanced_forum_preprocess_forum_post(&$variables) {
+  $variables['template_files'][] = 'advf-forum-post';
+}
 
 /**
  * Preprocesses template variables for the forum template.
+ *
+ * This function adds additional functionality to the core forum preprocess.
  */
 function advanced_forum_preprocess_forums($variables) {
   $variables['template_files'][] = 'advf-forums';
@@ -401,6 +401,8 @@ function advanced_forum_preprocess_forums($variables) {
 
 /**
  * Preprocesses template variables for the forum list template.
+ *
+ * This function adds additional functionality to the core forum preprocess.
  */
 function advanced_forum_preprocess_forum_list(&$variables) {
   $variables['template_files'][] = 'advf-forum-list';
@@ -430,6 +432,8 @@ function advanced_forum_preprocess_forum_list(&$variables) {
 
 /**
  * Preprocesses template variables for the submitted by/in template.
+ *
+ * This function adds additional functionality to the core forum preprocess.
  */
 function advanced_forum_preprocess_forum_submitted(&$variables) {
   $variables['template_files'][] = 'advf-forum-submitted';
@@ -456,6 +460,8 @@ function advanced_forum_preprocess_forum_submitted(&$variables) {
 
 /**
  * Preprocesses template variables for the topic list template.
+ *
+ * This function adds additional functionality to the core forum preprocess.
  */
 function advanced_forum_preprocess_forum_topic_list(&$variables) {
   // Take control of the template file.
@@ -542,6 +548,8 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
 
 /**
  * Preprocesses template variables for the forum icon template.
+ *
+ * This function adds additional functionality to the core forum preprocess.
  */
 function advanced_forum_preprocess_forum_icon(&$variables) {
   $variables['template_files'][] = 'advf-forum-icon';
@@ -549,16 +557,187 @@ function advanced_forum_preprocess_forum_icon(&$variables) {
   $variables['iconpath'] = advanced_forum_path_to_images();
 }
 
-// This one is exclusive to advanced forum
-function advanced_forum_preprocess_forum_post(&$variables) {
-  $variables['template_files'][] = 'advf-forum-post';
+// CORE FORUM PAGE OVERRIDE **************************************************/
+
+/**
+ * Menu callback; prints a forum listing.
+ *
+ * This is copied from the forum module and adapted.
+ */
+function advanced_forum_page($tid = 0) {
+  $topics = '';
+  $forum_per_page = variable_get('forum_per_page', 25);
+  $sortby = variable_get('forum_order', 1);
+
+  $forums = advanced_forum_get_forums($tid);
+  $parents = taxonomy_get_parents_all($tid);
+  if ($tid && !in_array($tid, variable_get('forum_containers', array()))) {
+    $topics = forum_get_topics($tid, $sortby, $forum_per_page);
+  }
+
+  return theme('forums', $forums, $topics, $parents, $tid, $sortby, $forum_per_page);
 }
 
-/*****************************************************************************/
-/*** THEME RELATED ***********************************************************/
-/*****************************************************************************/
+/**
+ * Returns a list of all forums for a given taxonomy id
+ *
+ * This is copied from the forum module and adapted.
+ *
+ * Forum objects contain the following fields
+ * -num_topics Number of topics in the forum
+ * -num_posts Total number of posts in all topics
+ * -last_post Most recent post for the forum
+ *
+ * @param $tid
+ *   Taxonomy ID of the vocabulary that holds the forum list.
+ * @return
+ *   Array of object containing the forum information.
+ */
+function advanced_forum_get_forums($tid = 0) {
+
+  $forums = array();
+  $vid = variable_get('forum_nav_vocabulary', '');
+  $_forums = taxonomy_get_tree($vid, $tid);
+
+  if (count($_forums)) {
+
+    $counts = array();
+
+    $sql = "SELECT r.tid, COUNT(n.nid) AS topic_count, SUM(l.comment_count) AS comment_count 
+            FROM {node} n 
+            INNER JOIN {node_comment_statistics} l ON n.nid = l.nid 
+            INNER JOIN {term_node} r ON n.vid = r.vid 
+            WHERE n.status = 1 
+            GROUP BY r.tid";
+    $sql = db_rewrite_sql($sql);
+    $_counts = db_query($sql);
+    while ($count = db_fetch_object($_counts)) {
+      $counts[$count->tid] = $count;
+    }
+  }
+
+  foreach ($_forums as $forum) {
+    // Check if this term is a container
+    if (in_array($forum->tid, variable_get('forum_containers', array()))) {
+      $forum->container = 1;
+    }
+
+    if (!empty($counts[$forum->tid])) {
+      $forum->num_topics = $counts[$forum->tid]->topic_count;
+      $forum->num_posts = $counts[$forum->tid]->topic_count + $counts[$forum->tid]->comment_count;
+    }
+    else {
+      $forum->num_topics = 0;
+      $forum->num_posts = 0;
+    }
+
+    // This query does not use full ANSI syntax since MySQL 3.x does not support
+    // table1 INNER JOIN table2 INNER JOIN table3 ON table2_criteria ON table3_criteria
+    // used to join node_comment_statistics to users.
+    $sql = "SELECT n.nid, n.title, n.type,
+                   ncs.last_comment_timestamp, 
+                   IF (ncs.last_comment_uid != 0, u2.name, ncs.last_comment_name) AS last_comment_name, 
+                   ncs.last_comment_uid 
+            FROM {node} n 
+            INNER JOIN {users} u1 ON n.uid = u1.uid 
+            INNER JOIN {term_node} tn ON n.vid = tn.vid 
+            INNER JOIN {node_comment_statistics} ncs ON n.nid = ncs.nid 
+            INNER JOIN {users} u2 ON ncs.last_comment_uid=u2.uid 
+            WHERE n.status = 1 AND tn.tid = %d 
+            ORDER BY ncs.last_comment_timestamp DESC";
+    $sql = db_rewrite_sql($sql);
+    $topic = db_fetch_object(db_query_range($sql, $forum->tid, 0, 1));
+
+    $last_post = new stdClass();
+    if (!empty($topic->last_comment_timestamp)) {
+      $last_post->timestamp = $topic->last_comment_timestamp;
+      $last_post->name = $topic->last_comment_name;
+      $last_post->uid = $topic->last_comment_uid;
+      $last_post->nid = $topic->nid;
+      // Note, we call it "node_title" otherwise it gets picked up on the  
+      // topic list as well.
+      $last_post->node_title = $topic->title;
+      $last_post->type = $topic->type;
+    }
+    $forum->last_post = $last_post;
+
+    $forums[$forum->tid] = $forum;
+  }
+
+  return $forums;
+}
 
 
+// MARK AS READ **************************************************************/
+
+/**
+ * Marks all posts in forums or in a given forum as read by the current user.
+ */
+function advanced_forum_markasread() {
+  global $user;
+
+  // See if we're on a forum or on the forum overview
+  // Path will be /forum/markasread or /forum/markasread/tid
+  $current_forum_id = arg(2);
+
+  if ($current_forum_id) {
+    // Combine INSERT with SELECT+SUBSELECT that will return rows that are not
+    // present in the history table, marking all unread nodes as read
+    $sql = 'INSERT INTO {history} (uid,nid,timestamp)'
+           .' SELECT %d, n.nid, %d FROM {node} AS n'
+           .' INNER JOIN {term_node} AS tn ON n.nid=tn.nid'
+           .' INNER JOIN {node_comment_statistics} AS ncs ON ncs.nid=n.nid'
+           .' WHERE (n.created > %d OR ncs.last_comment_timestamp > %d)'
+           .' AND tn.tid = %d'
+           .' and n.nid not in ( SELECT nid FROM {history} AS h WHERE h.nid = n.nid AND h.uid = %d)';
+
+    $args = array($user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $current_forum_id, $user->uid);
+
+    db_query($sql, $args);
+
+    drupal_set_message(t('All content in this forum has been marked as read'));
+    drupal_goto('forum/'. $current_forum_id);
+  } 
+  else {
+    // We are on the forum overview, requesting all forums be marked read
+    $forum_vocabulary_id = variable_get('forum_nav_vocabulary', '');
+ 
+    // Combine INSERT with SELECT+SUBSELECT that will return rows that are not
+    // present in the history table, marking all unread nodes as read.
+    // This version adds another subselect to get all forums
+    $sql = 'INSERT INTO {history} (uid,nid,timestamp)'
+           .' SELECT %d, n.nid, %d FROM {node} AS n'
+           .' INNER JOIN {term_node} AS tn ON n.nid=tn.nid' 
+           .' INNER JOIN {node_comment_statistics} AS ncs ON ncs.nid=n.nid'
+           .' WHERE (n.created > %d OR ncs.last_comment_timestamp > %d)'
+           .' and n.nid not in ( SELECT nid FROM {history} AS h WHERE h.nid = n.nid AND h.uid = %d)'
+           .' AND tn.tid in (SELECT tid FROM {term_data} WHERE vid = %d)';
+
+    $args = array($user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $user->uid, $forum_vocabulary_id);
+
+    db_query($sql, $args);
+
+    drupal_set_message(t('All forum content been marked as read'));
+    drupal_goto('forum');
+  }
+}
+
+/**
+ * Access callback for menus and link display.
+ *
+ * This separate function is needed because the Drupal 6 menu system doesn't
+ * run hook_menu() every time and the logged-in status of the user can get
+ * cached and re-used for other users.
+ */
+function advanced_forum_markasread_access() {
+  global $user;
+  return user_access('access content') && $user->uid;
+}
+
+
+// THEME UTILITY FUNCTIONS ***************************************************/
+
+// Include the file that handles the plugin system adapted from panels.
 include_once drupal_get_path('module', 'advanced_forum') . '/advf-plugins.inc';
 
 function advanced_forum_advforum_styles() {
@@ -599,6 +778,9 @@ function advanced_forum_path_to_style() {
   return $style_path;
 }
 
+/**
+ * Returns the path to the advanced forum image directory
+ */
 function advanced_forum_path_to_images() {
   static $image_path;
   
@@ -673,77 +855,8 @@ function advanced_forum_treat_as_forum_post($hook, $vars) {
   }
 }
 
-/*****************************************************************************/
-/*** MARK AS READ ************************************************************/
-/*****************************************************************************/
 
-/**
- * Marks all posts in forums or in a given forum as read by the current user.
- */
-function advanced_forum_markasread() {
-  global $user;
-
-  // See if we're on a forum or on the forum overview
-  // Path will be /forum/markasread or /forum/markasread/tid
-  $current_forum_id = arg(2);
-
-  if ($current_forum_id) {
-    // Combine INSERT with SELECT+SUBSELECT that will return rows that are not
-    // present in the history table, marking all unread nodes as read
-    $sql = 'INSERT INTO {history} (uid,nid,timestamp)'
-           .' SELECT %d, n.nid, %d FROM {node} AS n'
-           .' INNER JOIN {term_node} AS tn ON n.nid=tn.nid'
-           .' INNER JOIN {node_comment_statistics} AS ncs ON ncs.nid=n.nid'
-           .' WHERE (n.created > %d OR ncs.last_comment_timestamp > %d)'
-           .' AND tn.tid = %d'
-           .' and n.nid not in ( SELECT nid FROM {history} AS h WHERE h.nid = n.nid AND h.uid = %d)';
-
-    $args = array($user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $current_forum_id, $user->uid);
-
-    db_query($sql, $args);
-
-    drupal_set_message(t('All content in this forum has been marked as read'));
-    drupal_goto('forum/'. $current_forum_id);
-  } 
-  else {
-    // We are on the forum overview, requesting all forums be marked read
-    $forum_vocabulary_id = variable_get('forum_nav_vocabulary', '');
- 
-    // Combine INSERT with SELECT+SUBSELECT that will return rows that are not
-    // present in the history table, marking all unread nodes as read.
-    // This version adds another subselect to get all forums
-    $sql = 'INSERT INTO {history} (uid,nid,timestamp)'
-           .' SELECT %d, n.nid, %d FROM {node} AS n'
-           .' INNER JOIN {term_node} AS tn ON n.nid=tn.nid' 
-           .' INNER JOIN {node_comment_statistics} AS ncs ON ncs.nid=n.nid'
-           .' WHERE (n.created > %d OR ncs.last_comment_timestamp > %d)'
-           .' and n.nid not in ( SELECT nid FROM {history} AS h WHERE h.nid = n.nid AND h.uid = %d)'
-           .' AND tn.tid in (SELECT tid FROM {term_data} WHERE vid = %d)';
-
-    $args = array($user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $user->uid, $forum_vocabulary_id);
-
-    db_query($sql, $args);
-
-    drupal_set_message(t('All forum content been marked as read'));
-    drupal_goto('forum');
-  }
-}
-
-/**
- * Access callback for menus and link display.
- *
- * This separate function is needed because the Drupal 6 menu system doesn't
- * run hook_menu() every time and the logged-in status of the user can get
- * cached and re-used for other users.
- */
-function advanced_forum_markasread_access() {
-  global $user;
-  return user_access('access content') && $user->uid;
-}
-
-/*****************************************************************************/
-/*** GENERAL FUNCTIONS *******************************************************/
-/*****************************************************************************/
+// GENERAL UTILITY FUNCTIONS *************************************************/
 
 /**
  * Holds the node ID of the thread we are on.
@@ -877,113 +990,8 @@ function _advanced_forum_get_topic_views_count($nid) {
 }
 
 /**
- * Menu callback; prints a forum listing.
- *
- * This is copied from the forum module and adapted.
+ * Returns the number of unread posts in a given forum for a given user
  */
-function advanced_forum_page($tid = 0) {
-  $topics = '';
-  $forum_per_page = variable_get('forum_per_page', 25);
-  $sortby = variable_get('forum_order', 1);
-
-  $forums = advanced_forum_get_forums($tid);
-  $parents = taxonomy_get_parents_all($tid);
-  if ($tid && !in_array($tid, variable_get('forum_containers', array()))) {
-    $topics = forum_get_topics($tid, $sortby, $forum_per_page);
-  }
-
-  return theme('forums', $forums, $topics, $parents, $tid, $sortby, $forum_per_page);
-}
-
-/**
- * Returns a list of all forums for a given taxonomy id
- *
- * This is copied from the forum module and adapted.
- *
- * Forum objects contain the following fields
- * -num_topics Number of topics in the forum
- * -num_posts Total number of posts in all topics
- * -last_post Most recent post for the forum
- *
- * @param $tid
- *   Taxonomy ID of the vocabulary that holds the forum list.
- * @return
- *   Array of object containing the forum information.
- */
-function advanced_forum_get_forums($tid = 0) {
-
-  $forums = array();
-  $vid = variable_get('forum_nav_vocabulary', '');
-  $_forums = taxonomy_get_tree($vid, $tid);
-
-  if (count($_forums)) {
-
-    $counts = array();
-
-    $sql = "SELECT r.tid, COUNT(n.nid) AS topic_count, SUM(l.comment_count) AS comment_count 
-            FROM {node} n 
-            INNER JOIN {node_comment_statistics} l ON n.nid = l.nid 
-            INNER JOIN {term_node} r ON n.vid = r.vid 
-            WHERE n.status = 1 
-            GROUP BY r.tid";
-    $sql = db_rewrite_sql($sql);
-    $_counts = db_query($sql);
-    while ($count = db_fetch_object($_counts)) {
-      $counts[$count->tid] = $count;
-    }
-  }
-
-  foreach ($_forums as $forum) {
-    // Check if this term is a container
-    if (in_array($forum->tid, variable_get('forum_containers', array()))) {
-      $forum->container = 1;
-    }
-
-    if (!empty($counts[$forum->tid])) {
-      $forum->num_topics = $counts[$forum->tid]->topic_count;
-      $forum->num_posts = $counts[$forum->tid]->topic_count + $counts[$forum->tid]->comment_count;
-    }
-    else {
-      $forum->num_topics = 0;
-      $forum->num_posts = 0;
-    }
-
-    // This query does not use full ANSI syntax since MySQL 3.x does not support
-    // table1 INNER JOIN table2 INNER JOIN table3 ON table2_criteria ON table3_criteria
-    // used to join node_comment_statistics to users.
-    $sql = "SELECT n.nid, n.title, n.type,
-                   ncs.last_comment_timestamp, 
-                   IF (ncs.last_comment_uid != 0, u2.name, ncs.last_comment_name) AS last_comment_name, 
-                   ncs.last_comment_uid 
-            FROM {node} n 
-            INNER JOIN {users} u1 ON n.uid = u1.uid 
-            INNER JOIN {term_node} tn ON n.vid = tn.vid 
-            INNER JOIN {node_comment_statistics} ncs ON n.nid = ncs.nid 
-            INNER JOIN {users} u2 ON ncs.last_comment_uid=u2.uid 
-            WHERE n.status = 1 AND tn.tid = %d 
-            ORDER BY ncs.last_comment_timestamp DESC";
-    $sql = db_rewrite_sql($sql);
-    $topic = db_fetch_object(db_query_range($sql, $forum->tid, 0, 1));
-
-    $last_post = new stdClass();
-    if (!empty($topic->last_comment_timestamp)) {
-      $last_post->timestamp = $topic->last_comment_timestamp;
-      $last_post->name = $topic->last_comment_name;
-      $last_post->uid = $topic->last_comment_uid;
-      $last_post->nid = $topic->nid;
-      // Note, we call it "node_title" otherwise it gets picked up on the  
-      // topic list as well.
-      $last_post->node_title = $topic->title;
-      $last_post->type = $topic->type;
-    }
-    $forum->last_post = $last_post;
-
-    $forums[$forum->tid] = $forum;
-  }
-
-  return $forums;
-}
-
 function advanced_forum_unread_posts_in_forum($tid, $uid) {
   $sql = "SELECT COUNT(c.cid) FROM {comments} c INNER JOIN {node} n INNER JOIN {term_node} tn ON c.nid = n.nid AND c.nid = tn.nid AND tn.tid = %d LEFT JOIN {history} h ON c.nid = h.nid AND h.uid = %d WHERE n.status = 1 AND n.type = 'forum' AND c.timestamp > h.timestamp";
   $sql = db_rewrite_sql($sql);
