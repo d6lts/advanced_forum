@@ -184,8 +184,13 @@ function advanced_forum_preprocess_node(&$vars) {
     $vars['account'] = user_load(array('uid' => $vars['node']->uid));
     $vars['user_info_pane'] = theme('forum_user', $vars['account']);
 
-    // Load the signature since Drupal doesn't put it on nodes
-    if (variable_get('user_signatures', 0)) {
+    // Load the signature. 
+    if (module_exists('signature_forum')) {
+      // If Signature For Forums is installed, use that
+      $vars['signature'] = signature_forum_get_signature($vars['node']);
+    }
+    elseif (variable_get('user_signatures', 0)) {
+      // Otherwise load Drupal's built in one, if enabled.
       $vars['signature'] = check_markup($vars['account']->signature, $vars['node']->format);
     }
   }
@@ -275,7 +280,18 @@ function advanced_forum_preprocess_comment(&$vars) {
     if (!empty($vars['comment']->page_url) && !(arg(0) == 'comment' && arg(1) == $vars['comment']->cid)) {
       $vars['page_link'] = l('(permalink)', $vars['comment']->page_url);
     }
-
+    
+    // Load the signature. 
+    if (module_exists('signature_forum')) {
+      // If Signature For Forums is installed, use that
+      $vars['signature'] = signature_forum_get_signature($vars['comment']);
+    }
+    elseif (variable_get('user_signatures', 0)) {
+      if ($vars['account']->signature) {
+        // Otherwise load Drupal's built in one, if enabled.
+        $vars['signature'] = check_markup($vars['account']->signature, $vars['comment']->format);
+      }
+    }
   }
 }
 
