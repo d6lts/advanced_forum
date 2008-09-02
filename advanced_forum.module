@@ -415,17 +415,26 @@ function advanced_forum_preprocess_forum_list(&$variables) {
     $variables['forums'][$id]->old_posts = $forum->num_posts;
     
     if ($user->uid) {
+      // Show number of new posts as well as topics
       if (variable_get('advforum_get_new_comments', TRUE)) {
         // This can cause performance issues, so allow it to be turned off
         $variables['forums'][$id]->new_posts = advanced_forum_unread_posts_in_forum($forum->tid, $user->uid) + $variables['forums'][$id]->new_topics; 
+            
+        if ($variables['forums'][$id]->new_posts) {
+          $variables['forums'][$id]->new_text_posts = format_plural($variables['forums'][$id]->new_posts, '1 new', '@count new');
+          $variables['forums'][$id]->new_url_posts = url("forum/$forum->tid", array('fragment' => 'new'));
+        }
+       
+        $variables['forums'][$id]->old_posts = $forum->num_posts - $variables['forums'][$id]->new_posts;
       }
       
-      if ($variables['forums'][$id]->new_posts) {
-        $variables['forums'][$id]->new_text_posts = format_plural($variables['forums'][$id]->new_posts, '1 new', '@count new');
-        $variables['forums'][$id]->new_url_posts = url("forum/$forum->tid", array('fragment' => 'new'));
+      // If there are new topics/posts, change the icon
+      if ($forum->new_topics || $forum->new_posts) {
+        $forum->icon = theme('image', advanced_forum_path_to_images() . '/forum-folder-new-posts.png');
       }
-      
-      $variables['forums'][$id]->old_posts = $forum->num_posts - $variables['forums'][$id]->new_posts;
+      else {
+        $forum->icon = theme('image', advanced_forum_path_to_images() . '/forum-folder.png');
+      }
     }  
   }  
 }
@@ -735,7 +744,7 @@ function advanced_forum_markasread_access() {
 }
 
 
-// THEME UTILITY FUNCTIONS ***************************************************/
+// STYLE UTILITY FUNCTIONS ***************************************************/
 
 // Include the file that handles the plugin system adapted from panels.
 include_once drupal_get_path('module', 'advanced_forum') . '/advf-plugins.inc';
