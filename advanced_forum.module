@@ -57,7 +57,6 @@ function advanced_forum_menu_alter(&$callbacks) {
   $callbacks['forum']['page callback'] = advanced_forum_page;
 }
 
-
 /**
  * Implementation of hook_theme().
  */
@@ -112,6 +111,13 @@ function advanced_forum_settings_page() {
     '#default_value' => variable_get('advanced_forum_theme_all_comments', 0),
   );
 
+/*
+Hidden options
+variable_get('advanced_forum_show_created', TRUE)) {
+variable_get('advforum_topic_pager_max', 5);
+variable_get('advforum_get_new_comments', TRUE);
+*/ 
+  
   // Send our form to Drupal to make a settings page
   return system_settings_form($form);
 }
@@ -278,11 +284,7 @@ function advanced_forum_preprocess_comment(&$vars) {
  */
 function template_preprocess_forum_user(&$variables) {
   // The passed in $variables['account'] refers to the user who's info is in the pane.
-  $account = $variables['accountid'];
-  $accountid = $account->uid;
-
-  // Get a reference to the currently logged in user.
-  global $user;
+  $account = $variables['account'];
 
   // Username
   $variables['name_raw'] =  theme('username', $account);
@@ -292,12 +294,12 @@ function template_preprocess_forum_user(&$variables) {
   $variables['picture'] = theme('user_picture', $account);
 
   // Nothing else applies to anon users, so just stop here
-  if ($accountid == 0) {
+  if ($variables['account']->uid == 0) {
     return;
   }
 
   // Join date / since
-  $variables['joined_raw'] = format_date($account->created, 'custom', 'Y-m-d');
+  $variables['joined_raw'] = format_date($account->created, 'small');
   $variables['joined'] = '<div class="account-joined"><strong>' . t('Joined: ') . '</strong>' . $variables['joined_raw'] . '</div>';
 
   $variables['member_since_raw'] = format_interval(time() - $account->created);
@@ -317,89 +319,30 @@ function template_preprocess_forum_user(&$variables) {
     $variables['online_status'] = '<div class="user-offline">' . $variables['online_icon'] . ' ' . $variables['online_text'] . '</div>';
   }
 
-  // Profile
+  //TODO: Move these into the new plugin system  
+  if (module_exists('contact')) {
+    include_once drupal_get_path('module', 'advanced_forum') . '/modules/contact.forum.inc';
+    contact_preprocess_forum_user(&$variables);
+  }
+  
   if (module_exists('profile')) {
-    $variables['profile'] = profile_view_profile($account);
+    include_once drupal_get_path('module', 'advanced_forum') . '/modules/profile.forum.inc';
+    profile_preprocess_forum_user(&$variables);
   }
-
-  // Points
-  if (module_exists('userpoints')) {
-    $variables['points_raw'] = userpoints_get_current_points($accountid);
-    $variables['points'] = '<div class="user-points">' . t('Points: ') . $variables['points_raw'] . '</div>';
+  
+  if (module_exists('privatemsg')) {
+    include_once drupal_get_path('module', 'advanced_forum') . '/modules/privatemsg.forum.inc';
+    privatemsg_preprocess_forum_user(&$variables);
   }
-
-  // Posts / IP
+  
   if (module_exists('user_stats')) {
-    $variables['posts_raw'] = user_stats_get_stats('post_count', $accountid);
-    $variables['posts'] = '<div class="user-posts"><strong>' . t('Posts: ') . '</strong>' . $variables['posts_raw'] . '</div>';
-
-    // IP is only visible if the viewer has access, so do an extra check
-    $ip = user_stats_get_stats('ip_address', $accountid);
-    if (!empty($ip)) {
-      $variables['ip_raw'] = $ip;
-      $variables['ip'] = '<div class="user-ip"><strong>' . t('IP: ') . '</strong>' . $variables['ip_raw'] . '</div>';
-    }
+    include_once drupal_get_path('module', 'advanced_forum') . '/modules/user_stats.forum.inc';
+    user_stats_preprocess_forum_user(&$variables);
   }
-
-  // Title
-  if (module_exists('user_titles')) {
-    $variables['user_title_raw'] = user_titles_get_user_title($accountid);
-    $variables['user_title'] = '<div class="user-title">' . $variables['user_title_raw'] . '</div>';
-  }
-
-  // Badges
-  if (module_exists('user_badges')) {
-    $variables['user_badges_raw'] = user_badges_for_uid($accountid);
-    $variables['user_badges'] = '<div class="user-badges">' . $variables['user_badges_raw'] . '</div>';
-  }
-
-  // Contact user
-  if (module_exists('contact') && ($account->contact) && ($account->uid != $user->uid) && ($user->uid != 0)) {
-    $variables['contact_class'] = "contact";
-    $variables['contact_icon'] = theme('image', advanced_forum_path_to_images() . '/email.png', 'Email', 'Email', NULL, TRUE);
-    $variables['contact_text'] = t('Email');
-    $variables['contact_link'] = 'user/'. $accountid . '/contact';
-    $variables['contact'] = '<div class="contact">' . 
-                          l($variables['contact_icon'] . ' '  . $variables['contact_text'], $variables['contact_link'], array('absolute' => TRUE, 'html' => TRUE)) . 
-                          '</div>';
-  }
-
-  // Send private message
-  if (module_exists('privatemsg') &&
-     ($account->uid != $user->uid) &&
-     user_access('access private messages') &&
-     (isset($account->privatemsg_allow) ? $account->privatemsg_allow : 1)) {
-    $variables['privatemsg_icon'] = theme('image', advanced_forum_path_to_images() . '/user_comment.png', 'Private Message', 'Private Message', NULL, TRUE);
-    $variables['privatemsg_text'] = t('Send PM');
-    $variables['privatemsg_link'] = 'privatemsg/new/'. $accountid;
-    $variables['privatemsg'] = '<div class="privatemsg">' . 
-      l($variables['privatemsg_icon'] . ' '  . 
-      $variables['privatemsg_text'], $variables['privatemsg_link'], array('absolute' => TRUE, 'html' => TRUE)) . '</div>';
-  }
-
-  // Add / remove from buddylist
-  if (module_exists('buddylist')) {
-
-    if (user_access('maintain buddy list') && @in_array($accountid, array_keys(buddylist_get_buddies($user->uid)))) {
-      // Remove buddy
-      $variables['buddylist_class'] = "buddy-remove";
-      $variables['buddylist_icon'] = theme('image', advanced_forum_path_to_images() . '/group_delete.png', 'Remove Buddy', 'Remove Buddy', NULL, TRUE);
-      $variables['buddylist_text'] = t('Remove buddy'); 
-      $variables['buddylist_link'] = 'buddy/delete/'. $accountid;
-    } 
-    else {
-      // Add buddy
-      if ($accountid != $user->uid && user_access('maintain buddy list')) {
-        $variables['buddylist_class'] = "buddy-add";
-        $variables['buddylist_icon'] = theme('image', advanced_forum_path_to_images() . '/group_add.png', 'Add to buddy list', 'Add to buddy list', NULL, TRUE);
-        $variables['buddylist_text'] = t('Add buddy');
-        $variables['buddylist_link'] = 'buddy/add/'. $accountid;
-      }
-    }
-
-    $variables['buddylist'] = '<div class="' . $variables['buddylist_class'] . '">' . 
-                         l($variables['buddylist_icon'] . ' '  . $variables['buddylist_text'], $variables['buddylist_link'], array('absolute' => TRUE, 'html' => TRUE)) . 
-                         '</div>';
+  
+  if (module_exists('userpoints')) {
+    include_once drupal_get_path('module', 'advanced_forum') . '/modules/userpoints.forum.inc';
+    userpoints_preprocess_forum_user(&$variables);
   }
 }
 
@@ -454,11 +397,16 @@ function advanced_forum_preprocess_forum_list(&$variables) {
     $variables['forums'][$id]->old_posts = $forum->num_posts;
     
     if ($user->uid) {
-      $variables['forums'][$id]->new_posts = advanced_forum_unread_posts_in_forum($forum->tid, $user->uid) + $variables['forums'][$id]->new_topics; 
+      if (variable_get('advforum_get_new_comments', TRUE)) {
+        // This can cause performance issues, so allow it to be turned off
+        $variables['forums'][$id]->new_posts = advanced_forum_unread_posts_in_forum($forum->tid, $user->uid) + $variables['forums'][$id]->new_topics; 
+      }
+      
       if ($variables['forums'][$id]->new_posts) {
         $variables['forums'][$id]->new_text_posts = format_plural($variables['forums'][$id]->new_posts, '1 new', '@count new');
         $variables['forums'][$id]->new_url_posts = url("forum/$forum->tid", array('fragment' => 'new'));
       }
+      
       $variables['forums'][$id]->old_posts = $forum->num_posts - $variables['forums'][$id]->new_posts;
     }  
   }  
@@ -603,6 +551,10 @@ function advanced_forum_advforum_styles() {
     'directory' => 'styles/naked',
   );
 
+  $items['flatgrey'] = array(
+    'directory' => 'styles/flatgrey',
+  );
+  
   return $items;
 }
 
@@ -625,7 +577,7 @@ function advanced_forum_path_to_style() {
     
     // Get the path information
     $style_info = advanced_forum_get_style($style);
-    $style_path = $style_info['path'];
+    $style_path = $style_info['path'];    
   }
 
   return $style_path;
@@ -1017,8 +969,7 @@ function advanced_forum_get_forums($tid = 0) {
 }
 
 function advanced_forum_unread_posts_in_forum($tid, $uid) {
- // $sql = "SELECT COUNT(c.cid) FROM {comments} c INNER JOIN {node} n INNER JOIN {term_node} tn ON c.nid = n.nid AND c.nid = tn.nid AND tn.tid = %d LEFT JOIN {history} h ON c.nid = h.nid AND h.uid = %d WHERE n.status = 1 AND n.type = 'forum' AND c.timestamp > h.timestamp";
- // $sql = db_rewrite_sql($sql);
- // return db_result(db_query($sql, $term, $uid, NODE_NEW_LIMIT));
- return 42;
+  $sql = "SELECT COUNT(c.cid) FROM {comments} c INNER JOIN {node} n INNER JOIN {term_node} tn ON c.nid = n.nid AND c.nid = tn.nid AND tn.tid = %d LEFT JOIN {history} h ON c.nid = h.nid AND h.uid = %d WHERE n.status = 1 AND n.type = 'forum' AND c.timestamp > h.timestamp";
+  $sql = db_rewrite_sql($sql);
+  return db_result(db_query($sql, $term, $uid, NODE_NEW_LIMIT));
 }
