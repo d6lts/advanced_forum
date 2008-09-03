@@ -22,7 +22,7 @@ function advanced_forum_get_style($style) {
  *   An array with information about the requested forum style.
  */
 function advanced_forum_get_styles() {
-  return advanced_forum_get_plugins('styles', 'advforum_styles', $style);
+  return advanced_forum_get_plugins('styles', 'advforum_styles');
 }
 
 // -----------------------------------------------------------------------

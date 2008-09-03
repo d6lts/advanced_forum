@@ -2,6 +2,21 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+September 2, 2008
+-----------------
+#NOISSUE by Michelle: Fixed joined date to not use hardcoded format. Regex provided by Morbus.
+#274978 by Michelle: Fixed signatures so they work with and without signature for forums installed.
+#NOISSUE by Michelle: Re-arranged functions and cleaned up some comments.
+#268684 by Michelle: Removed old themes directory.
+#268684 by Michelle: Added code to change forum icon when new posts. 
+#268684 by Michelle: Added new forum icons.
+#268684 by Michelle: Changed "mark as read" to use new icon.
+#268684 by Michelle: Added advf-comment-wrapper.tpl.php and used it to add reply link at bottom of each page.
+#301089 by George2: Only print title div if there is a title on the comment.
+#NOISSUE by Michelle: Fixed bad copy of &variables when calling functions. Thanks afeijo for reporting it.
+#NOISSUE by Michelle: Changed "ago" to showing actual dates when over 48 hours.
+#302125 by IceCreamYou, Michelle: Added facebook status support.
+
 September 1, 2008
 -----------------
 #238668 by Michelle: Added advanced setting to turn this off if it causes performance problems.
