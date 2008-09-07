@@ -17,6 +17,7 @@ function advanced_forum_init() {
     $style_directory = advanced_forum_path_to_style();
     drupal_add_css("$style_directory/advanced_forum-structure.css" );
     drupal_add_css("$style_directory/advanced_forum.css" );
+    _advanced_forum_load_preprocessors();
   }
 }
 
@@ -59,6 +60,7 @@ function advanced_forum_menu_alter(&$callbacks) {
  * Implementation of hook_theme().
  */
 function advanced_forum_theme() {
+  _advanced_forum_load_preprocessors();
   $items['forum_user'] = array(
       'template' => 'advf-forum-user',
       'path' => advanced_forum_path_to_style(),
@@ -124,6 +126,49 @@ variable_get('advanced_forum_button_links', TRUE)
 }
 
 // TEMPLATE PREPROCESS *******************************************************/
+
+/**
+ * Load advanced forum preprocessors includes on behalf of modules.
+ */
+function _advanced_forum_load_preprocessors() {
+  // forum.inc is the extension on the includes such as contact.forum.inc
+  advanced_forum_include('forum.inc');
+}
+
+/**
+ * Load advanced forum files on behalf of modules.
+ *
+ * Blatent rip of views include system.
+ */
+function advanced_forum_include($file) {
+  $includes = array();
+  $cache = cache_get('advforum_includes');
+  if (isset($cache->data) && $cache->data) {
+    $includes = $cache->data;
+  }
+  else {
+    $advanced_forum_path = drupal_get_path('module', 'advanced_forum') . '/modules';
+    foreach (module_list() as $module) {
+      $module_path = drupal_get_path('module', $module);
+      if (file_exists("$module_path/$module.$file")) {
+        $includes[] = "./$module_path/$module.$file";
+      }
+      else if (file_exists("$module_path/includes/$module.$file")) {
+        $includes[] = "./$module_path/includes/$module.$file";
+      }
+      else if (file_exists("$advanced_forum_path/$module.$file")) {
+        $includes[] = "./$advanced_forum_path/$module.$file";
+      }
+    }
+    cache_set('advforum_includes', $includes);
+  }
+
+  if (!empty($includes)) {
+    foreach ($includes as $include) {
+      require_once $include;
+    }
+  }
+}
 
 /**
  * Preprocesses template variables for the node template.
@@ -345,38 +390,6 @@ function template_preprocess_forum_user(&$variables) {
     $variables['online_text'] = t('Offline');
     $variables['online_status'] = '<div class="user-offline">' . $variables['online_icon'] . ' ' . $variables['online_text'] . '</div>';
   }
-
-  //TODO: Move these into the new plugin system  
-  if (module_exists('contact')) {
-    include_once drupal_get_path('module', 'advanced_forum') . '/modules/contact.forum.inc';
-    contact_preprocess_forum_user($variables);
-  }
-  
-  if (module_exists('profile')) {
-    include_once drupal_get_path('module', 'advanced_forum') . '/modules/profile.forum.inc';
-    profile_preprocess_forum_user($variables);
-  }
-  
-  if (module_exists('privatemsg')) {
-    include_once drupal_get_path('module', 'advanced_forum') . '/modules/privatemsg.forum.inc';
-    privatemsg_preprocess_forum_user($variables);
-  }
-  
-  if (module_exists('user_stats')) {
-    include_once drupal_get_path('module', 'advanced_forum') . '/modules/user_stats.forum.inc';
-    user_stats_preprocess_forum_user($variables);
-  }
-  
-  if (module_exists('userpoints')) {
-    include_once drupal_get_path('module', 'advanced_forum') . '/modules/userpoints.forum.inc';
-    userpoints_preprocess_forum_user($variables);
-  }
-
-  if (module_exists('facebook_status')) {
-    include_once drupal_get_path('module', 'advanced_forum') . '/modules/facebook_status.forum.inc';
-    facebook_status_preprocess_forum_user($variables);
-  }
-
 }
 
 function advanced_forum_preprocess_forum_post(&$variables) {
