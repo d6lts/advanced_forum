@@ -372,23 +372,19 @@ function template_preprocess_forum_user(&$variables) {
   // Join date / since
   $just_date = str_replace(array('H:i', 'g:ia', ' - '), '', variable_get('date_format_short', 'm/d/Y - H:i'));
   $variables['joined_raw'] = format_date($account->created, 'custom', $just_date);
-  $variables['joined'] = '<div class="account-joined"><strong>' . t('Joined: ') . '</strong>' . $variables['joined_raw'] . '</div>';
+  $variables['joined'] = '<div class="account-joined"><span class="user-info-label">' . t('Joined:') . ' </span>' . $variables['joined_raw'] . '</div>';
 
-  $variables['member_since_raw'] = format_interval(time() - $account->created);
-  $variables['member_since'] = '<div class="account-member-since">' . t('Member since: ') . $variables['member_since_raw'] . '</div>';
+  $variables['joined_ago_raw'] = format_interval(time() - $account->created);
+  $variables['joined_ago'] = '<div class="account-member-since"><span class="user-info-label">' . t('Joined:')  . ' </span>' . $variables['member_since_raw'] . 'ago </div>';
 
   // Online status
   if (round((time()-$account->access)/60) < 15) {
-    $variables['online_class'] = 'user-online';
-    $variables['online_icon'] = theme('image', advanced_forum_path_to_images() . '/status_online.png', 'User is online', 'User is online', NULL, TRUE);
-    $variables['online_text'] = t('Online');
-    $variables['online_status'] = '<div class="user-online">' . $variables['online_icon'] . ' ' . $variables['online_text'] . '</div>';
+    $variables['online_icon'] = theme('image', advanced_forum_path_to_images() . '/status_online.png', t('User is online'), t('User is online'), NULL, TRUE);
+    $variables['online_status'] = '<div class="user-online">' . $variables['online_icon'] . ' ' . t('Online') . '</div>';
   } 
   else {
-    $variables['online_class'] = 'user-offline';
-    $variables['online_icon'] = theme('image', advanced_forum_path_to_images() . '/status_offline.png', 'User is offline', 'User is offline', NULL, TRUE);
-    $variables['online_text'] = t('Offline');
-    $variables['online_status'] = '<div class="user-offline">' . $variables['online_icon'] . ' ' . $variables['online_text'] . '</div>';
+    $variables['online_icon'] = theme('image', advanced_forum_path_to_images() . '/status_offline.png', t('User is offline'), t('User is offline'), NULL, TRUE);
+    $variables['online_status'] = '<div class="user-offline">' . $variables['online_icon'] . ' ' . t('Offline') . '</div>';
   }
 }
 
@@ -449,11 +445,29 @@ function advanced_forum_preprocess_forum_list(&$variables) {
   $variables['template_files'][] = 'advf-forum-list';
   
   global $user;
+  
+  $number_of_forums = count($forums); 
+  $forum_counter = 0;
+
   foreach ($variables['forums'] as $id => $forum) {
+    // Counter to label the rows by position
+    $$forum_counter++;
+    switch ($forum_counter) {
+      case "1":
+        $position = 'first-row';
+        break;
+      case $number_of_forums:
+        $position = 'last-row';
+        break;
+      default:
+        $position = 'middle-row';
+    }
+ 
     $variables['forums'][$id]->new_posts = 0;
     $variables['forums'][$id]->new_text_posts = '';
     $variables['forums'][$id]->new_url_posts = '';
     $variables['forums'][$id]->old_posts = $forum->num_posts;
+    $variables['forums'][$id]->position = $position;
     
     if ($user->uid) {
       // Show number of new posts as well as topics
@@ -530,21 +544,21 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
   global $forum_topic_list_header;
 
   $forum_topic_list_header = array();
-  $forum_topic_list_header[] = array('data' => '&nbsp;', 'class' => 'column_icon');
-  $forum_topic_list_header[] = array('data' => t('Topic'), 'field' => 'n.title', 'class' => 'column_topic');
-  $forum_topic_list_header[] = array('data' => t('Replies'), 'field' => 'l.comment_count', 'class' => 'column_replies');
+  $forum_topic_list_header[] = array('data' => '&nbsp;', 'class' => 'topic-icon');
+  $forum_topic_list_header[] = array('data' => t('Topic'), 'field' => 'n.title', 'class' => 'topic-topic');
+  $forum_topic_list_header[] = array('data' => t('Replies'), 'field' => 'l.comment_count', 'class' => 'topic-replies');
   
   // Topic views require the statistics module so don't show if it's not enabled
   if (module_exists('statistics')) {
-    $forum_topic_list_header[] =  array('data' => t('Views'), 'class' => 'column_views');
+    $forum_topic_list_header[] =  array('data' => t('Views'), 'class' => 'topic-views');
   }
   
   // Allow admins to turn off the created column
   if (variable_get('advanced_forum_show_created', TRUE)) {
-    $forum_topic_list_header[] =  array('data' => t('Created'), 'field' => 'n.created', 'class' => 'column_created');
+    $forum_topic_list_header[] =  array('data' => t('Created'), 'field' => 'n.created', 'class' => 'topic-created');
   }
   
-  $forum_topic_list_header[] =  array('data' => t('Last reply'), 'field' => 'l.last_comment_timestamp', 'class' => 'column_lreply');
+  $forum_topic_list_header[] =  array('data' => t('Last reply'), 'field' => 'l.last_comment_timestamp', 'class' => 'topic-lreply');
 
   // Create the tablesorting header.
   $ts = tablesort_init($forum_topic_list_header);
