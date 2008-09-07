@@ -52,7 +52,7 @@ function advanced_forum_menu() {
  * Take over the forum page creation so we can add more information.
  */
 function advanced_forum_menu_alter(&$callbacks) {
-  $callbacks['forum']['page callback'] = advanced_forum_page;
+  $callbacks['forum']['page callback'] = 'advanced_forum_page';
 }
 
 /**
@@ -130,7 +130,7 @@ variable_get('advanced_forum_button_links', TRUE)
  */
 function advanced_forum_preprocess_node(&$vars) {
   if (advanced_forum_treat_as_forum_post('node', $vars)) {
-    if ($_GET['page'] > 0) { 
+    if (isset($_GET['page']) && $_GET['page'] > 0) { 
       // This is the repeated node on the top of subsequent pages.
       // We send this to a special .tpl so people can wipe it out or whatever
       $vars['template_files'][] = "advf-forum-repeat-post";
@@ -167,6 +167,7 @@ function advanced_forum_preprocess_node(&$vars) {
       $current_page = $_GET['page'];
       $number_new_comments = comment_num_new($nid);
 
+      $vars['jump_first_new'] = '';
       if ($number_new_comments > 0) {
         // Note that we are linking to the cid anchor rather than new because
         // the new links will be gone if we go to another page.
@@ -324,7 +325,8 @@ function template_preprocess_forum_user(&$variables) {
   }
 
   // Join date / since
-  $variables['joined_raw'] = preg_replace('/\s*-?\s*\d{2}:\d{2}\s*-?\s*/', '', format_date($account->created, 'small'));
+  $just_date = str_replace(array('H:i', 'g:ia', ' - '), '', variable_get('date_format_short', 'm/d/Y - H:i'));
+  $variables['joined_raw'] = format_date($account->created, 'custom', $just_date);
   $variables['joined'] = '<div class="account-joined"><strong>' . t('Joined: ') . '</strong>' . $variables['joined_raw'] . '</div>';
 
   $variables['member_since_raw'] = format_interval(time() - $account->created);
@@ -472,8 +474,11 @@ function advanced_forum_preprocess_forum_list(&$variables) {
  */
 function advanced_forum_preprocess_forum_submitted(&$variables) {
   $variables['template_files'][] = 'advf-forum-submitted';
+  
+  // Avoid E_ALL warning
+  $variables['topic_link'] = '';
 
-  if ($variables['topic']->node_title) {
+  if (isset($variables['topic']->node_title)) {
     $nid = $variables['topic']->nid;
   
     // Make a fake node object to avoid the node load
@@ -544,7 +549,8 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
   // Do our own topic processing.
   if (!empty($variables['topics'])) {
     $row = 0;
-
+    $was_sticky = FALSE;
+    
     // Find out how many pages to show on the topic pager. We do this outside
     // the loop because it will be the same for all topics.
     $max_pages_to_display = variable_get('advforum_topic_pager_max', 5);
@@ -1036,5 +1042,5 @@ function _advanced_forum_get_topic_views_count($nid) {
 function advanced_forum_unread_posts_in_forum($tid, $uid) {
   $sql = "SELECT COUNT(c.cid) FROM {comments} c INNER JOIN {node} n INNER JOIN {term_node} tn ON c.nid = n.nid AND c.nid = tn.nid AND tn.tid = %d LEFT JOIN {history} h ON c.nid = h.nid AND h.uid = %d WHERE n.status = 1 AND n.type = 'forum' AND c.timestamp > h.timestamp";
   $sql = db_rewrite_sql($sql);
-  return db_result(db_query($sql, $term, $uid, NODE_NEW_LIMIT));
+  return db_result(db_query($sql, $tid, $uid, NODE_NEW_LIMIT));
 }
