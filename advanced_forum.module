@@ -18,6 +18,7 @@ function advanced_forum_init() {
     drupal_add_css("$style_directory/advanced_forum-structure.css" );
     drupal_add_css("$style_directory/advanced_forum.css" );
     _advanced_forum_load_preprocessors();
+    drupal_add_js(drupal_get_path('module', 'advanced_forum') . '/advanced_forum.js');
   }
 }
 
@@ -111,6 +112,15 @@ function advanced_forum_settings_page() {
     '#options' => array(t("No"), t("Yes")),
     '#description' => t('Choosing yes causes advanced forum to consider every comment a forum comment and attempt to theme it that way. Some changes to your theme may be required.'),
     '#default_value' => variable_get('advanced_forum_theme_all_comments', 0),
+  );
+
+  //collapsible container
+  $form['advanced_forum_collapse_settings'] = array(
+    '#type' => 'radios',
+    '#title' => t('Choose collapse state'),
+    '#options' => array(t("None collapsed"), t("All collapsed"), t("Not collapsable")),
+    '#description' => t('Choose initial collapse state of the forum containers.'),
+    '#default_value' => variable_get('advanced_forum_collapse_settings', 0)
   );
 
 /*
@@ -446,29 +456,40 @@ function advanced_forum_preprocess_forum_list(&$variables) {
   
   global $user;
   
+  
   $number_of_forums = count($forums); 
   $forum_counter = 0;
-
   foreach ($variables['forums'] as $id => $forum) {
     // Counter to label the rows by position
     $$forum_counter++;
     switch ($forum_counter) {
       case "1":
-        $position = 'first-row';
+        $row_position = 'first-row';
         break;
       case $number_of_forums:
-        $position = 'last-row';
+        $row_position = 'last-row';
         break;
       default:
-        $position = 'middle-row';
+        $row_position = 'middle-row';
     }
+    $variables['forums'][$id]->row_position = $row_position;
  
     $variables['forums'][$id]->new_posts = 0;
     $variables['forums'][$id]->new_text_posts = '';
     $variables['forums'][$id]->new_url_posts = '';
     $variables['forums'][$id]->old_posts = $forum->num_posts;
-    $variables['forums'][$id]->position = $position;
     
+    if ($forum->is_container) {
+      $current_container = $forum->tid;
+      $current_container_depth = $forum->depth;
+      $variables['forums'][$id]->container_id = $current_container;
+    }
+    else {
+      if ($forum->depth > $current_container_depth ) {
+        $variables['forums'][$id]->container_id = $current_container;
+      }     
+    }
+
     if ($user->uid) {
       // Show number of new posts as well as topics
       if (variable_get('advforum_get_new_comments', TRUE)) {
