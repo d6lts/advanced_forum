@@ -355,8 +355,11 @@ function advanced_forum_preprocess_comment_wrapper(&$variables) {
   
   // Make a variable for the reply link so it can be put on the bottom of the thread
   $reply_link = $variables['node']->links['comment_add'];
-  $reply_link['title'] = t("Post Reply");
-  $variables['reply_link'] = theme('links', array('topic_reply' => $reply_link), array('class' => 'forumlinks'));
+  
+  if (!empty($reply_link)) {
+    $reply_link['title'] = t("Post Reply");
+    $variables['reply_link'] = theme('links', array('topic_reply' => $reply_link), array('class' => 'forumlinks'));
+  }
 
 }
 
