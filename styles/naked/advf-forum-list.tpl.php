@@ -49,7 +49,7 @@
     <?php foreach ($forums as $child_id => $forum): ?>
     
         <?php if ($forum->is_container): ?>
-          <tr id="forum-list-<?php print $child_id; ?>" class="<?php print $forum->zebra; ?> <?php print $forum->row_position;?> container-<?php print $forum->container_id;?>">
+          <tr id="forum-list-<?php print $child_id; ?>" class="<?php print $forum->zebra; ?> <?php print $forum->row_position;?> container-<?php print $forum->container_id;?>" <?php print 'onClick="jq_collapse(\'' . $forum->container_id . '\')"'; ?>>
           
             <td colspan="5" class="container">
               <span id="collapse-toggle-<?php print $forum->container_id;?>"></span>

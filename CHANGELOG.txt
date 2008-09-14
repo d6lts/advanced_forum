@@ -4,7 +4,12 @@ $Id$
 
 September 10, 2008
 ------------------
+#291084 by grn: Added initial jquery to make collapsable containers work. Still rough but usable.
+
+September 10, 2008
+------------------
 #303816 by Michelle: Fixed post reply bug.
+#303556 by Michelle: Added blue_lagoon style.
 
 September 8, 2008
 -----------------

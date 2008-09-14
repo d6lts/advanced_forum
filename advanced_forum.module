@@ -102,8 +102,8 @@ function advanced_forum_settings_page() {
     '#type' => 'textfield',
     '#title' => t('Advanced forum style'),
     '#size' => 25,
-    '#description' => t('Name of advanced forum style. Defaults to "advforum"'),
-    '#default_value' => variable_get('advanced_forum_style', 'advforum'),
+    '#description' => t('Name of advanced forum style. Defaults to "naked"'),
+    '#default_value' => variable_get('advanced_forum_style', 'naked'),
   );
 
   $form['advanced_forum_theme_all_comments'] = array(
@@ -464,18 +464,23 @@ function advanced_forum_preprocess_forum_list(&$variables) {
   $forum_counter = 0;
   foreach ($variables['forums'] as $id => $forum) {
     // Counter to label the rows by position
-    $$forum_counter++;
+    $forum_counter++;
     switch ($forum_counter) {
       case "1":
-        $row_position = 'first-row';
+        $row_classes = 'first-row';
         break;
       case $number_of_forums:
-        $row_position = 'last-row';
+        $row_classes = 'last-row';
         break;
       default:
-        $row_position = 'middle-row';
+        $row_classes = 'middle-row';
     }
-    $variables['forums'][$id]->row_position = $row_position;
+    
+    if ($forum->is_container) {
+      $row_classes .= ' container';
+    }
+    
+    $variables['forums'][$id]->row_classes = $row_classes;
  
     $variables['forums'][$id]->new_posts = 0;
     $variables['forums'][$id]->new_text_posts = '';
@@ -846,6 +851,10 @@ function advanced_forum_advforum_styles() {
 
   $items['flatgrey'] = array(
     'directory' => 'styles/flatgrey',
+  );
+  
+  $items['blue_lagoon'] = array(
+    'directory' => 'styles/blue_lagoon',
   );
   
   return $items;
