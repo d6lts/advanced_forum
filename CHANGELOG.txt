@@ -2,9 +2,16 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
-September 10, 2008
+September 14, 2008
+------------------
+#291084 by grn, Michelle: More fixes for collapsable containers.
+
+September 13, 2008
 ------------------
 #291084 by grn: Added initial jquery to make collapsable containers work. Still rough but usable.
+#303556 by alpritt: Fixed no background showing in header on forum icon column.
+NOISSUE by Michelle: Changed jump to first reply on top of forum nodes to show total replies as well.
+#303556 by Michelle: Fixed issue with topic list header.
 
 September 10, 2008
 ------------------
@@ -17,7 +24,7 @@ September 8, 2008
 
 September 7, 2008
 -----------------
-#NOISSUE by Michelle: Cleaned up user info .tpl and modules that feed it.
+NOISSUE by Michelle: Cleaned up user info .tpl and modules that feed it.
 #303799 by Michelle: Moved folder icons into their own column. Also cleaned up forum list tpl.
 #303799 by Michelle: Fixed issue with indenting when no containers.
 
@@ -29,17 +36,17 @@ September 6, 2008
 
 September 2, 2008
 -----------------
-#NOISSUE by Michelle: Fixed joined date to not use hardcoded format. Regex provided by Morbus.
+NOISSUE by Michelle: Fixed joined date to not use hardcoded format. Regex provided by Morbus.
 #274978 by Michelle: Fixed signatures so they work with and without signature for forums installed.
-#NOISSUE by Michelle: Re-arranged functions and cleaned up some comments.
+NOISSUE by Michelle: Re-arranged functions and cleaned up some comments.
 #268684 by Michelle: Removed old themes directory.
 #268684 by Michelle: Added code to change forum icon when new posts. 
 #268684 by Michelle: Added new forum icons.
 #268684 by Michelle: Changed 'mark as read' to use new icon.
 #268684 by Michelle: Added advf-comment-wrapper.tpl.php and used it to add reply link at bottom of each page.
 #301089 by George2: Only print title div if there is a title on the comment.
-#NOISSUE by Michelle: Fixed bad copy of &variables when calling functions. Thanks afeijo for reporting it.
-#NOISSUE by Michelle: Changed 'ago' to showing actual dates when over 48 hours.
+NOISSUE by Michelle: Fixed bad copy of &variables when calling functions. Thanks afeijo for reporting it.
+NOISSUE by Michelle: Changed 'ago' to showing actual dates when over 48 hours.
 #302125 by IceCreamYou, Michelle: Added facebook status support.
 
 September 1, 2008
