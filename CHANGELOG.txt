@@ -2,10 +2,11 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
-September 14, 2008
+September 16, 2008
 ------------------
 #309233 by merlinofchaos, Michelle: Adjusted theme registry manipulation to properly find .tpl files in themes and subthemes.
 NOISSUE by Michelle: Made killing of topic navigation optional since there are a few people out there who like it.
+#309066 by asxnot: Fixed PHP 4 issue with forum list icons.
 
 September 14, 2008
 ------------------
