@@ -76,19 +76,50 @@ function advanced_forum_theme() {
  */
 function advanced_forum_theme_registry_alter(&$theme_registry) {
   // Kill the next/previous forum topic navigation links.
-  foreach ($theme_registry['forum_topic_navigation']['preprocess functions'] as $key => $value) {
-    if ($value = 'template_preprocess_forum_topic_navigation') {
-      unset($theme_registry['forum_topic_navigation']['preprocess functions'][$key]);
+  if (!variable_get('advanced_forum_use_topic_navigation', FALSE)) {
+    foreach ($theme_registry['forum_topic_navigation']['preprocess functions'] as $key => $value) {
+      if ($value = 'template_preprocess_forum_topic_navigation') {
+        unset($theme_registry['forum_topic_navigation']['preprocess functions'][$key]);
+      }
     }
   }
 
-  // Convince the theme registry that the style directory is a theme 
-  // so the template files are found.
+  // --- The following section manipulates the theme registry so the .tpl files 
+  // --- for the given templates can be found first in the (sub)theme directory
+  // --- then in ancestor themes, if any, and finally in the designated styles
+  // --- directory for advanced forum.
+  
+  // Affected templates
   $templates = array('node', 'comment', 'comment_wrapper', 'forums', 'forum_list', 'forum_topic_list', 'forum_icon', 'forum_submitted');
+  
+  // Find all our ancestor themes and put them in an array.
+  global $theme;
+  $themes = list_themes();
+
+  $ancestor_paths = array();
+  $ancestor = $theme;
+  while ($ancestor && isset($themes[$ancestor]->base_theme)) {
+    array_unshift($ancestor_paths, dirname($themes[$themes[$ancestor]->base_theme]->filename));
+    $ancestor = $themes[$ancestor]->base_theme;
+  }
+  
   foreach ($templates as $template) {
+    // If there was a path in there, store it
     $originalpath = array_shift($theme_registry[$template]['theme paths']);
+    
+    // Add in the style directory
     $modulepath = advanced_forum_path_to_style();
+    
+    // Restore the original path
     array_unshift($theme_registry[$template]['theme paths'], $originalpath, $modulepath);
+    
+    // If there are any ancestor paths (ie: we are in a subtheme, add those)
+    foreach($ancestor_paths as $ancestor_path) {
+      $theme_registry[$template]['theme paths'][] = $ancestor_path;
+    }
+    
+    // Put the active theme's path last since that takes precidence
+    $theme_registry[$template]['theme paths'][] = path_to_theme();
   }
 }
 
@@ -129,6 +160,7 @@ variable_get('advanced_forum_show_created', TRUE)) {
 variable_get('advforum_topic_pager_max', 5);
 variable_get('advforum_get_new_comments', TRUE);
 variable_get('advanced_forum_button_links', TRUE)
+variable_get('advanced_forum_use_topic_navigation', FALSE)
 */ 
   
   // Send our form to Drupal to make a settings page
@@ -458,8 +490,7 @@ function advanced_forum_preprocess_forum_list(&$variables) {
   $variables['template_files'][] = 'advf-forum-list';
   
   global $user;
-  
-  
+   
   $number_of_forums = count($forums); 
   $forum_counter = 0;
   foreach ($variables['forums'] as $id => $forum) {

@@ -4,7 +4,14 @@ $Id$
 
 September 14, 2008
 ------------------
+#309233 by merlinofchaos, Michelle: Adjusted theme registry manipulation to properly find .tpl files in themes and subthemes.
+NOISSUE by Michelle: Made killing of topic navigation optional since there are a few people out there who like it.
+
+September 14, 2008
+------------------
 #291084 by grn, Michelle: More fixes for collapsable containers.
+#303542 by Michelle: Updated README.txt
+#299258 by Michelle: Documented icon sources.
 
 September 13, 2008
 ------------------
