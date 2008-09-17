@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+September 17, 2008
+------------------
+#291084 by cridenour: More work on the collapsable forum containers: setting initial state and remembering state.
+
 September 16, 2008
 ------------------
 #309233 by merlinofchaos, Michelle: Adjusted theme registry manipulation to properly find .tpl files in themes and subthemes.
