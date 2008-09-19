@@ -15,9 +15,18 @@ function advanced_forum_init() {
   // load in the advanced forum theme if we're in a forum, or viewing a node.
   if (arg(0) == 'forum' || ($node = menu_get_object())) {
     $style_directory = advanced_forum_path_to_style();
-    drupal_add_css("$style_directory/advanced_forum-structure.css" );
-    drupal_add_css("$style_directory/advanced_forum.css" );
+
+    foreach (array('advanced_forum-structure.css', 'advanced_forum.css') as $filename) {
+      $css_file = path_to_theme() . '/' . $filename;
+      if (!file_exists($css_file)) {
+        $css_file = $style_directory . '/' . $filename;
+      }
+
+      drupal_add_css($css_file);
+    }
+
     _advanced_forum_load_preprocessors();
+    
     drupal_add_js(drupal_get_path('module', 'advanced_forum') . '/advanced_forum.js');
     drupal_add_js(array('advanced_forum_ajax' => url('advanced_forum/collapse')), 'setting');
   }
