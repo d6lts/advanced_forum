@@ -5,6 +5,8 @@ $Id$
 September 18, 2008
 ------------------
 #310547 by Michelle: Added 'hidden options' to settings page as well as other work on the settings page. This also necessitated a change to the collapsable container code.
+NOISSUE by Michelle: Added check for css files in theme directory so they can be overridden.
+#309955 by Michelle: Comment wrapper preprocess was not checking that we are on a forum node.
 
 September 17, 2008
 ------------------

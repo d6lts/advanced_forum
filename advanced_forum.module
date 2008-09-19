@@ -455,16 +455,17 @@ function advanced_forum_preprocess_comment(&$vars) {
 }
 
 function advanced_forum_preprocess_comment_wrapper(&$variables) {
-  $variables['template_files'][] = 'advf-comment-wrapper';
+  if (advanced_forum_treat_as_forum_post('comment-wrapper', $variables)) {
+    $variables['template_files'][] = 'advf-comment-wrapper';
   
-  // Make a variable for the reply link so it can be put on the bottom of the thread
-  $reply_link = $variables['node']->links['comment_add'];
+    // Make a variable for the reply link so it can be put on the bottom of the thread
+    $reply_link = $variables['node']->links['comment_add'];
   
-  if (!empty($reply_link)) {
-    $reply_link['title'] = t("Post Reply");
-    $variables['reply_link'] = theme('links', array('topic_reply' => $reply_link), array('class' => 'forumlinks'));
+    if (!empty($reply_link)) {
+      $reply_link['title'] = t("Post Reply");
+      $variables['reply_link'] = theme('links', array('topic_reply' => $reply_link), array('class' => 'forumlinks'));
+    }
   }
-
 }
 
 /**
@@ -1070,6 +1071,24 @@ function advanced_forum_treat_as_forum_post($hook, $vars) {
         unset($forum_node_id);
         return false;
       }
+
+    case 'comment-wrapper':
+      if (isset($forum_node_id) && ($vars['node']->nid == $forum_node_id)) {
+        // We already know this comment wrapper is either part of a forum thread
+        // or that comments on this thread are known exceptions.
+        return true;
+      } 
+      else {
+        // Not part of a forum thread. Check for exceptions.
+        if (variable_get("advanced_forum_theme_all_comments", 0) == 1) {
+          // This site wants all comments to use the forum comment template
+          $forum_node_id = $vars['node']->nid;
+          return true;
+        }
+      }
+      
+      // Comment wrapper is not part of a forum thread and there are no exceptions.
+      return false;
 
     case 'comment':
       if (isset($forum_node_id) && ($vars['comment']->nid == $forum_node_id)) {
