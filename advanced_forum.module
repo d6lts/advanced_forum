@@ -351,6 +351,7 @@ function advanced_forum_preprocess_node(&$vars) {
 
     // Jump to first unread comment
     $comment_count = $vars['comment_count'];
+    $vars['jump_first_new'] = '';
     if ($comment_count > 0) {
       $nid = $vars['node']->nid;
       $current_page = $_GET['page'];
@@ -476,10 +477,7 @@ function advanced_forum_preprocess_comment(&$vars) {
     _advanced_forum_topic_nid($vars['node']->nid);
 
     $post_per_page = _comment_get_display_setting('comments_per_page', $vars['node']);
-    $page_number = $_GET['page'];
-    if (!$page_number) {
-      $page_number = 0;
-    }
+    $page_number = (isset($GET['page'])) ? (int)$_GET['page'] : 0;
 
     $post_number++;
     $fragment = 'comment-' . $vars['comment']->cid;
@@ -489,6 +487,7 @@ function advanced_forum_preprocess_comment(&$vars) {
     $vars['comment_link'] = l($linktext, $linkpath, array('query' => $query, 'fragment' => $fragment));;
 
     // Link to page created by Comment Page module, if it exists
+    $vars['page_link'] = '';
     if (!empty($vars['comment']->page_url) && !(arg(0) == 'comment' && arg(1) == $vars['comment']->cid)) {
       $vars['page_link'] = l('(permalink)', $vars['comment']->page_url);
     }
@@ -546,7 +545,7 @@ function template_preprocess_forum_user(&$variables) {
   $variables['joined'] = '<div class="account-joined"><span class="user-info-label">' . t('Joined:') . ' </span>' . $variables['joined_raw'] . '</div>';
 
   $variables['joined_ago_raw'] = format_interval(time() - $account->created);
-  $variables['joined_ago'] = '<div class="account-member-since"><span class="user-info-label">' . t('Joined:')  . ' </span>' . $variables['member_since_raw'] . 'ago </div>';
+  $variables['joined_ago'] = '<div class="account-joined-ago"><span class="user-info-label">' . t('Joined:')  . ' </span>' . $variables['joined_ago_raw'] . 'ago </div>';
 
   // Online status
   if (round((time()-$account->access)/60) < 15) {
@@ -575,6 +574,7 @@ function advanced_forum_preprocess_forums($variables) {
     // We don't want the links on the top of the forum overview
     $variables['links_orig'] = $variables['links'];
     $variables['links'] = array();
+    $variables['forum_description'] = '';
   } 
   else {
     // Grab the forum description and make it available to the template file
@@ -644,6 +644,7 @@ function advanced_forum_preprocess_forum_list(&$variables) {
     $variables['forums'][$id]->new_url_posts = '';
     $variables['forums'][$id]->old_posts = $forum->num_posts;
     
+    $current_container = $current_container_depth = 0;
     if ($forum->is_container) {
       $current_container = $forum->tid;
       $current_container_depth = $forum->depth;
@@ -653,6 +654,9 @@ function advanced_forum_preprocess_forum_list(&$variables) {
       if ($forum->depth > $current_container_depth ) {
         $variables['forums'][$id]->container_id = $current_container;
       }     
+      else {
+        $variables['forums'][$id]->container_id = 0;
+      }
     }
 
     if ($user->uid) {
@@ -709,11 +713,13 @@ function advanced_forum_preprocess_forum_submitted(&$variables) {
     $fragment = ($new_replies) ? 'new' : '';
     $variables['topic_link'] = l($short_topic_title, "node/$nid", array('query' => $query, 'fragment' => $fragment));
   }
-  
+
   // For items posted more than 48 hours ago, offer an actual date.
-  $timestamp = $variables['topic']->timestamp;
-  if (time() - $timestamp > 172800) {
-    $variables['date_posted'] = format_date($timestamp, 'small');
+  if (isset($variables['topic']->timestamp)) {
+      $timestamp = $variables['topic']->timestamp;
+      if (time() - $timestamp > 172800) {
+        $variables['date_posted'] = format_date($timestamp, 'small');
+      }
   }
 }
 
@@ -792,7 +798,7 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
         $sticky_class = 'sticky-topic';
         $was_sticky = TRUE;
       } 
-      elseif ($wassticky) {
+      elseif ($was_sticky) {
         $sticky_class = 'first-not-sticky not-sticky';
         $was_sticky = FALSE;
       } 
