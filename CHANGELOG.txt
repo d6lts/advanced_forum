@@ -5,6 +5,8 @@ $Id$
 September 26, 2008
 ------------------
 #303549 by Michelle: Cleaned up author info pane.
+#250112 by Michelle: Added userpoints categorization. Also added branding suggested by Vuds in #310460. Also fixed missing t()s.
+#314205 by Michelle: First round of style cleanup.
 
 September 25, 2008
 ------------------
