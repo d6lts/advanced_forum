@@ -9,9 +9,8 @@
  */
 function facebook_status_preprocess_forum_user(&$variables) {
   // We don't want to do this for anonymous users.
-  if ($variables['account']->uid == 0) {
-    return;
+  if ($variables['account']->uid != 0) {
+    $variables['facebook_status'] = facebook_status_advf($variables['account']);
   }
   
-  $variables['facebook_status'] = facebook_status_advf($variables['account']);
 }
