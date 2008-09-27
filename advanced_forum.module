@@ -1028,6 +1028,10 @@ function advanced_forum_advforum_styles() {
     'directory' => 'styles/naked',
   );
 
+  $items['naked_stacked'] = array(
+    'directory' => 'styles/naked_stacked',
+  );
+
   $items['flatgrey'] = array(
     'directory' => 'styles/flatgrey',
   );
