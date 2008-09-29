@@ -77,8 +77,8 @@ function advanced_forum_menu_alter(&$callbacks) {
  */
 function advanced_forum_theme() {
   _advanced_forum_load_preprocessors();
-  $items['forum_user'] = array(
-      'template' => 'advf-forum-user',
+  $items['author_pane'] = array(
+      'template' => 'advf-author-pane',
       'path' => advanced_forum_path_to_style(),
       'arguments' => array('account' => NULL),
   );
@@ -105,7 +105,14 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
   // --- directory for advanced forum.
   
   // Affected templates
-  $templates = array('node', 'comment', 'comment_wrapper', 'forums', 'forum_list', 'forum_topic_list', 'forum_icon', 'forum_submitted');
+  $templates = array('node', 
+                     'comment', 
+                     'comment_wrapper', 
+                     'forums', 
+                     'forum_list', 
+                     'forum_topic_list', 
+                     'forum_icon', 
+                     'forum_submitted');
   
   // Find all our ancestor themes and put them in an array.
   global $theme;
@@ -320,6 +327,7 @@ function advanced_forum_preprocess_node(&$vars) {
       else {
         $reply_link['title'] = t("Post Reply");
       }
+      
       $vars['reply_link'] = theme('links', array('topic_reply' => $reply_link), array('class' => 'forum-links'));
     }
     
@@ -372,7 +380,7 @@ function advanced_forum_preprocess_node(&$vars) {
 
     // User information
     $vars['account'] = user_load(array('uid' => $vars['node']->uid));
-    $vars['user_info_pane'] = theme('forum_user', $vars['account']);
+    $vars['user_info_pane'] = theme('author_pane', $vars['account']);
 
     // Load the signature. 
     if (module_exists('signature_forum')) {
@@ -418,8 +426,8 @@ function advanced_forum_preprocess_comment(&$vars) {
       $vars['account'] = user_load(array('uid' => $vars['comment']->uid));
     }
 
-    // Create the user info pane
-    $vars['user_info_pane'] = theme('forum_user', $vars['account']);
+    // Create the author pane
+    $vars['user_info_pane'] = theme('author_pane', $vars['account']);
 
     if (arg(1) != 'reply') {
       // Because the $links array isn't available here, we recreate it
@@ -477,7 +485,10 @@ function advanced_forum_preprocess_comment(&$vars) {
     _advanced_forum_topic_nid($vars['node']->nid);
 
     $post_per_page = _comment_get_display_setting('comments_per_page', $vars['node']);
-    $page_number = (isset($GET['page'])) ? (int)$_GET['page'] : 0;
+    $page_number = $_GET['page'];
+    if (!$page_number) {
+      $page_number = 0;
+    }
 
     $post_number++;
     $fragment = 'comment-' . $vars['comment']->cid;
@@ -514,16 +525,23 @@ function advanced_forum_preprocess_comment_wrapper(&$variables) {
     $reply_link = $variables['node']->links['comment_add'];
   
     if (!empty($reply_link)) {
-      $reply_link['title'] = t("Post Reply");
+      if (variable_get('advanced_forum_button_links', 1)) {
+        $reply_link['title'] = theme('image', advanced_forum_path_to_images() . '/' . 'post-reply.png');
+        $reply_link['html'] = TRUE;
+      }
+      else {
+        $reply_link['title'] = t("Post Reply");
+      }
+
       $variables['reply_link'] = theme('links', array('topic_reply' => $reply_link), array('class' => 'forum-links'));
     }
   }
 }
 
 /**
- * Preprocesses template variables for the user info template.
+ * Preprocesses template variables for the author info template.
  */
-function template_preprocess_forum_user(&$variables) {
+function template_preprocess_author_pane(&$variables) {
   // The passed in $variables['account'] refers to the user who's info is in the pane.
   $account = $variables['account'];
   $account_id = $account->uid;

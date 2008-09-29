@@ -2,6 +2,12 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+September 28, 2008
+------------------
+#314205 by Michelle, stephthegeek: Lots of style cleanup.
+#314186 by Michelle: Fixed broken comment numbering.
+NOISSUE by Michelle: Changed "forum user" to "author pane" for clarity.
+
 September 26, 2008
 ------------------
 #303549 by Michelle: Cleaned up author info pane.
