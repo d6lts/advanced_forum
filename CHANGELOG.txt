@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+September 29, 2008
+------------------
+#314108 by Michelle: Fixed shadow post message.
+
 September 28, 2008
 ------------------
 #314205 by Michelle, stephthegeek: Lots of style cleanup.

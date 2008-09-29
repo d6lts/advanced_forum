@@ -655,7 +655,7 @@ function advanced_forum_preprocess_forums($variables) {
  */
 function advanced_forum_preprocess_forum_list(&$variables) {
   $variables['template_files'][] = 'advf-forum-list';
-  
+
   global $user;
    
   $number_of_forums = count($variables['forums']); 
@@ -722,7 +722,12 @@ function advanced_forum_preprocess_forum_list(&$variables) {
     else {
       $variables['forums'][$id]->icon = theme('image', advanced_forum_path_to_images() . '/forum-folder.png');
     }
-  }  
+    
+    // Make container description more accessable
+    if (!empty($variables['parents']['0'])) {
+      $variables['container_description'] = $variables['parents']['0']->description;
+    }
+  } 
 }
 
 /**
@@ -821,7 +826,7 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
 
       // Make shadow copy point to actual thread and tell you new the forum name
       if ($variables['topics'][$id]->moved == TRUE) {
-        $term = taxonomy_get_term($topic->tid);
+        $term = taxonomy_get_term($topic->forum_tid);
         $variables['topics'][$id]->message = l(t('This topic has been moved to ') . $term->name, "node/$topic->nid");
       }
 
