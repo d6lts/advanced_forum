@@ -6,7 +6,7 @@ September 28, 2008
 ------------------
 #314205 by Michelle, stephthegeek: Lots of style cleanup.
 #314186 by Michelle: Fixed broken comment numbering.
-NOISSUE by Michelle: Changed "forum user" to "author pane" for clarity.
+NOISSUE by Michelle: Changed 'forum user' to 'author pane' for clarity.
 
 September 26, 2008
 ------------------
@@ -211,7 +211,7 @@ May 1, 2008
 -----------
 Ported some small fixes that were done for D5 but not D6.
 Updated D6 with all D5 theme changes.
-#237362 Loaded user object in preprocesses for node and comment rather than in template_preprocess_forum_user so it is available in the main forum post template. Fixed #236870 in the process.
+#237362 Loaded user object in preprocesses for node and comment rather than in template_preprocess_author_pane so it is available in the main forum post template. Fixed #236870 in the process.
 
 March 22, 2008
 --------------

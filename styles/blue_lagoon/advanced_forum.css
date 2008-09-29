@@ -145,17 +145,17 @@ images/author-pane-bg.png Colored background behind author info pane on posts.
   border: 1px solid #91CDF5;
 }
 
-.author-info .author-name {
+.author-pane .author-name {
   font-size: 120%;
   font-weight: bold;
 }
 
-.author-info  .picture img {
+.author-pane  .picture img {
 	border: 1px solid #91CDF5;
 	background: #ffffff;
 }
 
-.author-info  .author-info-label {
+.author-pane  .author-pane-label {
   font-weight: bold;
 }
 

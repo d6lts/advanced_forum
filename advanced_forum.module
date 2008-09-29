@@ -380,7 +380,7 @@ function advanced_forum_preprocess_node(&$vars) {
 
     // User information
     $vars['account'] = user_load(array('uid' => $vars['node']->uid));
-    $vars['user_info_pane'] = theme('author_pane', $vars['account']);
+    $vars['author_pane'] = theme('author_pane', $vars['account']);
 
     // Load the signature. 
     if (module_exists('signature_forum')) {
@@ -427,7 +427,7 @@ function advanced_forum_preprocess_comment(&$vars) {
     }
 
     // Create the author pane
-    $vars['user_info_pane'] = theme('author_pane', $vars['account']);
+    $vars['author_pane'] = theme('author_pane', $vars['account']);
 
     if (arg(1) != 'reply') {
       // Because the $links array isn't available here, we recreate it
