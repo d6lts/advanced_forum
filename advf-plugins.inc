@@ -65,7 +65,7 @@ function advanced_forum_get_plugins($plugin, $hook, $id = NULL) {
 
 /**
  * Load plugin info for all hooks; this is handled separately from plugins
- * from files. 
+ * from files.
  *
  * @param $hook
  *   The hook being invoked.
@@ -107,7 +107,7 @@ function _advanced_forum_process_plugin($module, $identifier, $path, $hook) {
   // Fill in defaults.
   foreach ($result as $name => $plugin) {
      if (!is_dir($path . '/' . $plugin['directory'])) {
-      unset ($result[$name]);
+      unset($result[$name]);
       continue;
     }
     $result[$name] += array(
