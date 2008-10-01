@@ -26,9 +26,17 @@
 <?php if ($top_post): ?>
   <?php $postclass = "top-post"; ?>
 
-  <div class="forum-post-header">
+  <div class="forum-post-header clearfix">
     <?php print $reply_link; ?>
-    <?php print $jump_first_new; ?>
+    
+    <div class="reply-count">
+      <?php print $total_posts; ?>
+      
+      <?php if (!empty($new_posts)): ?>
+        (<?php print $new_posts; ?>)
+      <? endif; ?>
+    </div>
+    
   </div>
 
 <?php endif; ?>

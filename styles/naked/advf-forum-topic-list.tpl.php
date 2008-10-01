@@ -78,7 +78,9 @@
         <td class="views"><?php print $topic->views;?> </td>
       <?php endif; ?>
 
-      <td class="created"><?php print $topic->created; ?></td>
+      <?php if (!variable_get('advanced_forum_hide_created', 0)): ?>
+        <td class="created"><?php print $topic->created; ?></td>
+      <?php endif; ?>
 
       <td class="last-reply"><?php print $topic->last_reply; ?></td>
     <?php endif; ?>
