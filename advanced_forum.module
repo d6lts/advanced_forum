@@ -26,9 +26,6 @@ function advanced_forum_init() {
     }
 
     _advanced_forum_load_preprocessors();
-
-    drupal_add_js(drupal_get_path('module', 'advanced_forum') . '/advanced_forum.js');
-    drupal_add_js(array('advanced_forum_ajax' => url('advanced_forum/collapse')), 'setting');
   }
 }
 
@@ -54,11 +51,6 @@ function advanced_forum_menu() {
     'page arguments' => array('advanced_forum_settings_page'),
     'page callback' => 'drupal_get_form',
     'title' => 'Advanced Forum',
-  );
-  $items['advanced_forum/collapse'] = array(
-    'access arguments' => array('access content'),
-    'page callback' => 'advanced_form_ajax',
-    'type' => MENU_CALLBACK,
   );
   return $items;
 }
@@ -200,14 +192,6 @@ function advanced_forum_settings_page() {
       $options[$forum_or_container->tid] = $forum_or_container->name;
     }
   }
-
-  $form['advanced_forum_collapse_defaults'] = array(
-    '#type' => 'checkboxes',
-    '#title' => t('Default collapsed containers'),
-    '#default_value' => variable_get('advanced_forum_collapse_defaults', array()),
-    '#options' => $options,
-    '#description' => t('Check containers to collapse by default.'),
-  );
 
   // Hide 'created' column
   $form['advanced_forum_hide_created'] = array(
@@ -1110,41 +1094,6 @@ function advanced_forum_path_to_images() {
   }
 
   return $image_path;
-}
-
-// COLLAPSABLE CONTAINERS ****************************************************/
-
-/**
- * Allows users with javascript enabled to collapse / expand containers.
- */
-function advanced_form_ajax($op, $container_id = NULL) {
-  global $base_url;
-  $base_url = str_replace('.', '_', $base_url);
-  switch ($op) {
-    case 'load':
-      if (!isset($_COOKIE[$base_url . '_advanced_forum'])) {
-        //Set defaults in the cookie.
-        $defaults = variable_get('advanced_forum_collapse_defaults', array());
-        setcookie($base_url . '_advanced_forum[tids]', serialize($initial_state), time()+60*60*24*30, '/');
-      }
-      else {
-        $initial_state = unserialize($_COOKIE[$base_url . '_advanced_forum']['tids']);
-      }
-      print drupal_json(array('tids' => $initial_state));
-      break;
-    case 'toggle':
-      if (!$container_id)
-        exit;
-      if (!isset($_COOKIE[$base_url . '_advanced_forum'])) {
-        $defaults = variable_get('advanced_forum_collapse_defaults', array());
-      }
-      else {
-        $initial_state = unserialize($_COOKIE[$base_url . '_advanced_forum']['tids']);
-      }
-      $initial_state[$container_id] = 1 - $initial_state[$container_id];
-      setcookie($base_url . '_advanced_forum[tids]', serialize($initial_state), time()+60*60*24*30, '/');
-      break;
-  }
 }
 
 /**
