@@ -4,6 +4,10 @@ $Id$
 
 October 20, 2008
 ---------------
+NOISSUE by Michelle: Added blue_lagoon_stacked style.
+
+October 20, 2008
+---------------
 #323631 by Morbus: Style fixes for blue_lagoon. Removed need for background image.
 #323632 by Michelle: Removed member ID from naked & blue_lagoon templates as requested by Morbus.
 #323656 by Michelle: Removed override that set table row borders to 0.
@@ -20,7 +24,7 @@ October 7, 2008
 #316525 by CompShack, samuelet: Minor CSS fixes to forum posts to fix IE 7 issues.
 #318303 by Michelle, waawaamilk: Added static variable to avoid making multiple trips to the cache per page.
 
-October 1, 2008
+October 1, 2008 -- ALPHA 12
 ---------------
 #314205 by Michelle: More style cleanup.
 NOISSUE by Michelle: Code cleanup.

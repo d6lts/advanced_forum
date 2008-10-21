@@ -1059,12 +1059,16 @@ function advanced_forum_advforum_styles() {
     'directory' => 'styles/naked_stacked',
   );
 
-  $items['flatgrey'] = array(
-    'directory' => 'styles/flatgrey',
-  );
-
   $items['blue_lagoon'] = array(
     'directory' => 'styles/blue_lagoon',
+  );
+
+  $items['blue_lagoon_stacked'] = array(
+    'directory' => 'styles/blue_lagoon_stacked',
+  );
+
+  $items['flatgrey'] = array(
+    'directory' => 'styles/flatgrey',
   );
 
   return $items;
