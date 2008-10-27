@@ -72,7 +72,7 @@ function advanced_forum_theme() {
   $items['author_pane'] = array(
       'template' => 'advf-author-pane',
       'path' => advanced_forum_path_to_style(),
-      'arguments' => array('account' => NULL),
+      'arguments' => array('account' => NULL, 'image_path' => NULL),
   );
 
   return $items;
@@ -320,7 +320,7 @@ function advanced_forum_preprocess_node(&$variables) {
 
   // User information
   $variables['account'] = user_load(array('uid' => $variables['node']->uid));
-  $variables['author_pane'] = theme('author_pane', $variables['account']);
+  $variables['author_pane'] = theme('author_pane', $variables['account'], advanced_forum_path_to_images());
 
   // Load the signature.
   if (module_exists('signature_forum')) {
@@ -415,7 +415,7 @@ function advanced_forum_preprocess_comment(&$variables) {
     }
 
     // Create the author pane
-    $variables['author_pane'] = theme('author_pane', $variables['account']);
+    $variables['author_pane'] = theme('author_pane', $variables['account'], advanced_forum_path_to_images());
 
     if (arg(1) != 'reply') {
       // Because the $links array isn't available here, we recreate it
