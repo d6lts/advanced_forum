@@ -238,7 +238,7 @@ function advanced_forum_settings_page() {
  */
 function _advanced_forum_load_preprocessors() {
   // forum.inc is the extension on the includes such as contact.forum.inc
-  advanced_forum_include('forum.inc');
+  advanced_forum_include('author-pane.inc');
 }
 
 /**
