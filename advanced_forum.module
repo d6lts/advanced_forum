@@ -1138,79 +1138,71 @@ function advanced_forum_treat_as_forum_post($hook, $variables) {
   // Setting this static means the check only needs to be done once per thread
   static $forum_node_id;
 
-  switch ($hook) {
-    case 'node':
-      $vid = variable_get('forum_nav_vocabulary', '');
-      $vocabulary = taxonomy_vocabulary_load($vid);
-      if (empty($vocabulary) || !in_array($variables['node']->type, $vocabulary->nodes)) {
-        // No forum vocabulary or the node type cannot be used in the forums
-        unset($forum_node_id);
-        return FALSE;
-      }
-
+  // Start out assuming it's not one of ours.
+  $decision = FALSE;
+  
+  if ($hook == 'node') {
+    $vid = variable_get('forum_nav_vocabulary', '');
+    $vocabulary = taxonomy_vocabulary_load($vid);
+    if (empty($vocabulary) || !in_array($variables['node']->type, $vocabulary->nodes)) {
+      // No forum vocabulary or the node type cannot be used in the forums
+      unset($forum_node_id);
+      $decision = FALSE;
+    }
+    else {
       // Get a list of the terms attached to this node
       $terms = taxonomy_node_get_terms_by_vocabulary($variables['node'], $vid);
       if (count($terms) > 0 && (arg(0) == 'node' && is_numeric(arg(1)) && arg(1) == $variables['node']->nid || arg(0) == 'comment')) {
         // The node has at least one forum term attached to it and is not being
         // shown on some other page (like a view or promoted to front page)
         $forum_node_id = $variables['node']->nid;
-        return TRUE;
+        $decision = TRUE;
       }
       else {
         // We've hit a non forum node
         unset($forum_node_id);
-        return FALSE;
+        $decision = FALSE;
       }
-
-    case 'comment-wrapper':
-      if (isset($forum_node_id) && ($variables['node']->nid == $forum_node_id)) {
-        // We already know this comment wrapper is either part of a forum thread
-        // or that comments on this thread are known exceptions.
-        return TRUE;
-      }
-      else {
-        // Not part of a forum thread. Check for exceptions.
-        if (variable_get("advanced_forum_theme_all_comments", 0) == 1) {
-          // This site wants all comments to use the forum comment template
-          $forum_node_id = $variables['node']->nid;
-          return TRUE;
-        }
-      }
-
-      // Comment wrapper is not part of a forum thread and there are no exceptions.
-      return FALSE;
-
-    case 'comment':
-      if (isset($forum_node_id) && ($variables['comment']->nid == $forum_node_id)) {
-        // We already know this comment is either part of a forum thread
-        // or that comments on this thread are known exceptions.
-        return TRUE;
-      }
-      else {
-        // Not part of a forum thread. Check for exceptions.
-        if (variable_get("advanced_forum_theme_all_comments", 0) == 1) {
-          // This site wants all comments to use the forum comment template
-          $forum_node_id = $variables['comment']->nid;
-          return TRUE;
-        }
-
-        if (arg(0) == 'comment' && is_numeric(arg(1))) {
-          // Comment is being shown alone via the comment_page module
-          // For now, assume those should be themed like the forums.
-          // TODO: Possibly add a setting for this?
-          $forum_node_id = $variables['comment']->nid;
-          return TRUE;
-        }
-
-        // Comment is not part of a forum thread and there are no exceptions.
-        return FALSE;
-      }
-
-    default:
-      // We only deal with nodes and comments
-      return FALSE;
+    }
   }
+ 
+  if ($hook == 'comment' or $hook == 'comment-wrapper') {
+    if (isset($forum_node_id) && ($variables['comment']->nid == $forum_node_id)) {
+      // We already know this comment is either part of a forum thread
+      // or that comments on this thread are known exceptions.
+      $decision = TRUE;
+    } 
+    else {
+      // Not part of a forum thread. Check if this site wants all comments to 
+      // use the forum comment template or the comment is being shown alone via 
+      // the comment_page module
+      if (variable_get("advanced_forum_theme_all_comments", 0) == 1 ||
+         (arg(0) == 'comment' && is_numeric(arg(1)))) {
+        // This site wants all comments to use the forum comment template
+        $forum_node_id = $variables['comment']->nid;
+        
+        // Add the CSS & JS since we know we're on a comment that needs them
+        advanced_forum_drupal_adds();
+        $decision = TRUE;
+      }
+    }
+  }
+  
+  // Call a hook with our decisions and the available information. If it returns
+  // a number, override our decision and set the static variable to that number.
+  $override_nids = module_invoke_all('treat_as_forum_post_alter', $decision, $hook, $variables);
+  
+  if (!empty($override_nids)) {
+    // At least one module has returned an nid. We are making an assumption here
+    // that if there was more than one the nids are the same and just grabbing
+    // the first one.
+    $forum_node_id = $override_nids[0];
+    $decision = TRUE;
+  }
+
+  return $decision;
 }
+
 
 
 // GENERAL UTILITY FUNCTIONS *************************************************/
