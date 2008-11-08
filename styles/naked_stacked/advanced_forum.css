@@ -6,8 +6,7 @@ see advanced_forum-structure.css.
 
 Colors used:
   #DEDEDE Sticky posts, statistics subheader
-  #F7F5EE Faint borders
-  #CCCCCC Post seperator, avatar frame
+  #CCCCCC Borders, post seperator, avatar frame
 */
 
 /*** FORUM LINK LISTS ********************************************************/
@@ -62,13 +61,13 @@ Colors used:
 
 /*** FORUM THREADS ***********************************************************/
 
-.forum-comment {
-  border-top: 1px solid #CCCCCC;
+.forum-post {
+  border: 1px solid #CCCCCC;
 }
 
 /* Header at the top of each post */
 .post-info {
-  border-bottom: 1px solid #F7F5EE;
+  border-bottom: 1px solid #CCCCCC;
 }
 
 .posted-on {
@@ -78,15 +77,11 @@ Colors used:
 
 .post-title {
   font-weight: bold;
-  border-bottom: 1px solid #F7F5EE;
+  border-bottom: 1px solid #CCCCCC;
 }
 
 /* Author information pane */
 /* Note: Changes from Naked in this section */
-
-.forum-comment-left {
-}
-
 .author-pane .author-name {
   font-size: 120%;
   font-weight: bold;
@@ -106,10 +101,9 @@ Colors used:
 
 /* Post text area */
 /* Note: Changes from Naked in this section */
-
-.forum-post-wrapper .forum-comment-right {
-  border-top: 1px solid #F7F5EE;
-  border-bottom: 1px solid #F7F5EE;
+.forum-post-panel-main {
+  border-top: 1px solid #CCCCCC;
+  border-bottom: 1px solid #CCCCCC;
 }
 
 /* Signature */

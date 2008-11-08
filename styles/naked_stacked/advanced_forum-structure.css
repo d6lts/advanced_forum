@@ -8,12 +8,12 @@ floats. For colors and borders, see advanced_forum.css.
 /*** PAGER *******************************************************************/
 
 #forum .pager,
-#forum-comments .pager {
+#forum-posts .pager {
   float: right;
   margin-top: 5px;
 }
 
-#forum-comments .box {
+#forum-posts .box {
   clear: both;
 }
 
@@ -127,18 +127,17 @@ floats. For colors and borders, see advanced_forum.css.
 .forum-post-header .forum-links {
   float: left;
 }
+
 .forum-post-header .reply-count {
   float: right;
 }
 
-.forum-comment {
+.forum-post {
   margin: 0 0 5px 0;
-  padding: 0;
 }
 
 .forum-post-wrapper {
   clear: both;
-  height: 1%;
 }
 
 /* Header at the top of each post */
@@ -154,7 +153,7 @@ floats. For colors and borders, see advanced_forum.css.
   float: left;
 }
 
-.forum-comment .new {
+.forum-post .new {
   float: none;
 }
 
@@ -170,7 +169,7 @@ floats. For colors and borders, see advanced_forum.css.
 /* Author information pane */
 /* Note: Changes from Naked in this section */
 
-.forum-comment-left {
+.forum-post-panel-sub {
   line-height: 110%;
   min-height: 100px;
 }
@@ -200,7 +199,8 @@ floats. For colors and borders, see advanced_forum.css.
 }
 
 .author-pane-inner .picture {
-  float: left
+  float: left;
+  margin: 3px 2px 3px 5px;
 }
 
 .author-pane .picture img {
@@ -221,12 +221,12 @@ floats. For colors and borders, see advanced_forum.css.
 /* Post text area */
 /* Note: Changes from Naked in this section */
 
-.forum-post-wrapper .forum-comment-right {
+.forum-post-wrapper .forum-post-panel-main {
   clear: both;
 }
 
-.forum-comment-right .content {
-  padding: 2px;
+.forum-post-panel-main .content {
+  padding: 5px;
 }
 
 /* Signature */
@@ -235,8 +235,21 @@ floats. For colors and borders, see advanced_forum.css.
   padding: 0 1px 0 5px;
 }
 
+/* Post footer */
+.forum-post-footer {
+  margin-top: 0;
+  padding-top: 3px;
+  clear: both;
+}
+
+.forum-jump-links {
+  float: left;
+  line-height: 110%;
+  width: 150px;
+}
+
 /* Links */
-.forum-comment .links {
+.forum-post .links {
   line-height: 160%;
   margin: 2px;
   text-align: right;
