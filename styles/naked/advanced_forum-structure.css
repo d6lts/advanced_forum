@@ -168,7 +168,7 @@ floats. For colors and borders, see advanced_forum.css.
 }
 
 .author-pane {
-  margin: 5px;
+  margin: 10px;
 }
 
 .author-pane-first {
@@ -233,19 +233,20 @@ floats. For colors and borders, see advanced_forum.css.
 /* Post footer */
 .forum-post-footer {
   margin-top: 0;
-  padding-top: 3px;
   clear: both;
 }
 
 .forum-jump-links {
   float: left;
-  line-height: 110%;
-  width: 150px;
+  line-height: 2em;
+  padding: 0px 5px;  
+  width: 140px;
 }
 
-/* Links */
 .forum-post-links {
-  margin-left: 150px;
-  line-height: 160%;
+  float: right;
+  line-height: 2em;
   text-align: right;
+  padding: 0px 5px;  
+  margin-left: 150px;
 }

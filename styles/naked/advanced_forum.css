@@ -59,7 +59,7 @@ Colors used:
 /*** FORUM THREADS ***********************************************************/
 
 .forum-post {
-  border-top: 2px solid #CCCCCC;
+  border: 2px solid #CCCCCC;
 }
 
 /* Header at the top of each post */
@@ -74,6 +74,7 @@ Colors used:
 
 .post-title {
   font-weight: bold;
+  border-bottom: 1px solid #CCCCCC;
 }
 
 /* Author information pane */
@@ -105,7 +106,6 @@ Colors used:
   border-top: 1px solid #CCCCCC;
 }
 
-/* Links */
-.forum-post-links {
-  border-left: 1px solid #CCCCCC;
+.forum-jump-links {
+  border-right: 1px solid #CCCCCC;
 }
