@@ -24,6 +24,11 @@ floats. For colors and borders, see advanced_forum.css.
   float: right;
 }
 
+ul.forum-links {
+  margin: 0;
+  padding: 0;
+}
+
 .forum-links li {
   margin: 0;
   padding: 0pt 15px 0pt 0pt;
@@ -121,6 +126,10 @@ floats. For colors and borders, see advanced_forum.css.
 }
 
 /*** FORUM THREADS ***********************************************************/
+
+.forum-post-header {
+  margin: 10px 0 2px 0;
+}
 
 .forum-post-header .forum-links {
   float: left;

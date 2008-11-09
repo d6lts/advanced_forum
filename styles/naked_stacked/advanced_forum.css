@@ -21,10 +21,9 @@ Colors used:
   font-weight: bold;
 }
 
-/*** FORUM TABLES ************************************************************/
+/*** FORUM & TOPIC LIST ******************************************************/
 
-/* General */
-
+/* Headers */
 #forum th a,
 #forum th a:link,
 #forum th a:hover,
@@ -33,7 +32,6 @@ Colors used:
 }
 
 /* Containers & Forums */
-
 #forum td.container a {
   font-weight: bold;
 }
@@ -43,7 +41,6 @@ Colors used:
 }
 
 /* Topic listings */
-
 #forum tr.sticky-topic {
   background: #DEDEDE;
 }
@@ -62,7 +59,7 @@ Colors used:
 /*** FORUM THREADS ***********************************************************/
 
 .forum-post {
-  border: 1px solid #CCCCCC;
+  border: 2px solid #CCCCCC;
 }
 
 /* Header at the top of each post */
@@ -93,10 +90,6 @@ Colors used:
 
 .author-pane .author-pane-label {
   font-weight: bold;
-}
-
-.author-pane img {
-  vertical-align: top;
 }
 
 /* Post text area */

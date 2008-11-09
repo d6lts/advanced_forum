@@ -24,6 +24,11 @@ floats. For colors and borders, see advanced_forum.css.
   float: right;
 }
 
+ul.forum-links {
+  margin: 0;
+  padding: 0;
+}
+
 .forum-links li {
   margin: 0;
   padding: 0pt 15px 0pt 0pt;
@@ -124,6 +129,10 @@ floats. For colors and borders, see advanced_forum.css.
 
 /*** FORUM THREADS ***********************************************************/
 
+.forum-post-header {
+  margin: 10px 0 2px 0;
+}
+
 .forum-post-header .forum-links {
   float: left;
 }
@@ -145,7 +154,6 @@ floats. For colors and borders, see advanced_forum.css.
 .post-info {
   height:100%;
   clear: both;
-  margin-bottom: 3px;
 }
 
 .posted-on {
@@ -168,10 +176,9 @@ floats. For colors and borders, see advanced_forum.css.
 
 /* Author information pane */
 /* Note: Changes from Naked in this section */
-
 .forum-post-panel-sub {
   line-height: 110%;
-  min-height: 100px;
+  min-height: 130px;
 }
 
 .author-pane {
@@ -200,7 +207,7 @@ floats. For colors and borders, see advanced_forum.css.
 
 .author-pane-inner .picture {
   float: left;
-  margin: 3px 2px 3px 5px;
+  margin: 5px 2px 3px 5px;
 }
 
 .author-pane .picture img {
@@ -238,20 +245,20 @@ floats. For colors and borders, see advanced_forum.css.
 /* Post footer */
 .forum-post-footer {
   margin-top: 0;
-  padding-top: 3px;
   clear: both;
 }
 
 .forum-jump-links {
   float: left;
-  line-height: 110%;
-  width: 150px;
+  line-height: 2em;
+  padding: 0px 5px;  
+  width: 140px;
 }
 
-/* Links */
-.forum-post .links {
-  line-height: 160%;
-  margin: 2px;
+.forum-post-links {
+  float: right;
+  line-height: 2em;
   text-align: right;
-  clear: both;  
+  padding: 0px 5px;  
+  margin-left: 150px;
 }
