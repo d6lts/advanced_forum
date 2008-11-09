@@ -2,6 +2,24 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+November 9, 2008
+----------------
+NOISSUE by Michelle: Simplified code for including author-pane.inc files.
+#331609 by Michelle, dvessel: Fixed problem with advf-author-user.tpl.php not being called from theme.
+
+November 8, 2008
+----------------
+NOISSUE by Michelle: More style tweaking in naked and blue_lagoon. Still broken in IE.
+
+November 7, 2008
+----------------
+NOISSUE by Michelle: Changed naked_stacked to match recent changes to forum threads in naked.
+
+November 2, 2008
+----------------
+NOISSUE by Michelle: Contact link was using the D5 version of the l() function probably due to bad copy.
+NOISSUE by Michelle: Made sure all the icons in CVS matched my local copies.
+
 November 1, 2008
 ----------------
 #326706 by Michelle: Changed query that calculates number of new comments to try and fix problem with old comments. Minimally tested.

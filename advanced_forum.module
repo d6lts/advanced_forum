@@ -67,9 +67,10 @@ function advanced_forum_menu_alter(&$callbacks) {
  */
 function advanced_forum_theme() {
   advanced_forum_include('author-pane.inc');
+      //'path' => advanced_forum_path_to_style(),
+  
   $items['author_pane'] = array(
-      'template' => 'advf-author-pane',
-      'path' => advanced_forum_path_to_style(),
+      'template' => 'author-pane',
       'arguments' => array('account' => NULL, 'image_path' => NULL),
   );
 
@@ -102,7 +103,9 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
                      'forum_list',
                      'forum_topic_list',
                      'forum_icon',
-                     'forum_submitted');
+                     'forum_submitted',
+                     'author_pane',
+                );
 
   // Find all our ancestor themes and put them in an array.
   global $theme;
@@ -116,6 +119,7 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
   }
 
   foreach ($templates as $template) {
+  
     // If there was a path in there, store it
     $originalpath = array_shift($theme_registry[$template]['theme paths']);
 
@@ -131,7 +135,7 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
     }
 
     // Put the active theme's path last since that takes precidence
-    $theme_registry[$template]['theme paths'][] = path_to_theme();
+    $theme_registry[$template]['theme paths'][] = path_to_theme();   
   }
 }
 
@@ -523,6 +527,8 @@ function advanced_forum_preprocess_comment_wrapper(&$variables) {
  * Preprocesses template variables for the author info template.
  */
 function template_preprocess_author_pane(&$variables) {
+  $variables['template_files'][] = 'advf-author-pane';
+    
   // The passed in $variables['account'] refers to the user who's info is in the pane.
   $account = $variables['account'];
   $account_id = $account->uid;
@@ -563,10 +569,6 @@ function template_preprocess_author_pane(&$variables) {
       TRUE);
     $variables['online_status'] = t('Offline');
   }
-}
-
-function advanced_forum_preprocess_forum_post(&$variables) {
-  $variables['template_files'][] = 'advf-forum-post';
 }
 
 /**
