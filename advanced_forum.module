@@ -24,8 +24,6 @@ function advanced_forum_init() {
 
       drupal_add_css($css_file);
     }
-
-    _advanced_forum_load_preprocessors();
   }
 }
 
@@ -68,7 +66,7 @@ function advanced_forum_menu_alter(&$callbacks) {
  * Implementation of hook_theme().
  */
 function advanced_forum_theme() {
-  _advanced_forum_load_preprocessors();
+  advanced_forum_include('author-pane.inc');
   $items['author_pane'] = array(
       'template' => 'advf-author-pane',
       'path' => advanced_forum_path_to_style(),
@@ -234,17 +232,12 @@ function advanced_forum_settings_page() {
 // TEMPLATE PREPROCESS *******************************************************/
 
 /**
- * Load advanced forum preprocessors includes on behalf of modules.
- */
-function _advanced_forum_load_preprocessors() {
-  // forum.inc is the extension on the includes such as contact.forum.inc
-  advanced_forum_include('author-pane.inc');
-}
-
-/**
  * Load advanced forum files on behalf of modules.
  *
- * Blatent rip of views include system.
+ * This function, taken from the views include system, allows us to include
+ * an appropriately named include file bundled with any enabled module.
+ * It is currently used only to load the MODULE.author-pane.inc files which
+ * allow other modules to add to the author pane.
  */
 function advanced_forum_include($file) {
   static $cache;
@@ -1181,8 +1174,6 @@ function advanced_forum_treat_as_forum_post($hook, $variables) {
         // This site wants all comments to use the forum comment template
         $forum_node_id = $variables['comment']->nid;
         
-        // Add the CSS & JS since we know we're on a comment that needs them
-        advanced_forum_drupal_adds();
         $decision = TRUE;
       }
     }
