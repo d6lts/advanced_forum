@@ -1,4 +1,12 @@
 <?php
+
+// $Id$ 
+
+/**
+ * @file
+ * Allows modules to contribute styles.
+ */
+
 // -----------------------------------------------------------------------
 // REQUEST FUNCTIONS
 

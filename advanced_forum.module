@@ -24,6 +24,8 @@ function advanced_forum_init() {
 
       drupal_add_css($css_file);
     }
+
+    _advanced_forum_load_preprocessors();
   }
 }
 
@@ -66,9 +68,8 @@ function advanced_forum_menu_alter(&$callbacks) {
  * Implementation of hook_theme().
  */
 function advanced_forum_theme() {
-  advanced_forum_include('author-pane.inc');
-      //'path' => advanced_forum_path_to_style(),
-  
+  _advanced_forum_load_preprocessors();
+
   $items['author_pane'] = array(
       'template' => 'author-pane',
       'arguments' => array('account' => NULL, 'image_path' => NULL),
@@ -119,7 +120,7 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
   }
 
   foreach ($templates as $template) {
-  
+
     // If there was a path in there, store it
     $originalpath = array_shift($theme_registry[$template]['theme paths']);
 
@@ -135,7 +136,7 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
     }
 
     // Put the active theme's path last since that takes precidence
-    $theme_registry[$template]['theme paths'][] = path_to_theme();   
+    $theme_registry[$template]['theme paths'][] = path_to_theme();
   }
 }
 
@@ -185,16 +186,6 @@ function advanced_forum_settings_page() {
     '#description' => t('Choosing yes causes advanced forum to consider every comment a forum comment and attempt to theme it that way. Some changes to your theme may be required.'),
   );
 
-  // Collapsible containers
-  $options = array();
-  $containers = variable_get('forum_containers', array());
-  $forums_including_containers = advanced_forum_get_forum_list();
-  foreach ($forums_including_containers as $forum_or_container) {
-    if (in_array($forum_or_container->tid, $containers)) {
-      $options[$forum_or_container->tid] = $forum_or_container->name;
-    }
-  }
-
   // Hide 'created' column
   $form['advanced_forum_hide_created'] = array(
     '#type' => 'checkbox',
@@ -228,12 +219,22 @@ function advanced_forum_settings_page() {
     '#description' => t('Core forum gets the next and previous topics and shows links to them under the top post. This is turned off by default as the query has performance issues and the placement of the links is poor.'),
   );
 
-
   // Send our form to Drupal to make a settings page
   return system_settings_form($form);
 }
 
 // TEMPLATE PREPROCESS *******************************************************/
+
+/**
+  * Load advanced forum preprocessors includes on behalf of modules.
+  */
+function _advanced_forum_load_preprocessors() {
+  // author-pane.inc is the extension on the includes such as contact.author-pane.inc
+  advanced_forum_include('author-pane.inc');
+
+  // Added for modules that add things outside of the author pane.
+  advanced_forum_include('adv_process.inc');
+}
 
 /**
  * Load advanced forum files on behalf of modules.
@@ -245,13 +246,13 @@ function advanced_forum_settings_page() {
  */
 function advanced_forum_include($file) {
   static $cache;
-  
+
   $includes = array();
-  
+
   if (!isset($cache->data) || !$cache->data) {
     $cache = cache_get('advforum_includes', 'cache');
   }
-  
+
   if (isset($cache->data) && $cache->data) {
     $includes = $cache->data;
   }
@@ -287,7 +288,7 @@ function advanced_forum_preprocess_node(&$variables) {
     // We only deal with forum posts.
     return;
   }
-  
+
   // Determine the template file to use for the node.
   if (isset($_GET['page']) && $_GET['page'] > 0) {
     // This is the repeated node on the top of subsequent pages.
@@ -304,7 +305,7 @@ function advanced_forum_preprocess_node(&$variables) {
 
   // Process the links section and make our adjustments.
   _advanced_forum_adjust_node_links($variables);
-  
+
   // Total & new replies
   if (!empty($variables['comment_count'])) {
     $variables['total_posts'] = format_plural($variables['comment_count'], '1 reply', '@count replies');
@@ -312,7 +313,7 @@ function advanced_forum_preprocess_node(&$variables) {
   else {
     $variables['total_posts'] = t('No replies');
   }
-  
+
   $variables['new_posts'] = advanced_forum_first_new_post_link($variables['node'], $variables['comment_count']);
 
   // User information
@@ -330,7 +331,7 @@ function advanced_forum_preprocess_node(&$variables) {
   }
 }
 
-/** 
+/**
  * Part of the node preprocess, pulled out to simplify code.
  */
 function _advanced_forum_adjust_node_links(&$variables) {
@@ -528,7 +529,7 @@ function advanced_forum_preprocess_comment_wrapper(&$variables) {
  */
 function template_preprocess_author_pane(&$variables) {
   $variables['template_files'][] = 'advf-author-pane';
-    
+
   // The passed in $variables['account'] refers to the user who's info is in the pane.
   $account = $variables['account'];
   $account_id = $account->uid;
@@ -824,7 +825,7 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
       // Make shadow copy point to actual thread and tell you new the forum name
       if ($variables['topics'][$id]->moved == TRUE) {
         $term = taxonomy_get_term($topic->forum_tid);
-        $variables['topics'][$id]->message = l(t('This topic has been moved to ') . $term->name, "node/$topic->nid");
+        $variables['topics'][$id]->message = l(t('This topic has been moved to !forum', array('!forum' => $term->name)), "node/$topic->nid");
       }
 
       // Send the NID into the icon theme code so it can be linked to the topic
@@ -990,49 +991,49 @@ function advanced_forum_markasread() {
 
   if ($current_forum_id) {
     // Delete the current history entries so already visited nodes get updated.
-    $sql = "DELETE h 
-            FROM {history} AS h 
-              INNER JOIN {term_node} AS tn ON (h.nid = tn.nid) 
+    $sql = "DELETE h
+            FROM {history} AS h
+              INNER JOIN {term_node} AS tn ON (h.nid = tn.nid)
             WHERE h.uid = %d AND tn.tid = %d";
-	  db_query($sql, $user->uid, $current_forum_id);
-	
+    db_query($sql, $user->uid, $current_forum_id);
+
     // Update the history table with all forum nodes newer than the cutoff.
     $sql = "INSERT INTO {history} (uid, nid, timestamp)
-            SELECT %d, n.nid, %d 
+            SELECT %d, n.nid, %d
             FROM {node} AS n
               INNER JOIN {term_node} AS tn ON n.nid = tn.nid
               INNER JOIN {node_comment_statistics} AS ncs ON ncs.nid = n.nid
             WHERE (n.created > %d OR ncs.last_comment_timestamp > %d) AND tn.tid = %d";
-	
+
     $args = array($user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $current_forum_id);
     db_query($sql, $args);
 
     drupal_set_message(t('All content in this forum has been marked as read'));
     drupal_goto('forum/'. $current_forum_id);
-  } 
+  }
   else {
     // We are on the forum overview, requesting all forums be marked read
     $forum_vocabulary_id = variable_get('forum_nav_vocabulary', '');
- 
+
     // Delete the current history entries so already visited nodes get updated.
-    $sql = "DELETE h 
-            FROM {history} AS h 
-              INNER JOIN {term_node} AS tn ON (h.nid = tn.nid) 
-              INNER JOIN {term_data} AS td ON (td.tid = tn.tid) 
+    $sql = "DELETE h
+            FROM {history} AS h
+              INNER JOIN {term_node} AS tn ON (h.nid = tn.nid)
+              INNER JOIN {term_data} AS td ON (td.tid = tn.tid)
             WHERE h.uid = %d AND td.vid = %d";
-	  db_query($sql, $user->uid, $forum_vocabulary_id);
+    db_query($sql, $user->uid, $forum_vocabulary_id);
 
     // Update the history table with all forum nodes newer than the cutoff.
     $sql = "INSERT INTO {history} (uid, nid, timestamp)
-            SELECT DISTINCT %d, n.nid, %d 
+            SELECT DISTINCT %d, n.nid, %d
             FROM {node} AS n
-              INNER JOIN {term_node} AS tn ON n.nid=tn.nid 
+              INNER JOIN {term_node} AS tn ON n.nid=tn.nid
               INNER JOIN {node_comment_statistics} AS ncs ON ncs.nid = n.nid
-              INNER JOIN {term_data} AS td ON tn.tid = td.tid 
+              INNER JOIN {term_data} AS td ON tn.tid = td.tid
             WHERE (n.created > %d OR ncs.last_comment_timestamp > %d) AND td.vid = %d";
 
     $args = array($user->uid, time(), NODE_NEW_LIMIT, NODE_NEW_LIMIT, $forum_vocabulary_id);
-	
+
     db_query($sql, $args);
 
     drupal_set_message(t('All forum content been marked as read'));
@@ -1135,7 +1136,7 @@ function advanced_forum_treat_as_forum_post($hook, $variables) {
 
   // Start out assuming it's not one of ours.
   $decision = FALSE;
-  
+
   if ($hook == 'node') {
     $vid = variable_get('forum_nav_vocabulary', '');
     $vocabulary = taxonomy_vocabulary_load($vid);
@@ -1160,31 +1161,31 @@ function advanced_forum_treat_as_forum_post($hook, $variables) {
       }
     }
   }
- 
+
   if ($hook == 'comment' or $hook == 'comment-wrapper') {
     if (isset($forum_node_id) && ($variables['comment']->nid == $forum_node_id)) {
       // We already know this comment is either part of a forum thread
       // or that comments on this thread are known exceptions.
       $decision = TRUE;
-    } 
+    }
     else {
-      // Not part of a forum thread. Check if this site wants all comments to 
-      // use the forum comment template or the comment is being shown alone via 
+      // Not part of a forum thread. Check if this site wants all comments to
+      // use the forum comment template or the comment is being shown alone via
       // the comment_page module
       if (variable_get("advanced_forum_theme_all_comments", 0) == 1 ||
          (arg(0) == 'comment' && is_numeric(arg(1)))) {
         // This site wants all comments to use the forum comment template
         $forum_node_id = $variables['comment']->nid;
-        
+
         $decision = TRUE;
       }
     }
   }
-  
+
   // Call a hook with our decisions and the available information. If it returns
   // a number, override our decision and set the static variable to that number.
   $override_nids = module_invoke_all('treat_as_forum_post_alter', $decision, $hook, $variables);
-  
+
   if (!empty($override_nids)) {
     // At least one module has returned an nid. We are making an assumption here
     // that if there was more than one the nids are the same and just grabbing
@@ -1237,7 +1238,7 @@ function advanced_forum_first_new_comment($nid, $timestamp = 0) {
     if (!$timestamp) {
       $timestamp = node_last_viewed($nid);
     }
-    
+
     // Set the timestamp to the limit if the node was last read past the cutoff
     $timestamp = ($timestamp > NODE_NEW_LIMIT ? $timestamp : NODE_NEW_LIMIT);
 
@@ -1300,7 +1301,7 @@ function _advanced_forum_create_topic_pager($max_pages_to_display, $topic) {
     // first page because that doesn't have a query.
     $pager_array = array();
     $current_display_page = 1;
-    $pager_array[] = l('1', "node/$topic->nid");
+    $pager_array[] = l(t('1'), "node/$topic->nid");
 
     // Find the ending point. The pager URL is always 1 less than
     // the number being displayed because the first page is 0.
@@ -1359,7 +1360,7 @@ function _advanced_forum_get_topic_views_count($nid) {
   if (empty($views_count)) {
     $views_count = 0;
   }
-  
+
   return $views_count;
 }
 

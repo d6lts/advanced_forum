@@ -2,10 +2,16 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+November 11, 2008
+----------------
+NOISSUE by Michelle: Reverted changes to author pane auto file load patch.
+NOISSUE by Michelle: Code clean up.
+
 November 9, 2008
 ----------------
 NOISSUE by Michelle: Simplified code for including author-pane.inc files.
 #331609 by Michelle, dvessel: Fixed problem with advf-author-user.tpl.php not being called from theme.
+NOISSUE by Michelle: advf-forum-repeat-post.tpl.php still had clearfix instead of clear-block.
 
 November 8, 2008
 ----------------
