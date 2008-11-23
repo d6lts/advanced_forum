@@ -2,6 +2,11 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+November 22, 2008
+-----------------
+#325675 by Morbus: Implemented min-height IE fix suggested by Morbus.
+#337457 by Dave Reid: Fixed code that creates links array for comments to match missed change in core.
+
 November 11, 2008
 ----------------
 NOISSUE by Michelle: Reverted changes to author pane auto file load patch.
@@ -57,7 +62,7 @@ NOISSUE by Michelle: Small fixes to all styles based partially on Morbus' patch 
 #321041 by derhasi, swill, Michelle: Fixed errors in Mark as Read functionality.
 #322125 by swill: Fixed bug with comment link array recreation.
 
-October 7, 2008
+October 7, 2008 -- ALPHA 13
 ---------------
 #291084 by Michelle: Removed all collapsable container code as it caused too many issues. Many thanks to jmorahan for tracing the bizarre pagers to this code.
 #316525 by CompShack, samuelet: Minor CSS fixes to forum posts to fix IE 7 issues.

@@ -419,12 +419,9 @@ function advanced_forum_preprocess_comment(&$variables) {
       // Because the $links array isn't available here, we recreate it
       $node = node_load($variables['comment']->nid);
       $links = module_invoke_all('link', 'comment', $variables['comment']);
-      foreach (module_implements('link_alter') as $module) {
-        $function = $module .'_link_alter';
-        $function($node, $links);
-      }
+      drupal_alter('link', $links, $node);
       unset($links['comment_parent']);
-
+    
       // Iconify common links (optional to avoid translation issues)
       if (variable_get('advanced_forum_button_links', 1)) {
         if (!empty($links['comment_reply']['title'])) {
@@ -448,7 +445,6 @@ function advanced_forum_preprocess_comment(&$variables) {
       // Remake the links with our changes
       $variables['links'] = theme('links', $links, array('class' => 'links forum-links'));
       $variables['links_array'] = $links;
-
     }
 
     // Since we have to load the node anyway for our links trick, make it avail
