@@ -2,6 +2,11 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+November 26, 2008
+-----------------
+NOISSUE by Michelle: Stripped naked down to bare layout.
+NOISSUE by Michelle: Added boxy and boxy_stacked styles.
+
 November 22, 2008
 -----------------
 #325675 by Morbus: Implemented min-height IE fix suggested by Morbus.

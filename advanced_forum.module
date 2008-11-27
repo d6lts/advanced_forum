@@ -1073,6 +1073,14 @@ function advanced_forum_advforum_styles() {
     'directory' => 'styles/blue_lagoon_stacked',
   );
 
+  $items['boxy'] = array(
+    'directory' => 'styles/boxy',
+  );
+
+  $items['boxy_stacked'] = array(
+    'directory' => 'styles/boxy_stacked',
+  );
+
   $items['flatgrey'] = array(
     'directory' => 'styles/flatgrey',
   );
