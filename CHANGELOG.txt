@@ -6,6 +6,7 @@ November 26, 2008
 -----------------
 NOISSUE by Michelle: Stripped naked down to bare layout.
 NOISSUE by Michelle: Added boxy and boxy_stacked styles.
+#335770 by Michelle: Removed update that tried to clear up long unused variables as it was giving false fails.
 
 November 22, 2008
 -----------------
