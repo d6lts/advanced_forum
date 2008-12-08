@@ -1,8 +1,15 @@
 $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
+December 7, 2008
+-----------------
+#320635 by Michelle: Added logic to "treat as forum post" to account for reply pages. CSS is now loaded whenever AF determines the content is to be treated as a forum post.
 
-November 26, 2008
+December 7, 2008
+-----------------
+#339890 by Michelle: Fixed short script opener in advf-forum-repeat-post.tpl.php (500 errors on paged threads)
+
+November 26, 2008 -- ALPHA 15
 -----------------
 NOISSUE by Michelle: Stripped naked down to bare layout.
 NOISSUE by Michelle: Added boxy and boxy_stacked styles.
@@ -12,6 +19,8 @@ November 22, 2008
 -----------------
 #325675 by Morbus: Implemented min-height IE fix suggested by Morbus.
 #337457 by Dave Reid: Fixed code that creates links array for comments to match missed change in core.
+
+November 17, 2008 -- ALPHA 14
 
 November 11, 2008
 ----------------

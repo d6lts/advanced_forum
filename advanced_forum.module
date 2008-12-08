@@ -9,27 +9,6 @@
 // DRUPAL HOOKS **************************************************************/
 
 /**
- * Implementation of hook_init().
- */
-function advanced_forum_init() {
-  // load in the advanced forum theme if we're in a forum, or viewing a node.
-  if (arg(0) == 'forum' || ($node = menu_get_object())) {
-    $style_directory = advanced_forum_path_to_style();
-
-    foreach (array('advanced_forum-structure.css', 'advanced_forum.css') as $filename) {
-      $css_file = path_to_theme() . '/' . $filename;
-      if (!file_exists($css_file)) {
-        $css_file = $style_directory . '/' . $filename;
-      }
-
-      drupal_add_css($css_file);
-    }
-
-    _advanced_forum_load_preprocessors();
-  }
-}
-
-/**
  * Implementation of hook_perm().
  */
 function advanced_forum_perm() {
@@ -229,6 +208,11 @@ function advanced_forum_settings_page() {
   * Load advanced forum preprocessors includes on behalf of modules.
   */
 function _advanced_forum_load_preprocessors() {
+  static $finished = FALSE;
+  if ($finished) {
+    return;
+  }
+
   // author-pane.inc is the extension on the includes such as contact.author-pane.inc
   advanced_forum_include('author-pane.inc');
 
@@ -566,6 +550,7 @@ function template_preprocess_author_pane(&$variables) {
       TRUE);
     $variables['online_status'] = t('Offline');
   }
+  
 }
 
 /**
@@ -1183,6 +1168,14 @@ function advanced_forum_treat_as_forum_post($hook, $variables) {
 
         $decision = TRUE;
       }
+      else {
+        // If we are on a comment reply page, check if the node/comment gets styled.
+        if (arg(0) == 'comment' && arg(1) == 'reply') {
+          $nid = arg(2);
+          $variables['node'] = node_load($nid);
+          $decision = advanced_forum_treat_as_forum_post('node', $variables);
+        }
+      } 
     }
   }
 
@@ -1197,6 +1190,24 @@ function advanced_forum_treat_as_forum_post($hook, $variables) {
     $forum_node_id = $override_nids[0];
     $decision = TRUE;
   }
+
+  // If we're claiming this one, there are a few things we need to do...
+  if ($decision) {
+    // Add the Advanced Forum CSS code
+    $style_directory = advanced_forum_path_to_style();
+
+    foreach (array('advanced_forum-structure.css', 'advanced_forum.css') as $filename) {
+      $css_file = path_to_theme() . '/' . $filename;
+      if (!file_exists($css_file)) {
+        $css_file = $style_directory . '/' . $filename;
+      }
+
+      drupal_add_css($css_file);
+    }
+
+    // Load up the preprocessor include files
+    _advanced_forum_load_preprocessors();
+  }    
 
   return $decision;
 }
