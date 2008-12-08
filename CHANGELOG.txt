@@ -1,9 +1,11 @@
 $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
-December 7, 2008
+
+December 8, 2008
 -----------------
-#320635 by Michelle: Added logic to "treat as forum post" to account for reply pages. CSS is now loaded whenever AF determines the content is to be treated as a forum post.
+#320635 by Michelle: Added logic to 'treat as forum post' to account for reply pages. CSS is now loaded whenever AF determines the content is to be treated as a forum post.
+#320635 by Michelle: Improvements on theming reply pages, including using a seperate template for previews.
 
 December 7, 2008
 -----------------

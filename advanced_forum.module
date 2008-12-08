@@ -279,6 +279,10 @@ function advanced_forum_preprocess_node(&$variables) {
     // We send this to a special .tpl so people can wipe it out or whatever
     $variables['template_files'][] = "advf-forum-repeat-post";
   }
+  elseif (arg(1) == 'reply') {
+    // Use the preview version
+    $variables['template_files'][] = "advf-forum-preview-post";
+  }
   else {
     // Use our combined node/comment template file
     $variables['template_files'][] = "advf-forum-post";
@@ -369,8 +373,14 @@ function _advanced_forum_adjust_node_links(&$variables) {
  */
 function advanced_forum_preprocess_comment(&$variables) {
   if (advanced_forum_treat_as_forum_post('comment', $variables)) {
-    // Use our combined node/comment template file
-    $variables['template_files'][] = 'advf-forum-post';
+    if (arg(1) == 'reply') {
+      // Use the preview version
+      $variables['template_files'][] = "advf-forum-preview-post";
+    }
+    else {
+      // Use our combined node/comment template file
+      $variables['template_files'][] = 'advf-forum-post';
+    }
 
     // Thread is being shown in the forum (not on the front page or in a view)
     $variables['is_forum'] = TRUE;
@@ -1193,9 +1203,28 @@ function advanced_forum_treat_as_forum_post($hook, $variables) {
 
   // If we're claiming this one, there are a few things we need to do...
   if ($decision) {
-    // Add the Advanced Forum CSS code
-    $style_directory = advanced_forum_path_to_style();
+    _advanced_forum_add_files();
+  }
 
+  return $decision;
+}
+
+
+
+// GENERAL UTILITY FUNCTIONS *************************************************/
+
+/**
+ * Adds extra files needed when we have a post that is to be treated as a forum
+ * post. Mostly CSS but could be JS and others in the future.
+ */
+function _advanced_forum_add_files() {
+  // This could get called more than once on a page and we only need to do it
+  // once.
+  static $added;
+  
+  if (!$added) {
+    $added = TRUE;
+    $style_directory = advanced_forum_path_to_style();
     foreach (array('advanced_forum-structure.css', 'advanced_forum.css') as $filename) {
       $css_file = path_to_theme() . '/' . $filename;
       if (!file_exists($css_file)) {
@@ -1207,14 +1236,8 @@ function advanced_forum_treat_as_forum_post($hook, $variables) {
 
     // Load up the preprocessor include files
     _advanced_forum_load_preprocessors();
-  }    
-
-  return $decision;
+  }
 }
-
-
-
-// GENERAL UTILITY FUNCTIONS *************************************************/
 
 /**
  * Holds the node ID of the thread we are on.
