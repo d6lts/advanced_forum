@@ -1212,8 +1212,8 @@ function advanced_forum_treat_as_forum_post($hook, $variables) {
     }
   }
 
-  if ($hook == 'comment' or $hook == 'comment-wrapper') {
-    if (isset($forum_node_id) && ($variables['comment']->nid == $forum_node_id)) {
+  if ($hook == 'comment') {
+     if (isset($forum_node_id) && ($variables['comment']->nid == $forum_node_id)) {
       // We already know this comment is either part of a forum thread
       // or that comments on this thread are known exceptions.
       $decision = TRUE;
@@ -1237,6 +1237,14 @@ function advanced_forum_treat_as_forum_post($hook, $variables) {
           $decision = advanced_forum_treat_as_forum_post('node', $variables);
         }
       } 
+    }
+  }
+  
+  if ($hook == 'comment-wrapper') {
+    if (isset($forum_node_id) && ($variables['node']->nid == $forum_node_id)) {
+      // We only want to use our comment wrapper if we are on a node that 
+      // passed the tests.
+      $decision = TRUE;
     }
   }
 
