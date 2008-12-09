@@ -72,8 +72,9 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
 
   // --- The following section manipulates the theme registry so the .tpl files
   // --- for the given templates can be found first in the (sub)theme directory
-  // --- then in ancestor themes, if any, and finally in the designated styles
-  // --- directory for advanced forum.
+  // --- then in ancestor themes, if any, then in the designated styles
+  // --- directory for advanced forum, and finally in the advanced forum naked
+  // --- style as a base style.
 
   // Affected templates
   $templates = array('node',
@@ -97,24 +98,30 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
     array_unshift($ancestor_paths, dirname($themes[$themes[$ancestor]->base_theme]->filename));
     $ancestor = $themes[$ancestor]->base_theme;
   }
-
+  
+  $current_style = advanced_forum_path_to_style();
+  $naked_path = drupal_get_path('module', 'advanced_forum') . '/styles/naked';
   foreach ($templates as $template) {
 
-    // If there was a path in there, store it
-    $originalpath = array_shift($theme_registry[$template]['theme paths']);
+    // If there was a path in there, store it.
+    $existing_path = array_shift($theme_registry[$template]['theme paths']);
 
-    // Add in the style directory
-    $modulepath = advanced_forum_path_to_style();
-
-    // Restore the original path
-    array_unshift($theme_registry[$template]['theme paths'], $originalpath, $modulepath);
-
+    // Slide the paths we are adding in before the existing one.
+    if ($naked_path == $current_style) {
+      // The style is already naked, so no need to add it twice.
+      array_unshift($theme_registry[$template]['theme paths'], $existing_path, $current_style);
+    }
+    else {
+      // Style is not naked so slip naked in as a default style.
+      array_unshift($theme_registry[$template]['theme paths'], $existing_path, $naked_path, $current_style);
+    }
+    
     // If there are any ancestor paths (ie: we are in a subtheme, add those)
     foreach ($ancestor_paths as $ancestor_path) {
       $theme_registry[$template]['theme paths'][] = $ancestor_path;
     }
 
-    // Put the active theme's path last since that takes precidence
+    // Put the active theme's path last since that takes precidence.
     $theme_registry[$template]['theme paths'][] = path_to_theme();
   }
 }
@@ -1166,10 +1173,17 @@ function advanced_forum_path_to_images() {
   static $image_path;
 
   if (!$image_path) {
+    // If there is an override in settings, use it
     $image_path = variable_get('advanced_forum_image_directory', '');
 
     if (empty($image_path)) {
+      // Otherwise assume it's in the style's directory
       $image_path = advanced_forum_path_to_style() . '/images';
+    }
+    
+    if (!file_exists($image_path)) {
+      // If the style doesn't have an images directory, fall back to naked.
+      $image_path = drupal_get_path('module', 'advanced_forum') . '/styles/naked/images';
     }
   }
 
@@ -1284,10 +1298,20 @@ function _advanced_forum_add_files() {
   if (!$added) {
     $added = TRUE;
     $style_directory = advanced_forum_path_to_style();
+    $naked_directory = drupal_get_path('module', 'advanced_forum') . '/styles/naked';    
+    
     foreach (array('advanced_forum-structure.css', 'advanced_forum.css') as $filename) {
+      // Try first in the theme directory.
       $css_file = path_to_theme() . '/' . $filename;
+      
       if (!file_exists($css_file)) {
+        // Then try in the style directory.
         $css_file = $style_directory . '/' . $filename;
+        
+        if (!file_exists($css_file)) {
+          // If that fails, default to naked.
+          $css_file = $naked_directory . '/' . $filename;
+        }
       }
 
       drupal_add_css($css_file);

@@ -2,8 +2,12 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+December 9, 2008
+----------------
+NOISSUE by Michelle: Made 'naked' the base style so all other styles only need to include changed files.
+
 December 8, 2008
------------------
+----------------
 #320635 by Michelle: Added logic to 'treat as forum post' to account for reply pages. CSS is now loaded whenever AF determines the content is to be treated as a forum post.
 #320635 by Michelle: Improvements on theming reply pages, including using a seperate template for previews.
 #338268 by marcingy: Added option to set length of abbreviated topic title on forum overview.
@@ -13,7 +17,7 @@ Redid table headers on topic list pages in an attempt to fix #334198 . Turned ou
 #339982 by Michelle: Fixed bug with comment wrapper template not loading.
 
 December 7, 2008
------------------
+----------------
 #339890 by Michelle: Fixed short script opener in advf-forum-repeat-post.tpl.php (500 errors on paged threads)
 
 November 26, 2008 -- ALPHA 15
