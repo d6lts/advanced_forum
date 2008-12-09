@@ -794,25 +794,37 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
   // Take control of the template file.
   $variables['template_files'][] = 'advf-forum-topic-list';
 
-  // Redo the table header so we can add in views.
+  // Redo the table header so we can make our adjustments. This relies on this 
+  // header being unaltered from the forum module or it will be messed up. I
+  // decided to do it this way rather than making it better able to adapt for
+  // perfomance reasons.
   global $forum_topic_list_header;
 
-  $forum_topic_list_header = array();
-  $forum_topic_list_header[] = array('data' => '&nbsp;', 'class' => 'topic-icon');
-  $forum_topic_list_header[] = array('data' => t('Topic'), 'field' => 'n.title', 'class' => 'topic-topic');
-  $forum_topic_list_header[] = array('data' => t('Replies'), 'field' => 'l.comment_count', 'class' => 'topic-replies');
+  $new_header = array();
+  $forum_topic_list_header[0]['class'] = 'topic-icon';
+  $new_header[] = $forum_topic_list_header[0];
+
+  $forum_topic_list_header[1]['class'] = 'topic-topic';
+  $new_header[] = $forum_topic_list_header[1];
+ 
+  $forum_topic_list_header[2]['class'] = 'topic-replies';
+  $new_header[] = $forum_topic_list_header[2];
 
   // Topic views require the statistics module so don't show if it's not enabled
   if (module_exists('statistics')) {
-    $forum_topic_list_header[] =  array('data' => t('Views'), 'class' => 'topic-views');
+    $new_header[] = array('data' => t('Views'), 'class' => 'topic-views');
   }
-
+  
   // Allow admins to turn off the created column
   if (!variable_get('advanced_forum_hide_created', 0)) {
-    $forum_topic_list_header[] =  array('data' => t('Created'), 'field' => 'n.created', 'class' => 'topic-created');
+    $forum_topic_list_header[3]['class'] = 'topic-replies';
+    $new_header[] = $forum_topic_list_header[3];
   }
-
-  $forum_topic_list_header[] =  array('data' => t('Last reply'), 'field' => 'l.last_comment_timestamp', 'class' => 'topic-lreply');
+  
+  $forum_topic_list_header[4]['class'] = 'topic-lreply';
+  $new_header[] = $forum_topic_list_header[4];
+  
+  $forum_topic_list_header =  $new_header;
 
   // Create the tablesorting header.
   $ts = tablesort_init($forum_topic_list_header);

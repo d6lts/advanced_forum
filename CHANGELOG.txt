@@ -9,6 +9,7 @@ December 8, 2008
 #338268 by marcingy: Added option to set length of abbreviated topic title on forum overview.
 #338268 by Michelle: Added option to set 'time ago' cutoff.
 #303563 by Michelle: Clear readpath when marking read. (Outside module integration.)
+Redid table headers on topic list pages in an attempt to fix #334198 . Turned out not to be the problem but I like the new method better so am committing it anyway. Won't backport to D5, though.
 
 December 7, 2008
 -----------------
