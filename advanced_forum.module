@@ -12,7 +12,8 @@
  * Implementation of hook_perm().
  */
 function advanced_forum_perm() {
-  return array('administer advanced forum');
+  return array('administer advanced forum',
+    'view forum statistics');
 }
 
 /**
@@ -54,6 +55,10 @@ function advanced_forum_theme() {
       'arguments' => array('account' => NULL, 'image_path' => NULL),
   );
 
+  $items['advf_forum_statistics'] = array(
+      'template' => 'advf-forum-statistics',
+  );
+
   return $items;
 }
 
@@ -86,6 +91,7 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
                      'forum_icon',
                      'forum_submitted',
                      'author_pane',
+                     'advf_forum_statistics',
                 );
 
   // Find all our ancestor themes and put them in an array.
@@ -98,7 +104,7 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
     array_unshift($ancestor_paths, dirname($themes[$themes[$ancestor]->base_theme]->filename));
     $ancestor = $themes[$ancestor]->base_theme;
   }
-  
+
   $current_style = advanced_forum_path_to_style();
   $naked_path = drupal_get_path('module', 'advanced_forum') . '/styles/naked';
   foreach ($templates as $template) {
@@ -115,7 +121,7 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
       // Style is not naked so slip naked in as a default style.
       array_unshift($theme_registry[$template]['theme paths'], $existing_path, $naked_path, $current_style);
     }
-    
+
     // If there are any ancestor paths (ie: we are in a subtheme, add those)
     foreach ($ancestor_paths as $ancestor_path) {
       $theme_registry[$template]['theme paths'][] = $ancestor_path;
@@ -204,7 +210,7 @@ function advanced_forum_settings_page() {
     '#default_value' => variable_get('advanced_forum_use_topic_navigation', 0),
     '#description' => t('Core forum gets the next and previous topics and shows links to them under the top post. This is turned off by default as the query has performance issues and the placement of the links is poor.'),
   );
-  
+
   // Title length max
   $form['advanced_forum_topic_title_length'] = array(
     '#type' => 'textfield',
@@ -213,7 +219,7 @@ function advanced_forum_settings_page() {
     '#description' => t('Used on main forum page. Enter 0 to use the full title.'),
     '#default_value' => variable_get('advanced_forum_topic_title_length', 15),
   );
-  
+
   // Time ago cutoff
   $form['advanced_forum_time_ago_cutoff'] = array(
     '#type' => 'textfield',
@@ -222,8 +228,8 @@ function advanced_forum_settings_page() {
     '#description' => t('Will show actual date posted until this cutoff and then switch to time ago.'),
     '#default_value' => variable_get('advanced_forum_time_ago_cutoff', 48),
   );
-  
- 
+
+
   // Send our form to Drupal to make a settings page
   return system_settings_form($form);
 }
@@ -366,7 +372,7 @@ function _advanced_forum_adjust_node_links(&$variables) {
 
     $variables['reply_link'] = theme('links', array('topic_reply' => $reply_link), array('class' => 'forum-links'));
   }
-  
+
   // Change links over to buttons when possible and wanted.
   _advanced_forum_buttonify_links($variables['node']->links);
 
@@ -424,7 +430,7 @@ function advanced_forum_preprocess_comment(&$variables) {
       $links = module_invoke_all('link', 'comment', $variables['comment']);
       drupal_alter('link', $links, $node);
       unset($links['comment_parent']);
-    
+
       // Iconify common links (optional to avoid translation issues)
       _advanced_forum_buttonify_links($links);
 
@@ -547,7 +553,7 @@ function template_preprocess_author_pane(&$variables) {
     $variables['online_icon'] = advanced_forum_theme_image('user-offline.png', t('User offline. Last seen @time ago.', array('@time' => $variables['last_active'])));
     $variables['online_status'] = t('Offline');
   }
-  
+
 }
 
 /**
@@ -608,6 +614,27 @@ function advanced_forum_preprocess_forums($variables) {
       $variables['links_orig']['markasread'] = array('title' => $title, 'href' => $link);
     }
   }
+}
+
+/**
+ * Preprocesses template variables for the forum statistics template.
+ */
+function advanced_forum_preprocess_advf_forum_statistics(&$variables) {
+  $variables['template_files'][] = 'advf-forum-statistics';
+
+  $variables['topics'] = advanced_forum_statistics_topics();
+  $variables['posts'] = advanced_forum_statistics_comments() + $variables['topics'];
+  $variables['users'] = advanced_forum_statistics_users();
+
+  $authenticated_users = advanced_forum_statistics_online_users();
+  $variables['online_users'] = implode(', ', $authenticated_users);
+  $variables['current_users'] = count($authenticated_users);
+  $variables['current_guests'] = sess_count(time() - variable_get('user_block_seconds_online', 900));
+  $variables['current_total'] = $variables['current_users'] + $variables['current_guests'];
+
+  $latest_user = advanced_forum_statistics_latest_user();
+  $variables['latest_user_name'] = $latest_user['name'];
+  $variables['latest_user_id'] = $latest_user['uid'];
 }
 
 /**
@@ -690,20 +717,10 @@ function advanced_forum_preprocess_forum_list(&$variables) {
       $variables['container_description'] = $variables['parents']['0']->description;
     }
   }
-
-  $variables['topics'] = advanced_forum_statistics_topics();
-  $variables['posts'] = advanced_forum_statistics_comments() + $variables['topics'];
-  $variables['users'] = advanced_forum_statistics_users();
-
-  $authenticated_users = advanced_forum_statistics_online_users();
-  $variables['online_users'] = implode(', ', $authenticated_users);
-  $variables['current_users'] = count($authenticated_users);
-  $variables['current_guests'] = sess_count(time() - variable_get('user_block_seconds_online', 900));
-  $variables['current_total'] = $variables['current_users'] + $variables['current_guests'];
-
-  $latest_user = advanced_forum_statistics_latest_user();
-  $variables['latest_user_name'] = $latest_user['name'];
-  $variables['latest_user_id'] = $latest_user['uid'];
+  
+  if (user_access('view forum statistics')) {
+    $variables['forum_statistics'] = theme('advf_forum_statistics');
+  }
 }
 
 /**
@@ -737,7 +754,7 @@ function advanced_forum_preprocess_forum_submitted(&$variables) {
     }
     else {
       $short_topic_title = truncate_utf8($variables['topic']->node_title, $title_length, TRUE, TRUE);
-    }    
+    }
 
     $fragment = ($new_replies) ? 'new' : NULL;
     $variables['topic_link'] = l($short_topic_title, "node/$nid", array('query' => $query, 'fragment' => $fragment));
@@ -762,7 +779,7 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
   // Take control of the template file.
   $variables['template_files'][] = 'advf-forum-topic-list';
 
-  // Redo the table header so we can make our adjustments. This relies on this 
+  // Redo the table header so we can make our adjustments. This relies on this
   // header being unaltered from the forum module or it will be messed up. I
   // decided to do it this way rather than making it better able to adapt for
   // perfomance reasons.
@@ -774,7 +791,7 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
 
   $forum_topic_list_header[1]['class'] = 'topic-topic';
   $new_header[] = $forum_topic_list_header[1];
- 
+
   $forum_topic_list_header[2]['class'] = 'topic-replies';
   $new_header[] = $forum_topic_list_header[2];
 
@@ -782,16 +799,16 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
   if (module_exists('statistics')) {
     $new_header[] = array('data' => t('Views'), 'class' => 'topic-views');
   }
-  
+
   // Allow admins to turn off the created column
   if (!variable_get('advanced_forum_hide_created', 0)) {
     $forum_topic_list_header[3]['class'] = 'topic-replies';
     $new_header[] = $forum_topic_list_header[3];
   }
-  
+
   $forum_topic_list_header[4]['class'] = 'topic-lreply';
   $new_header[] = $forum_topic_list_header[4];
-  
+
   $forum_topic_list_header =  $new_header;
 
   // Create the tablesorting header.
@@ -1012,7 +1029,7 @@ function advanced_forum_markasread() {
     if (module_exists('readpath')) {
       readpath_clear_readpath();
     }
-    
+
     drupal_set_message(t('All content in this forum has been marked as read'));
     drupal_goto('forum/'. $current_forum_id);
   }
@@ -1045,7 +1062,7 @@ function advanced_forum_markasread() {
     if (module_exists('readpath')) {
       readpath_clear_readpath();
     }
-    
+
     drupal_set_message(t('All forum content been marked as read'));
     drupal_goto('forum');
   }
@@ -1141,7 +1158,7 @@ function advanced_forum_path_to_images() {
       // Otherwise assume it's in the style's directory
       $image_path = advanced_forum_path_to_style() . '/images';
     }
-    
+
     if (!file_exists($image_path)) {
       // If the style doesn't have an images directory, fall back to naked.
       $image_path = drupal_get_path('module', 'advanced_forum') . '/styles/naked/images';
@@ -1151,12 +1168,12 @@ function advanced_forum_path_to_images() {
   return $image_path;
 }
 
-/** 
+/**
  * Wrapper around theme_image that automatically includes the path.
  */
 function advanced_forum_theme_image($image_file, $alt = NULL, $title = NULL) {
   $image = advanced_forum_path_to_images() . "/$image_file";
-  
+
   if ($title = NULL) {
     $title = $alt;
   }
@@ -1170,7 +1187,7 @@ function advanced_forum_theme_image($image_file, $alt = NULL, $title = NULL) {
 
 function _advanced_forum_buttonify_links(&$links) {
   $buttonify = variable_get('advanced_forum_button_links', 1);
-  
+
   if ($buttonify) {
     foreach ($links as $link_key => $link) {
       switch ($link_key) {
@@ -1179,7 +1196,7 @@ function _advanced_forum_buttonify_links(&$links) {
           $links[$link_key]['title'] = advanced_forum_theme_image('reply.png', t('reply'));
           $links[$link_key]['html'] = TRUE;
           break;
-          
+
         case 'comment_reply':
           $links[$link_key]['title'] = advanced_forum_theme_image('reply.png', t('reply'));
           $links[$link_key]['html'] = TRUE;
@@ -1189,16 +1206,16 @@ function _advanced_forum_buttonify_links(&$links) {
           $links[$link_key]['title'] = advanced_forum_theme_image('edit.png', t('edit'));
           $links[$link_key]['html'] = TRUE;
           break;
-          
+
         case 'comment_delete':
           $links[$link_key]['title'] = advanced_forum_theme_image('delete.png', t('delete'));
           $links[$link_key]['html'] = TRUE;
-          break;        
-        
+          break;
+
         default:
           // For all other links, attempt to buttonify by key name.
           $image = advanced_forum_theme_image($link_key . '.png', $link['title']);
-          
+
           if ($image) {
             // If we found an image, use it. Otherwise leave the title alone.
             $links[$link_key]['title'] = $image;
@@ -1269,13 +1286,13 @@ function advanced_forum_treat_as_forum_post($hook, $variables) {
           $variables['node'] = node_load($nid);
           $decision = advanced_forum_treat_as_forum_post('node', $variables);
         }
-      } 
+      }
     }
   }
-  
+
   if ($hook == 'comment-wrapper') {
     if (isset($forum_node_id) && ($variables['node']->nid == $forum_node_id)) {
-      // We only want to use our comment wrapper if we are on a node that 
+      // We only want to use our comment wrapper if we are on a node that
       // passed the tests.
       $decision = TRUE;
     }
@@ -1313,20 +1330,20 @@ function _advanced_forum_add_files() {
   // This could get called more than once on a page and we only need to do it
   // once.
   static $added;
-  
+
   if (!$added) {
     $added = TRUE;
     $style_directory = advanced_forum_path_to_style();
-    $naked_directory = drupal_get_path('module', 'advanced_forum') . '/styles/naked';    
-    
+    $naked_directory = drupal_get_path('module', 'advanced_forum') . '/styles/naked';
+
     foreach (array('advanced_forum-structure.css', 'advanced_forum.css') as $filename) {
       // Try first in the theme directory.
       $css_file = path_to_theme() . '/' . $filename;
-      
+
       if (!file_exists($css_file)) {
         // Then try in the style directory.
         $css_file = $style_directory . '/' . $filename;
-        
+
         if (!file_exists($css_file)) {
           // If that fails, default to naked.
           $css_file = $naked_directory . '/' . $filename;
