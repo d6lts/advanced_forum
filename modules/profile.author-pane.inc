@@ -1,7 +1,9 @@
 <?php
+// $Id$
+
 /**
  * @file
- *   This file provides a preprocess function for the author pane used by  
+ *   This file provides a preprocess function for the author pane used by
  *   Advanced Forum and Advanced Profile Kit.
  */
 
@@ -12,6 +14,9 @@
 function profile_preprocess_author_pane(&$variables) {
   $account_id = $variables['account']->uid;
   if ($account_id != 0) {
-    $variables['profile'] = profile_view_profile($variables['account']);
+    // As of D6, this just loads the content array and doesn't return anything.
+    profile_view_profile($variables['account']);
+
+    $variables['profile'] = $variables['account']->content;
   }
-}  
+}
