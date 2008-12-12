@@ -2,6 +2,16 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+December 12, 2008
+-----------------
+#330000 and #328800 by Michelle: Redid image handling to ensure all images have alt text. Also made it possible for link images to be picked up automatically if they have a file name that matches the link key.
+
+December 11, 2008
+-----------------
+#345908 by Michelle: Fixed profile integration to account for change in core in D6.
+NOISSUE by Michelle: Fixed up author pane template comments and added facebook_status variable.
+#343848 by Michelle: Added variable for fasttoggle to author pane.
+
 December 9, 2008
 ----------------
 NOISSUE by Michelle: Made 'naked' the base style so all other styles only need to include changed files.
