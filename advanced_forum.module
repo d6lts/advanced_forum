@@ -48,13 +48,6 @@ function advanced_forum_menu_alter(&$callbacks) {
  * Implementation of hook_theme().
  */
 function advanced_forum_theme() {
-  _advanced_forum_load_preprocessors();
-
-  $items['author_pane'] = array(
-      'template' => 'author-pane',
-      'arguments' => array('account' => NULL, 'image_path' => NULL),
-  );
-
   $items['advf_forum_statistics'] = array(
       'template' => 'advf-forum-statistics',
   );
@@ -235,66 +228,6 @@ function advanced_forum_settings_page() {
 }
 
 // TEMPLATE PREPROCESS *******************************************************/
-
-/**
-  * Load advanced forum preprocessors includes on behalf of modules.
-  */
-function _advanced_forum_load_preprocessors() {
-  static $finished = FALSE;
-  if ($finished) {
-    return;
-  }
-
-  // author-pane.inc is the extension on the includes such as contact.author-pane.inc
-  advanced_forum_include('author-pane.inc');
-
-  // Added for modules that add things outside of the author pane.
-  advanced_forum_include('adv_process.inc');
-}
-
-/**
- * Load advanced forum files on behalf of modules.
- *
- * This function, taken from the views include system, allows us to include
- * an appropriately named include file bundled with any enabled module.
- * It is currently used only to load the MODULE.author-pane.inc files which
- * allow other modules to add to the author pane.
- */
-function advanced_forum_include($file) {
-  static $cache;
-
-  $includes = array();
-
-  if (!isset($cache->data) || !$cache->data) {
-    $cache = cache_get('advforum_includes', 'cache');
-  }
-
-  if (isset($cache->data) && $cache->data) {
-    $includes = $cache->data;
-  }
-  else {
-    $advanced_forum_path = drupal_get_path('module', 'advanced_forum') . '/modules';
-    foreach (module_list() as $module) {
-      $module_path = drupal_get_path('module', $module);
-      if (file_exists("$module_path/$module.$file")) {
-        $includes[] = "./$module_path/$module.$file";
-      }
-      else if (file_exists("$module_path/includes/$module.$file")) {
-        $includes[] = "./$module_path/includes/$module.$file";
-      }
-      else if (file_exists("$advanced_forum_path/$module.$file")) {
-        $includes[] = "./$advanced_forum_path/$module.$file";
-      }
-    }
-    cache_set('advforum_includes', $includes);
-  }
-
-  if (!empty($includes)) {
-    foreach ($includes as $include) {
-      require_once $include;
-    }
-  }
-}
 
 /**
  * Preprocesses template variables for the node template.
@@ -516,45 +449,8 @@ function advanced_forum_preprocess_comment_wrapper(&$variables) {
 /**
  * Preprocesses template variables for the author info template.
  */
-function template_preprocess_author_pane(&$variables) {
+function advanced_forum_preprocess_author_pane(&$variables) {
   $variables['template_files'][] = 'advf-author-pane';
-
-  // The passed in $variables['account'] refers to the user who's info is in the pane.
-  $account = $variables['account'];
-  $account_id = $account->uid;
-
-  // Get a reference to the currently logged in user.
-  global $user;
-
-  // Username
-  $variables['account_name'] =  theme('username', $account);
-  $variables['account_id'] = $account_id;
-
-  // Avatar
-  $variables['picture'] = theme('user_picture', $account);
-
-  // Nothing else applies to anon users, so just stop here
-  if ($account_id == 0) {
-    return;
-  }
-
-  // Join date / since
-  $just_date = str_replace(array('H:i', 'g:ia', ' - '), '', variable_get('date_format_short', 'm/d/Y - H:i'));
-  $variables['joined'] = format_date($account->created, 'custom', $just_date);
-
-  $variables['joined_ago'] = format_interval(time() - $account->created);
-
-  // Online status
-  $variables['last_active'] = format_interval(time() - $account->access);
-  if (round((time()-$account->access)/60) < 15) {
-    $variables['online_icon'] = advanced_forum_theme_image('user-online.png', t('User is online'));
-    $variables['online_status'] = t('Online');
-  }
-  else {
-    $variables['online_icon'] = advanced_forum_theme_image('user-offline.png', t('User offline. Last seen @time ago.', array('@time' => $variables['last_active'])));
-    $variables['online_status'] = t('Offline');
-  }
-
 }
 
 /**
@@ -1327,8 +1223,7 @@ function advanced_forum_treat_as_forum_post($hook, $variables) {
  * post. Mostly CSS but could be JS and others in the future.
  */
 function _advanced_forum_add_files() {
-  // This could get called more than once on a page and we only need to do it
-  // once.
+  // This could get called more than once on a page and we only need to do it once.
   static $added;
 
   if (!$added) {
@@ -1352,9 +1247,6 @@ function _advanced_forum_add_files() {
 
       drupal_add_css($css_file);
     }
-
-    // Load up the preprocessor include files
-    _advanced_forum_load_preprocessors();
   }
 }
 

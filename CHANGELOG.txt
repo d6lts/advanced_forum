@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+December 21, 2008
+-----------------
+#343853 by Michelle: Removed author pane code. This marks the start of dependency on the new author pane module.
+
 December 16, 2008
 -----------------
 #315972 by Michelle: Initial commit of jump to last post. Needs clean up and porting to D5.
