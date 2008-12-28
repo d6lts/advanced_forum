@@ -2,6 +2,12 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+December 27, 2008
+-----------------
+NOISSUE by Michelle: Removed author pane preprocess and switched to passing the template in the theme call.
+NOISSUE by Michelle: Moved main author pane div from post template to author pane template.
+
+
 December 21, 2008
 -----------------
 #343853 by Michelle: Removed author pane code. This marks the start of dependency on the new author pane module.

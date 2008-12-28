@@ -272,7 +272,7 @@ function advanced_forum_preprocess_node(&$variables) {
   
   // User information
   $variables['account'] = user_load(array('uid' => $variables['node']->uid));
-  $variables['author_pane'] = theme('author_pane', $variables['account'], advanced_forum_path_to_images());
+  $variables['author_pane'] = theme('author_pane', $variables['account'], advanced_forum_path_to_images(), 'advf-author-pane');
 
   // Load the signature.
   if (module_exists('signature_forum')) {
@@ -356,7 +356,7 @@ function advanced_forum_preprocess_comment(&$variables) {
     }
 
     // Create the author pane
-    $variables['author_pane'] = theme('author_pane', $variables['account'], advanced_forum_path_to_images());
+    $variables['author_pane'] = theme('author_pane', $variables['account'], advanced_forum_path_to_images(), 'advf-author-pane');
 
     if (arg(1) != 'reply') {
       // Because the $links array isn't available here, we recreate it
@@ -444,13 +444,6 @@ function advanced_forum_preprocess_comment_wrapper(&$variables) {
       $variables['reply_link'] = theme('links', array('topic_reply' => $reply_link), array('class' => 'forum-links'));
     }
   }
-}
-
-/**
- * Preprocesses template variables for the author info template.
- */
-function advanced_forum_preprocess_author_pane(&$variables) {
-  $variables['template_files'][] = 'advf-author-pane';
 }
 
 /**
