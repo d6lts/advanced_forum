@@ -2,10 +2,14 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+January 16, 2009
+----------------
+#354704 by Michelle: Added check to be sure template is in use before adding the module path to it.
+
 December 27, 2008
 -----------------
 NOISSUE by Michelle: Removed author pane preprocess and switched to passing the template in the theme call.
-NOISSUE by Michelle: Moved main author pane div from post template to author pane template.
+NOISSUE by Michelle: Moved main author pane div from post template to author pane template & generally updated template.
 
 
 December 21, 2008

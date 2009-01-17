@@ -101,27 +101,30 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
   $current_style = advanced_forum_path_to_style();
   $naked_path = drupal_get_path('module', 'advanced_forum') . '/styles/naked';
   foreach ($templates as $template) {
+    // Sanity check in case the template is not being used.
+    if (is_array($theme_registry[$template])) {
 
-    // If there was a path in there, store it.
-    $existing_path = array_shift($theme_registry[$template]['theme paths']);
+      // If there was a path in there, store it.
+      $existing_path = array_shift($theme_registry[$template]['theme paths']);
 
-    // Slide the paths we are adding in before the existing one.
-    if ($naked_path == $current_style) {
-      // The style is already naked, so no need to add it twice.
-      array_unshift($theme_registry[$template]['theme paths'], $existing_path, $current_style);
+      // Slide the paths we are adding in before the existing one.
+      if ($naked_path == $current_style) {
+        // The style is already naked, so no need to add it twice.
+        array_unshift($theme_registry[$template]['theme paths'], $existing_path, $current_style);
+      }
+      else {
+        // Style is not naked so slip naked in as a default style.
+        array_unshift($theme_registry[$template]['theme paths'], $existing_path, $naked_path, $current_style);
+      }
+
+      // If there are any ancestor paths (ie: we are in a subtheme, add those)
+      foreach ($ancestor_paths as $ancestor_path) {
+        $theme_registry[$template]['theme paths'][] = $ancestor_path;
+      }
+
+      // Put the active theme's path last since that takes precidence.
+      $theme_registry[$template]['theme paths'][] = path_to_theme();
     }
-    else {
-      // Style is not naked so slip naked in as a default style.
-      array_unshift($theme_registry[$template]['theme paths'], $existing_path, $naked_path, $current_style);
-    }
-
-    // If there are any ancestor paths (ie: we are in a subtheme, add those)
-    foreach ($ancestor_paths as $ancestor_path) {
-      $theme_registry[$template]['theme paths'][] = $ancestor_path;
-    }
-
-    // Put the active theme's path last since that takes precidence.
-    $theme_registry[$template]['theme paths'][] = path_to_theme();
   }
 }
 
