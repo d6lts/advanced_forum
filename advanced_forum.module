@@ -695,7 +695,7 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
 
   // Allow admins to turn off the created column
   if (!variable_get('advanced_forum_hide_created', 0)) {
-    $forum_topic_list_header[3]['class'] = 'topic-replies';
+    $forum_topic_list_header[3]['class'] = 'topic-created';
     $new_header[] = $forum_topic_list_header[3];
   }
 
