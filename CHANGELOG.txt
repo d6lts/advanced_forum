@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+January 18, 2009
+----------------
+#303564 by Psicomante, Michelle: Added legend for forum icons.
+
 January 16, 2009
 ----------------
 #354704 by Michelle: Added check to be sure template is in use before adding the module path to it.

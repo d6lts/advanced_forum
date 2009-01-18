@@ -52,6 +52,14 @@ function advanced_forum_theme() {
       'template' => 'advf-forum-statistics',
   );
 
+  $items['advanced_forum_topic_legend'] = array(
+      'template' => 'advanced_forum-topic-legend',
+  );  
+  
+  $items['advanced_forum_forum_legend'] = array(
+      'template' => 'advanced_forum-forum-legend',
+  );
+
   return $items;
 }
 
@@ -85,6 +93,8 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
                      'forum_submitted',
                      'author_pane',
                      'advf_forum_statistics',
+  					 'advanced_forum_topic_legend',
+                     'advanced_forum_forum_legend',
                 );
 
   // Find all our ancestor themes and put them in an array.
@@ -531,6 +541,17 @@ function advanced_forum_preprocess_advf_forum_statistics(&$variables) {
 }
 
 /**
+ * Preprocesses template variables for the forum statistics template.
+ */
+function advanced_forum_preprocess_advanced_forum_forum_legend(&$variables) {
+  $variables['template_files'][] = 'advanced_forum-forum-legend';
+}
+
+function advanced_forum_preprocess_advanced_forum_topic_legend(&$variables) {
+  $variables['template_files'][] = 'advanced_forum-topic-legend';
+}
+
+/**
  * Preprocesses template variables for the forum list template.
  *
  * This function adds additional functionality to the core forum preprocess.
@@ -614,6 +635,7 @@ function advanced_forum_preprocess_forum_list(&$variables) {
   if (user_access('view forum statistics')) {
     $variables['forum_statistics'] = theme('advf_forum_statistics');
   }
+  $variables['forum_legend'] = theme('advanced_forum_forum_legend');
 }
 
 /**
@@ -671,7 +693,7 @@ function advanced_forum_preprocess_forum_submitted(&$variables) {
 function advanced_forum_preprocess_forum_topic_list(&$variables) {
   // Take control of the template file.
   $variables['template_files'][] = 'advf-forum-topic-list';
-
+  $variables['topic_legend'] = theme('advanced_forum_topic_legend');
   // Redo the table header so we can make our adjustments. This relies on this
   // header being unaltered from the forum module or it will be messed up. I
   // decided to do it this way rather than making it better able to adapt for
@@ -771,7 +793,6 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
  */
 function advanced_forum_preprocess_forum_icon(&$variables) {
   $variables['template_files'][] = 'advf-forum-icon';
-
   $variables['iconpath'] = advanced_forum_path_to_images();
 }
 
