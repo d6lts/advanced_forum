@@ -93,7 +93,7 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
                      'forum_submitted',
                      'author_pane',
                      'advf_forum_statistics',
-  					 'advanced_forum_topic_legend',
+  					          'advanced_forum_topic_legend',
                      'advanced_forum_forum_legend',
                 );
 
@@ -635,6 +635,7 @@ function advanced_forum_preprocess_forum_list(&$variables) {
   if (user_access('view forum statistics')) {
     $variables['forum_statistics'] = theme('advf_forum_statistics');
   }
+  
   $variables['forum_legend'] = theme('advanced_forum_forum_legend');
 }
 
@@ -693,7 +694,7 @@ function advanced_forum_preprocess_forum_submitted(&$variables) {
 function advanced_forum_preprocess_forum_topic_list(&$variables) {
   // Take control of the template file.
   $variables['template_files'][] = 'advf-forum-topic-list';
-  $variables['topic_legend'] = theme('advanced_forum_topic_legend');
+
   // Redo the table header so we can make our adjustments. This relies on this
   // header being unaltered from the forum module or it will be messed up. I
   // decided to do it this way rather than making it better able to adapt for
@@ -783,6 +784,10 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
       $topic->sticky_class = $sticky_class;
 
     }
+    
+  // Set a variable for displaying the topic legend.
+  $variables['topic_legend'] = theme('advanced_forum_topic_legend');
+
   }
 }
 
@@ -1531,7 +1536,7 @@ function advanced_forum_statistics_users() {
  * Return the latest active user.
  */
 function advanced_forum_statistics_latest_user() {
-  return db_fetch_array(db_query('SELECT uid, name FROM {users} WHERE status = 1 ORDER BY created DESC'));
+  return db_fetch_array(db_query('SELECT uid, name FROM {users} WHERE status = 1 && access > 0 ORDER BY created DESC'));
 }
 
 /**
