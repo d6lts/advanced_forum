@@ -14,12 +14,15 @@ Advanced Forum (http://drupal.org/project/advanced_forum) enhances Drupal's foru
 INSTALLATION
 ------------
 
-1. Copy the entire advanced_forum project directory (not just the contents) to your normal 
+1. Enable all dependencies: Author Pane ( http://drupal.org/project/author_pane ), Forum, 
+   Taxonomy, Comment. (Optionally: Statistics)
+   
+2. Copy the entire advanced_forum project directory (not just the contents) to your normal 
    module directory (ie: sites/all/modules)
+   
+3. Enable the advanced forum module at ?q=admin/build/modules
 
-2. Enable the advanced forum module at ?q=admin/build/modules
-
-3. Visit the Advanced Forum settings page at ?q=admin/settings/advanced-forum 
+4. Visit the Advanced Forum settings page at ?q=admin/settings/advanced-forum 
    "Advanced forum style directory" Enter the name of the style you are using. 
    See http://drupal.org/node/234042 for more information on this.
    "Treat all site comments like forum comments" If you would like advanced forum to take 

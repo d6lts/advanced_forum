@@ -1,6 +1,6 @@
 <?php
 
-// $Id$ 
+// $Id$
 
 /**
  * @file
@@ -114,7 +114,7 @@ function _advanced_forum_process_plugin($module, $identifier, $path, $hook) {
 
   // Fill in defaults.
   foreach ($result as $name => $plugin) {
-     if (!is_dir($path . '/' . $plugin['directory'])) {
+    if (!is_dir($path . '/' . $plugin['directory'])) {
       unset($result[$name]);
       continue;
     }

@@ -54,8 +54,8 @@ function advanced_forum_theme() {
 
   $items['advanced_forum_topic_legend'] = array(
       'template' => 'advanced_forum-topic-legend',
-  );  
-  
+  );
+
   $items['advanced_forum_forum_legend'] = array(
       'template' => 'advanced_forum-forum-legend',
   );
@@ -99,7 +99,7 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
                      'forum_submitted',
                      'author_pane',
                      'advf_forum_statistics',
-  					          'advanced_forum_topic_legend',
+                     'advanced_forum_topic_legend',
                      'advanced_forum_forum_legend',
                 );
 
@@ -253,7 +253,7 @@ function advanced_forum_settings_page() {
       '#title' => t('User picture preset'),
       '#options' => $options,
       '#description' => t('Imagecache preset to use for forum avatars. Leave blank to not use this feature.'),
-      '#default_value' => variable_get('advanced_forum_user_picture_preset', ''),  
+      '#default_value' => variable_get('advanced_forum_user_picture_preset', ''),
     );
   }
 
@@ -318,7 +318,7 @@ function advanced_forum_preprocess_node(&$variables) {
   }
 
   $variables['new_posts'] = advanced_forum_first_new_post_link($variables['node'], $variables['comment_count']);
-  
+
   // User information
   $variables['account'] = user_load(array('uid' => $variables['node']->uid));
   $variables['author_pane'] = theme('author_pane', $variables['account'], advanced_forum_path_to_images(), 'advf-author-pane');
@@ -667,11 +667,11 @@ function advanced_forum_preprocess_forum_list(&$variables) {
       $variables['container_description'] = $variables['parents']['0']->description;
     }
   }
-  
+
   if (user_access('view forum statistics')) {
     $variables['forum_statistics'] = theme('advf_forum_statistics');
   }
-  
+
   $variables['forum_legend'] = theme('advanced_forum_forum_legend');
 }
 
@@ -820,7 +820,7 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
       $topic->sticky_class = $sticky_class;
 
     }
-    
+
   // Set a variable for displaying the topic legend.
   $variables['topic_legend'] = theme('advanced_forum_topic_legend');
 
@@ -1150,7 +1150,7 @@ function theme_advanced_forum_user_picture($account) {
       $picture = theme('imagecache', $preset, $account->picture);
     }
     return '<div class="picture">' . $picture . '</div>';
-  }  
+  }
   else {
     return theme('user_picture', $account);
   }
@@ -1233,7 +1233,7 @@ function advanced_forum_treat_as_forum_post($hook, $variables) {
   }
 
   if ($hook == 'comment') {
-     if (isset($forum_node_id) && ($variables['comment']->nid == $forum_node_id)) {
+    if (isset($forum_node_id) && ($variables['comment']->nid == $forum_node_id)) {
       // We already know this comment is either part of a forum thread
       // or that comments on this thread are known exceptions.
       $decision = TRUE;
@@ -1243,7 +1243,7 @@ function advanced_forum_treat_as_forum_post($hook, $variables) {
       // use the forum comment template or the comment is being shown alone via
       // the comment_page module
       if (variable_get("advanced_forum_theme_all_comments", 0) == 1 ||
-         (arg(0) == 'comment' && is_numeric(arg(1)))) {
+        (arg(0) == 'comment' && is_numeric(arg(1)))) {
         // This site wants all comments to use the forum comment template
         $forum_node_id = $variables['comment']->nid;
 
@@ -1360,7 +1360,7 @@ function advanced_forum_last_post_in_topic($nid) {
   // Retrieve the newest comment.
   $query = 'SELECT c.cid
             FROM {comments} c
-            WHERE c.nid = %d AND c.status = %d 
+            WHERE c.nid = %d AND c.status = %d
             ORDER BY c.cid DESC';
   $result = db_result(db_query_range($query, $nid, COMMENT_PUBLISHED, 0, 1));
 
@@ -1604,9 +1604,9 @@ function advanced_forum_statistics_online_users() {
   $list = array();
   $interval = time() - variable_get('user_block_seconds_online', 900);
   $sql = 'SELECT DISTINCT u.uid, u.name, MAX(s.timestamp)
-          FROM {users} u 
-            INNER JOIN {sessions} s ON u.uid = s.uid 
-          WHERE s.timestamp >= %d AND s.uid > 0 
+          FROM {users} u
+            INNER JOIN {sessions} s ON u.uid = s.uid
+          WHERE s.timestamp >= %d AND s.uid > 0
           GROUP BY u.uid, u.name
           ORDER BY s.timestamp DESC';
   $authenticated_users = db_query($sql, $interval);
