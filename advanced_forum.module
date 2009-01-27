@@ -61,7 +61,10 @@ function advanced_forum_theme() {
   );
 
   $items['advanced_forum_user_picture'] = array(
-      'argument' => array('account' => NULL,));
+      'argument' => array(
+        'account' => NULL,
+        )
+  );
 
   return $items;
 }
@@ -1133,7 +1136,7 @@ function advanced_forum_theme_image($image_file, $alt = NULL, $title = NULL) {
     return theme('image', $image, $alt, $title);
   }
   else {
-    return false;
+    return FALSE;
   }
 }
 
@@ -1367,7 +1370,9 @@ function advanced_forum_last_post_in_topic($nid) {
 function advanced_forum_last_post_link($node) {
   $last_comment_id = advanced_forum_last_post_in_topic($node->nid);
   $last_page = advanced_forum_get_last_page($node);
-  return l(t('Last post'), "node/$node->nid", array('query' => "page=$last_page", 'fragment' => "comment-$last_comment_id"));
+  $query = ($last_page > 0) ? "page=$last_page" : '';
+
+  return l(t('Last post'), "node/$node->nid", array('query' => $query, 'fragment' => "comment-$last_comment_id"));
 }
 
 /**
@@ -1379,8 +1384,6 @@ function advanced_forum_get_last_page($node) {
   $last_page = ceil($comment_count / $comments_per_page) - 1;
   return $last_page;
 }
-
-
 
 /**
  * Returns the ID of the first unread comment.
