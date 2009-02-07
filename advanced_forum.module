@@ -56,6 +56,10 @@ function advanced_forum_theme() {
       'template' => 'advanced_forum-topic-legend',
   );
 
+  $items['advanced_forum_topic_header'] = array(
+      'template' => 'advanced_forum-topic-header',
+  );
+
   $items['advanced_forum_forum_legend'] = array(
       'template' => 'advanced_forum-forum-legend',
   );
@@ -66,6 +70,12 @@ function advanced_forum_theme() {
         )
   );
 
+  $items['advanced_forum_reply_link'] = array(
+      'argument' => array(
+        'reply_link' => NULL,
+        )
+  );
+  
   return $items;
 }
 
@@ -101,6 +111,7 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
                      'advf_forum_statistics',
                      'advanced_forum_topic_legend',
                      'advanced_forum_forum_legend',
+                     'advanced_forum_topic_header',
                 );
 
   // Find all our ancestor themes and put them in an array.
@@ -279,35 +290,14 @@ function advanced_forum_preprocess_author_pane(&$variables) {
 }
 
 /**
- * Preprocesses template variables for the node template.
+ * Preprocesses template variables for the topic header template.
  */
-function advanced_forum_preprocess_node(&$variables) {
-  if (!advanced_forum_treat_as_forum_post('node', $variables)) {
-    // We only deal with forum posts.
-    return;
-  }
-
-  // Determine the template file to use for the node.
-  if (isset($_GET['page']) && $_GET['page'] > 0) {
-    // This is the repeated node on the top of subsequent pages.
-    // We send this to a special .tpl so people can wipe it out or whatever
-    $variables['template_files'][] = "advf-forum-repeat-post";
-  }
-  elseif (arg(1) == 'reply') {
-    // Use the preview version
-    $variables['template_files'][] = "advf-forum-preview-post";
-  }
-  else {
-    // Use our combined node/comment template file
-    $variables['template_files'][] = "advf-forum-post";
-  }
-
-  // The node is the first post, aka topic
-  $variables['top_post'] = TRUE;
-
-  // Process the links section and make our adjustments.
-  _advanced_forum_adjust_node_links($variables);
-
+function advanced_forum_preprocess_advanced_forum_topic_header(&$variables) {
+  $variables['template_files'][] = 'advanced_forum-topic-header';
+  
+  // Build the reply link / button
+  $variables['reply_link'] = theme('advanced_forum_reply_link', $variables['node']->links['comment_add']);
+  
   // Total & new replies
   if (!empty($variables['comment_count'])) {
     $variables['total_posts'] = format_plural($variables['comment_count'], '1 reply', '@count replies');
@@ -319,7 +309,67 @@ function advanced_forum_preprocess_node(&$variables) {
 
   $variables['new_posts'] = advanced_forum_first_new_post_link($variables['node'], $variables['comment_count']);
 
-  // User information
+
+}
+
+function theme_advanced_forum_reply_link($reply_link) {
+  if (variable_get('advanced_forum_button_links', 1)) {
+    $reply_link['title'] = advanced_forum_theme_image('post-reply.png', t('Post reply'));
+    $reply_link['html'] = TRUE;
+  }
+  else {
+    $reply_link['title'] = t("Post Reply");
+  }
+
+  return theme('links', array('topic_reply' => $reply_link), array('class' => 'forum-links'));
+}
+
+/**
+ * Preprocesses template variables for the node template.
+ */
+function advanced_forum_preprocess_node(&$variables) {
+  if (!advanced_forum_treat_as_forum_post('node', $variables)) {
+    // We only deal with forum posts.
+    return;
+  }
+
+  // Determine the template file to use for the node.
+  if (isset($_GET['page']) && $_GET['page'] > 0) {
+    // This is the repeated node on the top of subsequent pages.
+    // We send this to a special .tpl so people can adjust it to their needs.
+    $variables['template_files'][] = "advf-forum-repeat-post";
+  }
+  elseif (arg(1) == 'reply') {
+    // Use the preview version
+    $variables['template_files'][] = "advf-forum-preview-post";
+  }
+  else {
+    // Use our combined node/comment template file
+    $variables['template_files'][] = "advf-forum-post";
+  }
+
+  // The node is the first post, aka topic head
+  $variables['top_post'] = TRUE;
+  
+  // Build the topic header
+  $variables['topic_header'] = theme('advanced_forum_topic_header', $variables);
+    
+  /* Node links changes */
+  // Change first post from "add comment" to "Reply"
+  if (!empty($variables['node']->links) && !empty($variables['node']->links['comment_add'])) {
+    $variables['node']->links['comment_add']['title'] = t('Reply');
+  }
+
+  // Change links over to buttons when possible and wanted.
+  _advanced_forum_buttonify_links($variables['node']->links);
+
+  // Remake the links with our changes
+  $variables['links'] = theme('links', $variables['node']->links, array('class' => 'links inline forum-links'));
+
+  // Make an array version of $links
+  $variables['links_array'] = $variables['node']->links;
+
+  // User information / author pane
   $variables['account'] = user_load(array('uid' => $variables['node']->uid));
   $variables['author_pane'] = theme('author_pane', $variables['account'], advanced_forum_path_to_images(), 'advf-author-pane');
 
@@ -332,38 +382,6 @@ function advanced_forum_preprocess_node(&$variables) {
     // Otherwise load Drupal's built in one, if enabled.
     $variables['signature'] = check_markup($variables['account']->signature, $variables['node']->format);
   }
-}
-
-/**
- * Part of the node preprocess, pulled out to simplify code.
- */
-function _advanced_forum_adjust_node_links(&$variables) {
-  if (!empty($variables['node']->links) && !empty($variables['node']->links['comment_add'])) {
-    // Change first post from "add comment" to "Reply"
-    $variables['node']->links['comment_add']['title'] = t('Reply');
-
-    // Make a separate variable for the reply link so it can be put on top of the thread
-    $reply_link = $variables['node']->links['comment_add'];
-
-    if (variable_get('advanced_forum_button_links', 1)) {
-      $reply_link['title'] = advanced_forum_theme_image('post-reply.png', t('Post reply'));
-      $reply_link['html'] = TRUE;
-    }
-    else {
-      $reply_link['title'] = t("Post Reply");
-    }
-
-    $variables['reply_link'] = theme('links', array('topic_reply' => $reply_link), array('class' => 'forum-links'));
-  }
-
-  // Change links over to buttons when possible and wanted.
-  _advanced_forum_buttonify_links($variables['node']->links);
-
-  // Remake the links with our changes
-  $variables['links'] = theme('links', $variables['node']->links, array('class' => 'links inline forum-links'));
-
-  // Make an array version of $links
-  $variables['links_array'] = $variables['node']->links;
 }
 
 /**
@@ -380,9 +398,6 @@ function advanced_forum_preprocess_comment(&$variables) {
       $variables['template_files'][] = 'advf-forum-post';
     }
 
-    // Thread is being shown in the forum (not on the front page or in a view)
-    $variables['is_forum'] = TRUE;
-
     // This is a comment, not the node.
     $variables['top_post'] = FALSE;
 
@@ -393,8 +408,8 @@ function advanced_forum_preprocess_comment(&$variables) {
     $variables['content'] = $variables['comment']->comment;
 
     // User information
-    $accountid = $variables['comment']->uid;
-    if ($accountid == 0) {
+    $account_id = $variables['comment']->uid;
+    if ($account_id == 0) {
       // Anonymous user. Make a fake user object for theme_username
       $variables['account']->name = $variables['comment']->name;
       $variables['account']->homepage = $variables['comment']->homepage;
@@ -478,20 +493,8 @@ function advanced_forum_preprocess_comment_wrapper(&$variables) {
   if (advanced_forum_treat_as_forum_post('comment-wrapper', $variables)) {
     $variables['template_files'][] = 'advf-comment-wrapper';
 
-    // Make a variable for the reply link so it can be put on the bottom of the thread
-    $reply_link = $variables['node']->links['comment_add'];
-
-    if (!empty($reply_link)) {
-      if (variable_get('advanced_forum_button_links', 1)) {
-        $reply_link['title'] = advanced_forum_theme_image('post-reply.png', t('Post reply'));
-        $reply_link['html'] = TRUE;
-      }
-      else {
-        $reply_link['title'] = t("Post Reply");
-      }
-
-      $variables['reply_link'] = theme('links', array('topic_reply' => $reply_link), array('class' => 'forum-links'));
-    }
+    // Build the reply link / button
+    $variables['reply_link'] = theme('advanced_forum_reply_link', $variables['node']->links['comment_add']);
   }
 }
 
