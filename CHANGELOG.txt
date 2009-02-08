@@ -7,6 +7,7 @@ February 7, 2009
 #315972 by Michelle: Finished the reply link theming started yesterday.
 #369078 by lamigo: Fixed postgres errors.
 #370422 by Michelle: Replaced path_to_theme with my own function that always has the path to the actual site theme.
+#367496 by Michelle: Added check for link text when buttonifying.
 
 February 6, 2009
 ----------------
