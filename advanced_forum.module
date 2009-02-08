@@ -9,6 +9,15 @@
 // DRUPAL HOOKS **************************************************************/
 
 /**
+ * Implementation of hook_init().
+ */
+function advanced_forum_init() {
+  // Set a static variable to hold the site theme's path so we have a reliable
+  // source for it.
+  advanced_forum_path_to_theme();
+}
+
+/**
  * Implementation of hook_perm().
  */
 function advanced_forum_perm() {
@@ -154,7 +163,7 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
       }
 
       // Put the active theme's path last since that takes precidence.
-      $theme_registry[$template]['theme paths'][] = path_to_theme();
+      $theme_registry[$template]['theme paths'][] = advanced_forum_path_to_theme();
     }
   }
 }
@@ -1146,6 +1155,20 @@ function advanced_forum_get_current_style() {
 }
 
 /**
+ * Returns the path to actual site theme in use because path_to_theme is flaky.
+ */
+function advanced_forum_path_to_theme() {
+  static $path_to_theme;
+  
+  if (!isset($path_to_theme)) {
+    // Initialize variable
+    $path_to_theme = path_to_theme();
+  }
+  
+  return $path_to_theme;
+}
+
+/**
  * Returns the path to the advanced forum style, including the style name
  */
 function advanced_forum_path_to_style() {
@@ -1377,7 +1400,7 @@ function _advanced_forum_add_files() {
 
     foreach (array('advanced_forum-structure.css', 'advanced_forum.css') as $filename) {
       // Try first in the theme directory.
-      $css_file = path_to_theme() . '/' . $filename;
+      $css_file = advanced_forum_path_to_theme() . '/' . $filename;
 
       if (!file_exists($css_file)) {
         // Then try in the style directory.
