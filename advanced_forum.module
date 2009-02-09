@@ -9,15 +9,6 @@
 // DRUPAL HOOKS **************************************************************/
 
 /**
- * Implementation of hook_init().
- */
-function advanced_forum_init() {
-  // Set a static variable to hold the site theme's path so we have a reliable
-  // source for it.
-  advanced_forum_path_to_theme();
-}
-
-/**
  * Implementation of hook_perm().
  */
 function advanced_forum_perm() {
@@ -1158,14 +1149,11 @@ function advanced_forum_get_current_style() {
  * Returns the path to actual site theme in use because path_to_theme is flaky.
  */
 function advanced_forum_path_to_theme() {
-  static $path_to_theme;
-  
-  if (!isset($path_to_theme)) {
-    // Initialize variable
-    $path_to_theme = path_to_theme();
+  global $theme;
+ 
+  if (!empty($theme)) {
+    return drupal_get_path('theme', $theme);
   }
-  
-  return $path_to_theme;
 }
 
 /**
