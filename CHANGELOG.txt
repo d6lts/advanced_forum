@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+February 8, 2009
+----------------
+NOISSUE by Michelle: Check to make sure $links isn't empty before iterating thru it. Thanks to ghankstef for testing.
+
 February 7, 2009
 ----------------
 #315972 by Michelle: Finished the reply link theming started yesterday.
