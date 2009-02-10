@@ -5,6 +5,7 @@ $Id$
 February 9, 2009
 ----------------
 #370422 by Michelle, merlinofchaos: Hopefully the last fix to get around path_to_theme's flakiness.
+#371859 by lamigo: Fixed postgress error.
 
 February 8, 2009
 ----------------
