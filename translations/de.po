@@ -163,7 +163,7 @@ msgstr "Letzte Antwort"
 
 #: advanced_forum.module:832
 msgid "This topic has been moved to "
-msgstr "Dieses Thema wurde verschoben nach"
+msgstr "Dieses Thema wurde verschoben nach "
 
 #: advanced_forum.module:1015
 msgid "All content in this forum has been marked as read"
@@ -199,11 +199,11 @@ msgstr[1] "@count neu"
 
 #: advanced_forum.module:36
 msgid "administer advanced forum"
-msgstr "Advanced forum verwalten"
+msgstr "Advanced Forum verwalten"
 
 #: advanced_forum.module:50
 msgid "Configure Advanced Forum with these settings."
-msgstr "Advanced forum mit diesen Einstellungen konfigurieren"
+msgstr "Advanced Forum mit diesen Einstellungen konfigurieren"
 
 #: advanced_forum.module:53
 #: advanced_forum.info:0
@@ -229,7 +229,7 @@ msgstr "Private Nachricht senden"
 
 #: modules/privatemsg.forum.inc:22
 msgid "Send PM"
-msgstr "Private Nachricht senden"
+msgstr "PN senden"
 
 #: styles/blue_lagoon/advf-author-pane.tpl.php:76
 #: styles/blue_lagoon_stacked/advf-author-pane.tpl.php:78
@@ -310,7 +310,7 @@ msgstr "Statistiken"
 #: styles/naked/advf-forum-list.tpl.php:122
 #: styles/naked_stacked/advf-forum-list.tpl.php:122
 msgid "Topics: !topics, Posts: !posts, Users: !users"
-msgstr "Themen: !topics, Beiträge: !posts, Beuntzer: !users"
+msgstr "Themen: !topics, Beiträge: !posts, Benutzer: !users"
 
 #: styles/blue_lagoon/advf-forum-list.tpl.php:123
 #: styles/blue_lagoon_stacked/advf-forum-list.tpl.php:123
