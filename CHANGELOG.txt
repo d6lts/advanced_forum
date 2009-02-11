@@ -5,13 +5,15 @@ $Id$
 February 11, 2009
 ----------------
 #303548 by Michelle: Added default avatar support to custom user picture function and also linked to profile.
+#361407 by black silence: Updated German translation.
+#310547 by Michelle: Organized and cleaned up settings page.
 
 February 9, 2009
 ----------------
 #370422 by Michelle, merlinofchaos: Hopefully the last fix to get around path_to_theme's flakiness.
 #371859 by lamigo: Fixed postgress error.
 
-February 8, 2009
+February 8, 2009 -- BETA 2
 ----------------
 NOISSUE by Michelle: Check to make sure $links isn't empty before iterating thru it. Thanks to ghankstef for testing.
 
