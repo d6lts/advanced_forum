@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+February 11, 2009
+----------------
+#303548 by Michelle: Added default avatar support to custom user picture function and also linked to profile.
+
 February 9, 2009
 ----------------
 #370422 by Michelle, merlinofchaos: Hopefully the last fix to get around path_to_theme's flakiness.
