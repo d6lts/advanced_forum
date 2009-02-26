@@ -2,9 +2,16 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+February 26, 2009
+-----------------
+NOISSUE by Michelle: Fleshed out the readme.txt file more.
+
 February 25, 2009
 -----------------
-#375187: by Michelle: Fall back to default site theme when $theme not set.
+#375187 by Michelle: Fall back to default site theme when $theme not set.
+#374009 by rastatt@drupal.org: Updated German translation.
+#260397 by BlackNexus: Updated Spanish translation.
+#256174 by seals: Updated Swedish translation.
 
 February 20, 2009
 -----------------
