@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+February 25, 2009
+-----------------
+#375187: by Michelle: Fall back to default site theme when $theme not set.
+
 February 20, 2009
 -----------------
 #376540 by Michelle: Passed all image file names through t() to make them translatable as suggested by klavs.
