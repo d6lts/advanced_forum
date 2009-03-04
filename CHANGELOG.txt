@@ -2,9 +2,14 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+March 3, 2009
+-------------
+#375187 by nbz: Fixed switched variable name that caused fallback to Garland rather than the default theme.
+
 February 26, 2009
 -----------------
 NOISSUE by Michelle: Fleshed out the readme.txt file more.
+#373371 by Michelle: Syncing up Author Pane.
 
 February 25, 2009
 -----------------

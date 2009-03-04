@@ -1185,7 +1185,7 @@ function advanced_forum_path_to_theme() {
   // that the global theme variable is not set when this is called.
   // As a band-aid solution, this will pull the default theme out of the
   // database and use that.
-  $default_theme = variable_get('default_theme', 'garland');
+  $default_theme = variable_get('theme_default', 'garland');
   return drupal_get_path('theme', $default_theme); 
 }
 
