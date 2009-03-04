@@ -336,7 +336,7 @@ msgstr "Der gesamte Forumsinhalt wurde als gelesen markiert."
 
 #: advanced_forum.module:1259
 msgid "@user's picture"
-msgstr "Bild von @user"
+msgstr "@user's Bild"
 
 #: advanced_forum.module:1273
 msgid "View user profile."
@@ -490,7 +490,7 @@ msgstr "Statistiken"
 
 #: styles/naked/advf-forum-statistics.tpl.php:37
 msgid "Topics: !topics, Posts: !posts, Users: !users"
-msgstr "Themen: !topics, Beiträge: !posts, Beuntzer: !users"
+msgstr "Themen: !topics, Beiträge: !posts, Benutzer: !users"
 
 #: styles/naked/advf-forum-statistics.tpl.php:38
 msgid "Welcome to our latest member, !user"
@@ -498,7 +498,7 @@ msgstr "Ein Willkommen dem neuesten Mitglied, !user"
 
 #: styles/naked/advf-forum-submitted.tpl.php:26
 msgid "!title<br />by !author<br />@date_posted"
-msgstr "!title<br />nach !author<br />@date_posted"
+msgstr "!title<br />von !author<br />@date_posted"
 
 #: styles/naked/advf-forum-submitted.tpl.php:33
 msgid "!title<br />by !author<br />@time ago"
@@ -506,7 +506,7 @@ msgstr "!title<br />von !author<br />vor @time"
 
 #: styles/naked/advf-forum-submitted.tpl.php:42
 msgid "by !author<br />@date_posted"
-msgstr "nach !author<br />@date_posted"
+msgstr "von !author<br />@date_posted"
 
 #: styles/naked/advf-forum-submitted.tpl.php:48
 msgid "by !author<br />@time ago"
