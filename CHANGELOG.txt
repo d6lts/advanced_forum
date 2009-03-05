@@ -2,16 +2,22 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
-March 3, 2009
+March 4, 2009
+-------------
+#384180 by Michelle: Switched file format to UTF-8 [This failed to update in CVS]
+#373371 by Michelle: Synched up Author Pane template and updated CSS for Author Pane.
+
+March 3, 2009 - RC 3
 -------------
 #375187 by nbz: Fixed switched variable name that caused fallback to Garland rather than the default theme.
+#388504 by pebosi: Updated German translation.
 
 February 26, 2009
 -----------------
 NOISSUE by Michelle: Fleshed out the readme.txt file more.
 #373371 by Michelle: Syncing up Author Pane.
 
-February 25, 2009
+February 25, 2009 -- RC 2
 -----------------
 #375187 by Michelle: Fall back to default site theme when $theme not set.
 #374009 by rastatt@drupal.org: Updated German translation.
@@ -22,7 +28,7 @@ February 20, 2009
 -----------------
 #376540 by Michelle: Passed all image file names through t() to make them translatable as suggested by klavs.
 
-February 11, 2009
+February 11, 2009 -- RC 1
 ----------------
 #303548 by Michelle: Added default avatar support to custom user picture function and also linked to profile.
 #361407 by black silence: Updated German translation.
