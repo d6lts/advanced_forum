@@ -2,6 +2,11 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+March 21, 2009
+--------------
+#402352 by Michelle: Removed logic to print user title image. Variable is still there.
+#408006, #397860 by Michelle: Changed online/offline default to be small icon plus words.
+
 March 4, 2009
 -------------
 #384180 by Michelle: Switched file format to UTF-8 [This failed to update in CVS]
