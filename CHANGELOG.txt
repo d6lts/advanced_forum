@@ -6,6 +6,7 @@ March 21, 2009
 --------------
 #402352 by Michelle: Removed logic to print user title image. Variable is still there.
 #408006, #397860 by Michelle: Changed online/offline default to be small icon plus words.
+#365578 by joostvdl: Added ability to have language specific image directories.
 
 March 4, 2009
 -------------

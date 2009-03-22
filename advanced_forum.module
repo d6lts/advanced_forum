@@ -1212,6 +1212,7 @@ function advanced_forum_path_to_style() {
  */
 function advanced_forum_path_to_images() {
   static $image_path;
+  global $language;
 
   if (!$image_path) {
     // If there is an override in settings, use it
@@ -1228,6 +1229,13 @@ function advanced_forum_path_to_images() {
     }
   }
 
+	//Add language prefix to path if exist
+	$language_prefix = $language->language;
+	$image_path_language_prefix = $image_path . '/' . $language_prefix;
+	if (file_exists($image_path_language_prefix)) {
+		$image_path = $image_path_language_prefix;
+	}
+	
   return $image_path;
 }
 
