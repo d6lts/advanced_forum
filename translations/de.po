@@ -3,45 +3,29 @@
 # German translation of Drupal (general)
 # Copyright YEAR NAME <EMAIL@ADDRESS>
 # Generated from files:
-#  advanced_forum.module,v 1.21.2.127 2009/02/11 18:04:48 michellec
-#  advf-forum-list.tpl.php,v 1.1.2.12 2008/10/22 23:01:17 michellec
-#  advf-forum-list.tpl.php,v 1.1.2.3 2008/10/22 23:01:17 michellec
-#  advf-forum-list.tpl.php,v 1.1.2.1 2008/11/27 03:58:49 michellec
+#  advanced_forum.module,v 1.21.2.133 2009/03/31 21:27:52 michellec
 #  advf-forum-list.tpl.php,v 1.1.2.21 2009/01/27 23:31:11 michellec
-#  advf-forum-list.tpl.php,v 1.1.2.7 2008/10/22 23:01:18 michellec
 #  advanced_forum-forum-legend.tpl.php,v 1.1.2.3 2009/02/04 04:59:37 michellec
 #  advanced_forum-topic-legend.tpl.php,v 1.1.2.3 2009/02/04 04:59:37 michellec
 #  advf-forum-topic-list.tpl.php,v 1.1.2.10 2009/01/27 23:31:11 michellec
 #  advanced_forum.info,v 1.4.2.6 2008/12/21 22:41:41 michellec
-#  modules/contact.author-pane.inc: n/a
-#  modules/contact.forum.inc: n/a
-#  modules/privatemsg.forum.inc: n/a
-#  advf-author-pane.tpl.php,v 1.1.2.4 2008/10/20 21:34:23 michellec
-#  advf-author-pane.tpl.php,v 1.1.2.7 2009/02/04 04:06:09 michellec
-#  advf-author-pane.tpl.php,v 1.1.2.1 2008/11/27 03:58:49 michellec
-#  advf-author-pane.tpl.php,v 1.1.2.6 2009/02/04 04:06:09 michellec
-#  advf-author-pane.tpl.php,v 1.1.2.7 2009/01/27 04:54:53 michellec
-#  advf-author-pane.tpl.php,v 1.1.2.9 2009/02/04 04:06:09 michellec
-#  advf-forum-statistics.tpl.php,v 1.1.2.3 2009/02/04 17:22:18 michellec
-#  advf-forum-submitted.tpl.php,v 1.1.2.3 2008/10/01 03:34:23 michellec
-#  advf-forum-submitted.tpl.php,v 1.1.2.2 2008/10/21 21:12:07 michellec
-#  advf-forum-submitted.tpl.php,v 1.1.2.1 2008/11/27 03:58:49 michellec
-#  advf-forum-submitted.tpl.php,v 1.1.2.6 2009/01/27 23:31:11 michellec
-#  advf-forum-topic-list.tpl.php,v 1.1.2.4 2008/10/01 22:41:17 michellec
-#  advf-forum-topic-list.tpl.php,v 1.1.2.2 2008/10/21 21:12:07 michellec
-#  advf-forum-topic-list.tpl.php,v 1.1.2.1 2008/11/27 03:58:49 michellec
-#  advf-forum-topic-list.tpl.php,v 1.1.2.4 2008/10/01 22:41:18 michellec
+#  advf-author-pane.tpl.php,v 1.1.2.11 2009/03/30 15:33:49 michellec
+#  advf-author-pane.tpl.php,v 1.1.2.10 2009/03/30 15:33:50 michellec
+#  advf-author-pane.tpl.php,v 1.1.2.11 2009/03/30 15:33:50 michellec
+#  advf-author-pane.tpl.php,v 1.1.2.13 2009/03/30 15:33:50 michellec
 #  advf-forum-post.tpl.php,v 1.1.2.21 2009/02/07 04:40:48 michellec
+#  advf-forum-statistics.tpl.php,v 1.1.2.3 2009/02/04 17:22:18 michellec
+#  advf-forum-submitted.tpl.php,v 1.1.2.6 2009/01/27 23:31:11 michellec
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Drupal Advanced Forum V6.x-1.0-rc1\n"
-"POT-Creation-Date: 2009-02-21 14:20-0500\n"
-"PO-Revision-Date: 2009-02-22 17:52+0100\n"
+"Project-Id-Version: Drupal Advanced Forum V6.x-1.0\n"
+"POT-Creation-Date: 2009-04-03 09:13+0200\n"
+"PO-Revision-Date: 2009-04-03 09:14+0100\n"
 "Last-Translator: Frank Tartler <frank.tartler@googlemail.com>\n"
-"Language-Team: Frank Tartler <frank.tartler@googlemail.com>\n"
+"Language-Team: Frank Tartlerr <frank.tartler@googlemail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Poedit-Language: German\n"
@@ -121,12 +105,12 @@ msgid "Used on main forum page. Enter 0 to use the full title."
 msgstr "Wird auf der Haupt-Forumsseite verwendet. 0 eingeben, um den vollständigen Titel zu verwenden."
 
 #: advanced_forum.module:261
-msgid "Number of hours before switching to \"time ago\" in displays"
-msgstr "Anzahl Stunden, bevor in Anzeigen auf „vor“ umgestellt wird."
+msgid "Number of hours before switching to date posted in displays"
+msgstr "Anzahl Stunden, bevor in Anzeigen auf das Speicherdatum umgestellt wird."
 
 #: advanced_forum.module:263
-msgid "Will show actual date posted until this cutoff and then switch to time ago."
-msgstr "Zeigt bis zu dieser Grenze das tatsächliche Speicherdatum an und danach auf die Vor-Zeitangabe."
+msgid "Will show \"time ago\" until this cutoff and then switch to actual date posted ."
+msgstr "Zeigt bis zu dieser Grenze „vor“ an und ansonsten das tatsächliche Speicherdatum."
 
 #: advanced_forum.module:270
 #: styles/naked/advf-forum-list.tpl.php:41
@@ -334,57 +318,57 @@ msgstr "Der gesamte Inhalt in diesem Forum wurde als gelesen markiert"
 msgid "All forum content been marked as read"
 msgstr "Der gesamte Forumsinhalt wurde als gelesen markiert."
 
-#: advanced_forum.module:1259
+#: advanced_forum.module:1275
 msgid "@user's picture"
 msgstr "@user's Bild"
 
-#: advanced_forum.module:1273
+#: advanced_forum.module:1289
 msgid "View user profile."
 msgstr "Benutzerprofil anzeigen."
 
-#: advanced_forum.module:1289;1294
+#: advanced_forum.module:1305;1310
 msgid "reply.png"
 msgstr ""
 
-#: advanced_forum.module:1289;1294
+#: advanced_forum.module:1305;1310
 msgid "reply"
 msgstr "antworten"
 
-#: advanced_forum.module:1299
+#: advanced_forum.module:1315
 msgid "edit.png"
 msgstr ""
 
-#: advanced_forum.module:1299
+#: advanced_forum.module:1315
 msgid "edit"
 msgstr "bearbeiten"
 
-#: advanced_forum.module:1304
+#: advanced_forum.module:1320
 msgid "delete.png"
 msgstr ""
 
-#: advanced_forum.module:1304
+#: advanced_forum.module:1320
 msgid "delete"
 msgstr "löschen"
 
-#: advanced_forum.module:1504
+#: advanced_forum.module:1520
 #: styles/naked/advf-forum-list.tpl.php:43
 msgid "Last post"
 msgstr "Letzter Beitrag"
 
-#: advanced_forum.module:1575
+#: advanced_forum.module:1591
 #: styles/naked/advf-forum-topic-list.tpl.php:64
 msgid "new"
 msgstr "neu"
 
-#: advanced_forum.module:1599
+#: advanced_forum.module:1615
 msgid "1"
 msgstr ""
 
-#: advanced_forum.module:1632
+#: advanced_forum.module:1648
 msgid "Last Page"
 msgstr "Letzte Seite"
 
-#: advanced_forum.module:1637
+#: advanced_forum.module:1653
 msgid "Page"
 msgstr "Seite"
 
@@ -425,46 +409,39 @@ msgstr ""
 msgid "Enables the look and feel of other popular forum software."
 msgstr "Aktiviert das Erscheinungsbild anderer populärer Forum-Software."
 
-#: styles/blue_lagoon_stacked/advf-author-pane.tpl.php:78
-#: styles/boxy_stacked/advf-author-pane.tpl.php:77
-#: styles/naked/advf-author-pane.tpl.php:75
-#: styles/naked_stacked/advf-author-pane.tpl.php:78
-msgid "Title"
-msgstr "Titel"
-
-#: styles/blue_lagoon_stacked/advf-author-pane.tpl.php:95
-#: styles/boxy_stacked/advf-author-pane.tpl.php:94
-#: styles/naked/advf-author-pane.tpl.php:119
-#: styles/naked_stacked/advf-author-pane.tpl.php:95
+#: styles/blue_lagoon_stacked/advf-author-pane.tpl.php:49
+#: styles/boxy_stacked/advf-author-pane.tpl.php:49
+#: styles/naked/advf-author-pane.tpl.php:72
+#: styles/naked_stacked/advf-author-pane.tpl.php:49
 msgid "IP"
 msgstr ""
 
-#: styles/blue_lagoon_stacked/advf-author-pane.tpl.php:109
-#: styles/boxy_stacked/advf-author-pane.tpl.php:108
-#: styles/naked/advf-author-pane.tpl.php:92
-#: styles/naked_stacked/advf-author-pane.tpl.php:109
+#: styles/blue_lagoon_stacked/advf-author-pane.tpl.php:65
+#: styles/boxy_stacked/advf-author-pane.tpl.php:65
+#: styles/naked/advf-author-pane.tpl.php:46
+#: styles/naked_stacked/advf-author-pane.tpl.php:65
 msgid "Joined"
 msgstr "Beigetreten"
 
-#: styles/blue_lagoon_stacked/advf-author-pane.tpl.php:115
-#: styles/boxy_stacked/advf-author-pane.tpl.php:114
-#: styles/naked/advf-author-pane.tpl.php:98
+#: styles/blue_lagoon_stacked/advf-author-pane.tpl.php:71
+#: styles/boxy_stacked/advf-author-pane.tpl.php:71
+#: styles/naked/advf-author-pane.tpl.php:52
 #: styles/naked/advf-forum-list.tpl.php:42
-#: styles/naked_stacked/advf-author-pane.tpl.php:115
+#: styles/naked_stacked/advf-author-pane.tpl.php:71
 msgid "Posts"
 msgstr "Beiträge"
 
-#: styles/blue_lagoon_stacked/advf-author-pane.tpl.php:121
-#: styles/boxy_stacked/advf-author-pane.tpl.php:120
-#: styles/naked/advf-author-pane.tpl.php:104
-#: styles/naked_stacked/advf-author-pane.tpl.php:121
+#: styles/blue_lagoon_stacked/advf-author-pane.tpl.php:77
+#: styles/boxy_stacked/advf-author-pane.tpl.php:77
+#: styles/naked/advf-author-pane.tpl.php:58
+#: styles/naked_stacked/advf-author-pane.tpl.php:77
 msgid "!Points"
 msgstr "!Points"
 
-#: styles/blue_lagoon_stacked/advf-author-pane.tpl.php:147
-#: styles/boxy_stacked/advf-author-pane.tpl.php:126
-#: styles/naked/advf-author-pane.tpl.php:110
-#: styles/naked_stacked/advf-author-pane.tpl.php:147
+#: styles/blue_lagoon_stacked/advf-author-pane.tpl.php:106
+#: styles/boxy_stacked/advf-author-pane.tpl.php:106
+#: styles/naked/advf-author-pane.tpl.php:64
+#: styles/naked_stacked/advf-author-pane.tpl.php:106
 msgid "Groups"
 msgstr "Gruppen"
 
@@ -523,11 +500,4 @@ msgstr "Oben in Listen"
 #: styles/naked/advf-forum-topic-list.tpl.php:61
 msgid "updated"
 msgstr "aktualisiert"
-
-#~ msgid "Contact user"
-#~ msgstr "Benutzer kontaktieren"
-#~ msgid "Send private message"
-#~ msgstr "Private Nachricht senden"
-#~ msgid "Send PM"
-#~ msgstr "Private Nachricht senden"
 
