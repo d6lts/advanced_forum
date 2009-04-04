@@ -2,7 +2,11 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
-March 31, 2009
+April 4, 2009
+-------------
+#422652 by NeoID: Closed tag on break in advanced_forum-forum-legend.tpl.php
+
+March 31, 2009 -- 6.x-1.0
 --------------
 #419782 by Michelle: Fixed wording on time ago/actual date option as it was backwards.
 
@@ -21,7 +25,7 @@ March 4, 2009
 #384180 by Michelle: Switched file format to UTF-8 [This failed to update in CVS]
 #373371 by Michelle: Synched up Author Pane template and updated CSS for Author Pane.
 
-March 3, 2009 - RC 3
+March 3, 2009 -- RC 3
 -------------
 #375187 by nbz: Fixed switched variable name that caused fallback to Garland rather than the default theme.
 #388504 by pebosi: Updated German translation.
