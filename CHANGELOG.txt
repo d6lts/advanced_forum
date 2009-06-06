@@ -2,6 +2,11 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+June 6, 2009
+------------
+#460734 by moviemaniac: added Italian translation.
+#460734 by MGParisi: Minor fix to .pot as well as removing an extra space in a translated string.
+
 April 4, 2009
 -------------
 #422652 by NeoID: Closed tag on break in advanced_forum-forum-legend.tpl.php
