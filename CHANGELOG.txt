@@ -6,6 +6,7 @@ June 6, 2009
 ------------
 #460734 by moviemaniac: added Italian translation.
 #460734 by MGParisi: Minor fix to .pot as well as removing an extra space in a translated string.
+#471510 by wulff: Added Danish translation.
 
 April 4, 2009
 -------------
