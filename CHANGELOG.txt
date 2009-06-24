@@ -2,6 +2,11 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+June 24, 2009
+------------
+#485700 by tjodolv: Changed clear on br to clear-block in legend.
+#490972 by Jessica123: Added buttons for French.
+
 June 23, 2009
 ------------
 NOISSUE by Michelle: Fixed all notices except two that need to be fixed in Author Pane.
