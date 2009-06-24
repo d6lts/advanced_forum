@@ -133,7 +133,7 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
   $naked_path = drupal_get_path('module', 'advanced_forum') . '/styles/naked';
   foreach ($templates as $template) {
     // Sanity check in case the template is not being used.
-    if (is_array($theme_registry[$template])) {
+    if (!empty($theme_registry[$template])) {
 
       // If there was a path in there, store it.
       $existing_path = array_shift($theme_registry[$template]['theme paths']);
@@ -309,7 +309,7 @@ function advanced_forum_settings_page() {
 function advanced_forum_preprocess_author_pane(&$variables) {
   // Author pane is used in various places. The only way to be sure to only
   // hit it when we are using it is to check the template suggestion.
-  if ($variables['template_suggestion'] == 'advf-author-pane') {
+  if (!empty($variables['template_suggestion']) && $variables['template_suggestion'] == 'advanced_forum-author-pane') {
     // Attempt to override the user picture fetched by Author Pane from core.
     $sized_picture = theme('advanced_forum_user_picture', $variables['account']);
     if (!empty($sized_picture)) {
@@ -357,12 +357,13 @@ function theme_advanced_forum_reply_link($node) {
       }
       else {
         // Comment form is already on the page
+        $current_page = isset($_GET['page']) ? $_GET['page'] : 0;
         $links['topic_reply'] = array(
           'title' => t('Post Reply'),
           'href' => $_GET['q'],
           'attributes' => array('title' => t('Share your thoughts and opinions related to this posting.')),
           'fragment' => 'comment-form',
-          'query' => ($_GET['page']) ? "page=" . $_GET['page'] : NULL,
+          'query' => ($current_page) ? "page=$current_page" : NULL,
           );       
       }
       
@@ -402,6 +403,14 @@ function advanced_forum_preprocess_node(&$variables) {
   if (!advanced_forum_treat_as_forum_post('node', $variables)) {
     // We only deal with forum posts.
     return;
+  }
+  
+  // Avoid notices if the theme doesn't set these.
+  if (empty($variables['classes'])) {
+    $variables['classes'] = '';
+  }
+  if (empty($variables['node_classes'])) {
+    $variables['node_classes'] = '';
   }
 
   // Determine the template file to use for the node.
@@ -469,6 +478,14 @@ function advanced_forum_preprocess_comment(&$variables) {
       $variables['template_files'][] = 'advf-forum-post';
     }
 
+    // Avoid notices if the theme doesn't set these.
+    if (empty($variables['classes'])) {
+      $variables['classes'] = '';
+    }
+    if (empty($variables['comment_classes'])) {
+      $variables['comment_classes'] = '';
+    }
+
     // This is a comment, not the node.
     $variables['top_post'] = FALSE;
 
@@ -528,8 +545,8 @@ function advanced_forum_preprocess_comment(&$variables) {
     _advanced_forum_topic_nid($variables['node']->nid);
 
     $post_per_page = _comment_get_display_setting('comments_per_page', $variables['node']);
-    $page_number = $_GET['page'];
-    if (!$page_number) {
+    $current_page = isset($_GET['page']) ? $_GET['page'] : 0;
+    if (!isset($page_number)) {
       $page_number = 0;
     }
 
@@ -552,7 +569,7 @@ function advanced_forum_preprocess_comment(&$variables) {
       $variables['signature'] = signature_forum_get_signature($variables['comment']);
     }
     elseif (variable_get('user_signatures', 0)) {
-      if ($variables['account']->signature) {
+      if (!empty($variables['account']->signature)) {
         // Otherwise load Drupal's built in one, if enabled.
         $variables['signature'] = check_markup($variables['account']->signature, $variables['comment']->format);
       }
@@ -1579,7 +1596,7 @@ function advanced_forum_first_new_comment($nid, $timestamp = 0) {
  */
 function advanced_forum_first_new_post_link($node, $comment_count) {
   $nid = $node->nid;
-  $current_page = $_GET['page'];
+  $current_page = isset($_GET['page']) ? $_GET['page'] : 0;
   $number_new_comments = comment_num_new($nid);
 
   if ($number_new_comments > 0) {
