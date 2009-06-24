@@ -7,7 +7,7 @@
  *
  */
 ?>
-<div class="forum-folder-legend forum-smalltext">
+<div class="forum-folder-legend forum-smalltext clear-block">
   <dl>
     <dt><?php print $folder_new_posts; ?></dt>
     <dd><?php print t('Forum Contains New Posts'); ?></dd>
@@ -17,4 +17,3 @@
     <dd><?php print t('Forum is Locked'); ?></dd>
   </dl>
 </div>
-<br style="clear: both;" />
