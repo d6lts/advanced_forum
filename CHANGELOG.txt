@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 5 BRANCH ********************************
 
+July 1, 2009
+------------
+SECURITY: Fixes for SA-CONTRIB-2009-040
+
 April 4, 2009
 -------------
 #422652 by NeoID: Closed tag on break in advanced_forum-forum-legend.tpl.php
