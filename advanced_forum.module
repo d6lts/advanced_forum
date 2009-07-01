@@ -450,8 +450,10 @@ function advanced_forum_preprocess_node(&$variables) {
     $variables['signature'] = signature_forum_get_signature($variables['node']);
   }
   elseif (variable_get('user_signatures', 0)) {
-    // Otherwise load Drupal's built in one, if enabled.
-    $variables['signature'] = check_markup($variables['account']->signature, $variables['node']->format);
+    if ($variables['account']->signature) {
+      // Otherwise load Drupal's built in one, if enabled.
+      $variables['signature'] = check_markup($variables['account']->signature, $variables['account']->signature_format);
+    }
   }
 }
 
@@ -554,7 +556,7 @@ function advanced_forum_preprocess_comment(&$variables) {
     elseif (variable_get('user_signatures', 0)) {
       if ($variables['account']->signature) {
         // Otherwise load Drupal's built in one, if enabled.
-        $variables['signature'] = check_markup($variables['account']->signature, $variables['comment']->format);
+        $variables['signature'] = check_markup($variables['account']->signature, $variables['account']->signature_format);
       }
     }
   }
@@ -934,6 +936,11 @@ function advanced_forum_preprocess_forum_icon(&$variables) {
  * This is copied from the forum module and adapted.
  */
 function advanced_forum_page($tid = 0) {
+  if (!is_numeric($tid)) {
+    return MENU_NOT_FOUND;
+  }
+  $tid = (int)$tid;
+
   _advanced_forum_add_files();
 
   $topics = '';
