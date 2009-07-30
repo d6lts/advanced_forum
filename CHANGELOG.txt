@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+July 29, 2009
+------------
+#470202 by tom_o_t, merlinofchaos: Fixed small error with mark as read.
+
 June 24, 2009
 ------------
 #485700 by tjodolv: Changed clear on br to clear-block in legend.
