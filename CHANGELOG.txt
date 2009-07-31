@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+July 31, 2009
+-------------
+#524592 by Dave Reid: Added email to fake user object sent to Author Pane on comments for anon users.
+
 July 29, 2009
 ------------
 #470202 by tom_o_t, merlinofchaos: Fixed small error with mark as read.
