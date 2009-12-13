@@ -663,7 +663,7 @@ function advanced_forum_preprocess_advanced_forum_forum_legend(&$variables) {
   $variables['template_files'][] = 'advanced_forum-forum-legend';
   
   $variables['folder_new_posts'] = advanced_forum_theme_image(t('forum-folder-new-posts.png'), t('Forum Contains New Posts'));
-  $variables['folder_default'] = advanced_forum_theme_image(t('/forum-folder.png'), t('Forum Contains No New Posts'));
+  $variables['folder_default'] = advanced_forum_theme_image(t('forum-folder.png'), t('Forum Contains No New Posts'));
   $variables['folder_locked'] = advanced_forum_theme_image(t('forum-folder-locked.png'), t('Forum is Locked'));
 }
 
