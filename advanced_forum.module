@@ -90,7 +90,7 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
   // Kill the next/previous forum topic navigation links.
   if (!variable_get('advanced_forum_use_topic_navigation', FALSE)) {
     foreach ($theme_registry['forum_topic_navigation']['preprocess functions'] as $key => $value) {
-      if ($value = 'template_preprocess_forum_topic_navigation') {
+      if ($value == 'template_preprocess_forum_topic_navigation') {
         unset($theme_registry['forum_topic_navigation']['preprocess functions'][$key]);
       }
     }

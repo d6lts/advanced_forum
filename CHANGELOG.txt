@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+January 14, 2010
+----------------
+#683688 by apolzon: Fixed typo assignment in place of equality check.
+
 December 13, 2009
 -----------------
 #658788 by ssm2017 Binder: Removed typo.
