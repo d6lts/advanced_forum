@@ -18,6 +18,10 @@ July 29, 2009
 ------------
 #470202 by tom_o_t, merlinofchaos: Fixed small error with mark as read.
 
+July 1, 2009 -- 6.x-1.1
+------------
+Fixes for SA-CONTRIB-2009-040
+
 June 24, 2009
 ------------
 #485700 by tjodolv: Changed clear on br to clear-block in legend.
