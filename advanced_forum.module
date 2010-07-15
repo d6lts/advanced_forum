@@ -1413,6 +1413,9 @@ function advanced_forum_treat_as_forum_post($hook, $variables) {
           $variables['node'] = node_load($nid);
           $decision = advanced_forum_treat_as_forum_post('node', $variables);
         }
+        if (arg(0) == 'comment' && arg(1) == 'edit') {
+          $decision = advanced_forum_treat_as_forum_post('node', $variables);
+        }
       }
     }
   }

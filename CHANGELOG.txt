@@ -8,6 +8,7 @@ July 14, 2010
 #725720 by ltwinner: Added 'reply button' code to node preprocess.
 #323731 by anrikun: Improved French translation.
 #767638 by miro_dietiker: Added missing t() in post template.
+#728984 by miro_dietiker: Style comment preview.
 
 January 14, 2010
 ----------------
