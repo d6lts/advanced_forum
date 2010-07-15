@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+July 14, 2010
+-------------
+#714332 by Ddorda: Added Hebrew translation.
+
 January 14, 2010
 ----------------
 #683688 by apolzon: Fixed typo assignment in place of equality check.
