@@ -5,6 +5,7 @@ $Id$
 July 14, 2010
 -------------
 #714332 by Ddorda: Added Hebrew translation.
+#725720 by ltwinner: Added 'reply button' code to node preprocess.
 
 January 14, 2010
 ----------------

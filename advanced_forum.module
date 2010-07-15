@@ -424,7 +424,11 @@ function advanced_forum_preprocess_node(&$variables) {
   
   // Build the topic header
   $variables['topic_header'] = theme('advanced_forum_topic_header', $variables['node'], $variables['comment_count']);
-    
+  
+  // Build the reply link / button here even though it's in the header in case
+  // the site admin wants to move it in the template.
+  $variables['reply_link'] = theme('advanced_forum_reply_link', $variables['node']);
+     
   /* Node links changes */
   // Change first post from "add comment" to "Reply"
   if (!empty($variables['node']->links) && !empty($variables['node']->links['comment_add'])) {
