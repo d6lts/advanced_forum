@@ -39,47 +39,47 @@ msgstr ""
 
 #: advanced_forum.module:155
 msgid "Advanced forum style"
-msgstr "Style du Forum"
+msgstr "Style du forum"
 
 #: advanced_forum.module:157
 msgid "Choose which style to use for your forums. This will apply independent of site theme."
-msgstr "Choisissez quel style vous voulez utiliser pour votre Forum. Le style choisi est indépendant du theme du site"
+msgstr "Choisissez le style à utiliser pour vos forums. Le style choisi est indépendant du thème du site."
 
 #: advanced_forum.module:164
 msgid "Use graphical buttons for links"
-msgstr "Utiliser les boutons icone pour les liens"
+msgstr "Utiliser les boutons images pour les liens"
 
 #: advanced_forum.module:166
 msgid "Included buttons are in English. Uncheck this to use translatable links instead."
-msgstr "Les boutons icone fournis sont en Anglais. Ne les utilisez pas si vous voulez utiliser des liens traductibles."
+msgstr "Les boutons fournis sont en anglais. Décochez cette case si vous préférez utiliser des liens traductibles."
 
 #: advanced_forum.module:172
 msgid "Image directory"
-msgstr "Répertoire des Images"
+msgstr "Répertoire des images"
 
 #: advanced_forum.module:174
 msgid "Images are assumed to be in the \"images\" subdirectory of your style. If you need images to be somewhere else, put the full path here."
-msgstr "Par défaut les images sont stockées dans le répertoire /images de votre systeme. Si vous voulez personnalisé le chemin du répertoire images, indiquez le chemin ici."
+msgstr "Les images sont censées se trouver dans le sous-répertoire \"/images\" de votre style. Si vous avez besoin que les images soient ailleurs, indiquez ici le chemin complet."
 
 #: advanced_forum.module:181
-msgid "Treat all site comments like forum comments"
-msgstr "Traitez tous les commentaires de site comme des commentaires de forum."
+msgid "Treat all site comments like forum posts"
+msgstr "Traiter tous les commentaires du site comme des messages de forum."
 
 #: advanced_forum.module:183
 msgid "Choosing yes causes advanced forum to consider every comment a forum comment and attempt to theme it that way. Some changes to your theme may be required."
-msgstr "Si vous choisissez OUI, tous les commentaires seront considérés comme venant du forum et le style sera adapté. Requier quelques fois la modification de votre thème."
+msgstr "En cochant cette case, Advanced Forum considérera tous les commentaires comme des messages de forum et tentera d'adapter leur style comme tel. Peut nécessiter des modifications dans votre thème."
 
 #: advanced_forum.module:199
-msgid "Hide the created column on the topic list."
-msgstr "Cachez la colonne créée dans la liste de sujet."
+msgid "Hide the created column on the topic list"
+msgstr "Cacher la colonne « Créé » dans la liste des sujets"
 
 #: advanced_forum.module:201
 msgid "This allows you to hide the created column on the topic list. Useful if you want to move the created by information to underneath the topic title."
-msgstr "Cela vous permet de cacher la colonne créée dans la liste de sujet. Utile si vous voulez déplacer le créé par des informations au dessous le titre de sujet."
+msgstr "Cela vous permet de cacher la colonne « Créé » dans la liste des sujets. Utile si vous voulez déplacer l'information « Créé par » en dessous du titre du sujet."
 
 #: advanced_forum.module:207
 msgid "Maximum number of pages to show on per title pager"
-msgstr "Le nombre maximum de pages affichées sous forme de titre dans la page navigation du site."
+msgstr "Le nombre maximum de pages à afficher sous forme de titres dans la page navigation du site."
 
 #: advanced_forum.module:209
 msgid "Used on the pager under topic titles in topic list. e.g. entering 5 will get you 1,2,3,4 ... 10"
@@ -91,15 +91,15 @@ msgstr "Indiquer le nombre de nouveaux commentaires par forum sur la liste des f
 
 #: advanced_forum.module:218
 msgid "Core forum shows the number of new topics. If checked, Advanced Forum will get the number of new comments as well and show it under \"posts\" on the forum overview. Slow query not recommended on large forums."
-msgstr "Le noyau du module forum indique le nombre de nouveaux sujets. Si activé, Advanced Forum indique le nombre de nouveaux commentaires aussi et l'affiche sous \"posts\" sur la vue d'ensemble du forum. Gourmant en ressources, non recommandé sur les gros forums."
+msgstr "Le module noyau de forum indique le nombre de nouveaux sujets. Si coché, Advanced Forum récupérera aussi le nombre de nouveaux commentaires et l'affichera sous « messages » dans la vue d'ensemble du forum. Non recommandé sur les gros forums car gourmand en ressources."
 
 #: advanced_forum.module:224
 msgid "Use topic navigation"
-msgstr "Utiliser la navigation entre les sujets."
+msgstr "Utiliser la navigation entre les sujets"
 
 #: advanced_forum.module:226
 msgid "Core forum gets the next and previous topics and shows links to them under the top post. This is turned off by default as the query has performance issues and the placement of the links is poor."
-msgstr "Le noyau du module forum récupère le message précédent et suivant et les affiches sous forme de lien en dessous du premier post en haut. Cette fonction est désactivée par défaut car peu poser des problèmes."
+msgstr "Le module noyau de forum récupère les messages précédents et suivants et les affiche sous forme de liens en dessous du message de tête. Cette fonction est désactivée par défaut car elle peut poser des problèmes."
 
 #: advanced_forum.module:316
 msgid "No replies"
@@ -111,7 +111,7 @@ msgstr "Répondre"
 
 #: advanced_forum.module:352;521
 msgid "Post Reply"
-msgstr "Réponse au Message"
+msgstr "Poster la réponse"
 
 #: advanced_forum.module:491
 msgid "(permalink)"
@@ -127,19 +127,19 @@ msgstr "En ligne"
 
 #: advanced_forum.module:567;568
 msgid "User offline. Last seen @time ago."
-msgstr "L'utilisateur est Offline. Vue la dernière fois à @time."
+msgstr "L'utilisateur est hors-ligne. Vu la dernière fois il y a @time."
 
 #: advanced_forum.module:571
 msgid "Offline"
-msgstr "offline"
+msgstr "Hors-ligne"
 
 #: advanced_forum.module:618
 msgid "Mark all topics read"
-msgstr "Marqué tous les sujets comme lus"
+msgstr "Marquer tous les sujets comme lus"
 
 #: advanced_forum.module:622
 msgid "Mark all forums read"
-msgstr "Marqué tous les forums comme lus"
+msgstr "Marquer tous les forums comme lus"
 
 #: advanced_forum.module:788
 msgid "Topic"
@@ -147,7 +147,7 @@ msgstr "Sujet"
 
 #: advanced_forum.module:789
 msgid "Replies"
-msgstr "Réponse"
+msgstr "Réponses"
 
 #: advanced_forum.module:793
 msgid "Views"
@@ -155,11 +155,11 @@ msgstr "Voir"
 
 #: advanced_forum.module:798
 msgid "Created"
-msgstr "Créer"
+msgstr "Créé"
 
 #: advanced_forum.module:801
 msgid "Last reply"
-msgstr "Dernière Réponse"
+msgstr "Dernière réponse"
 
 #: advanced_forum.module:832
 msgid "This topic has been moved to "
@@ -171,7 +171,7 @@ msgstr "Tout le contenu de ce forum a été marqué comme lu"
 
 #: advanced_forum.module:1043
 msgid "All forum content been marked as read"
-msgstr "Tous les forums ont été marqué comme lu."
+msgstr "Tous les forums ont été marqués comme lus."
 
 #: advanced_forum.module:1294
 msgid "new"
@@ -188,8 +188,8 @@ msgstr "Page"
 #: advanced_forum.module:313
 msgid "1 reply"
 msgid_plural "@count réponses"
-msgstr[0] "1 Réponse"
-msgstr[1] "@count Réponses"
+msgstr[0] "1 réponse"
+msgstr[1] "@count réponses"
 
 #: advanced_forum.module:698
 msgid "1 nouveau"
@@ -296,7 +296,7 @@ msgstr "Résumé d'activité"
 #: styles/naked/advf-forum-list.tpl.php:110
 #: styles/naked_stacked/advf-forum-list.tpl.php:110
 msgid "Currently active users: !current_total (!current_users users and !current_guests guests)"
-msgstr "Nombre d'utilisateurs actifs: !current_total (!current_users Utilisateurs et !current_guests Invités)"
+msgstr "Nombre d'utilisateurs actifs : !current_total (!current_users utilisateurs et !current_guests invités)"
 
 #: styles/blue_lagoon/advf-forum-list.tpl.php:118
 #: styles/blue_lagoon_stacked/advf-forum-list.tpl.php:118
@@ -310,7 +310,7 @@ msgstr "Statistiques"
 #: styles/naked/advf-forum-list.tpl.php:122
 #: styles/naked_stacked/advf-forum-list.tpl.php:122
 msgid "Topics: !topics, Posts: !posts, Users: !users"
-msgstr "Sujets: !topics, Messages: !posts, Utilisateurs: !users"
+msgstr "Sujets : !topics, Messages : !posts, Utilisateurs : !users"
 
 #: styles/blue_lagoon/advf-forum-list.tpl.php:123
 #: styles/blue_lagoon_stacked/advf-forum-list.tpl.php:123
@@ -331,7 +331,7 @@ msgstr "!title<br />par !author<br />@date_posted"
 #: styles/naked/advf-forum-submitted.tpl.php:33
 #: styles/naked_stacked/advf-forum-submitted.tpl.php:33
 msgid "!title<br />by !author<br />@time ago"
-msgstr "!title<br />de !author<br />il y a @time"
+msgstr "!title<br />par !author<br />il y a @time"
 
 #: styles/blue_lagoon/advf-forum-submitted.tpl.php:42
 #: styles/blue_lagoon_stacked/advf-forum-submitted.tpl.php:42
@@ -345,7 +345,7 @@ msgstr "par !author<br />@date_posted"
 #: styles/naked/advf-forum-submitted.tpl.php:48
 #: styles/naked_stacked/advf-forum-submitted.tpl.php:48
 msgid "by !author<br />@time ago"
-msgstr "de !author<br />il y a @time"
+msgstr "par !author<br />il y a @time"
 
 #: styles/blue_lagoon/advf-forum-submitted.tpl.php:56
 #: styles/blue_lagoon_stacked/advf-forum-submitted.tpl.php:56
