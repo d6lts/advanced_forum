@@ -1372,6 +1372,12 @@ function advanced_forum_treat_as_forum_post($hook, $variables) {
       unset($forum_node_id);
       $decision = FALSE;
     }
+    elseif(arg(1) == 'add' && arg(2) == 'forum'){
+      // Previewing a new forum post. Checking just for 'forum' is not ideal
+      // but covers most use cases and will do for now.
+      unset($forum_node_id);
+      $decision = TRUE;
+    }    
     else {
       // Get a list of the terms attached to this node
       $terms = taxonomy_node_get_terms_by_vocabulary($variables['node'], $vid);
@@ -1411,9 +1417,6 @@ function advanced_forum_treat_as_forum_post($hook, $variables) {
         if (arg(0) == 'comment' && arg(1) == 'reply') {
           $nid = arg(2);
           $variables['node'] = node_load($nid);
-          $decision = advanced_forum_treat_as_forum_post('node', $variables);
-        }
-        if (arg(0) == 'comment' && arg(1) == 'edit') {
           $decision = advanced_forum_treat_as_forum_post('node', $variables);
         }
       }

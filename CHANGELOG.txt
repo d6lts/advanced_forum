@@ -9,6 +9,7 @@ July 14, 2010
 #323731 by anrikun: Improved French translation.
 #767638 by miro_dietiker: Added missing t() in post template.
 #728984 by miro_dietiker: Style comment preview.
+#848180 by fuse_64, Michelle: Style new forum node preview.
 
 January 14, 2010
 ----------------
