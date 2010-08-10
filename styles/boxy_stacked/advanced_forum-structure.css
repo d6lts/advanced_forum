@@ -250,6 +250,49 @@ ul.forum-links {
   padding-left: 0pt;
 }
 
+/* Author information pane - 2.x */
+.forum-post-panel-sub {
+  float: none; /* Reset */
+  line-height: 110%;
+  width: auto; /* Reset */
+}
+
+.author-pane-2x {
+  margin: 0; /* Reset */
+  padding: 10px 0 5px 10px;
+}
+
+.author-pane-2x .author-pane-line {
+  padding-bottom:5px;
+}
+
+.author-pane-2x .author-pane-top {
+  overflow: auto;
+  height: 100px;
+}
+
+.author-pane-2x .picture {
+  float: left;
+  display: block;
+  margin: 2px 10px 2px 2px;
+  padding-left: 0px;
+}
+
+.author-pane-2x .author-pane-section-1,
+.author-pane-2x .author-pane-section-2,
+.author-pane-2x .author-pane-stats {
+  float: left;
+  display: block;
+  margin-right: 10px;
+}
+
+.author-pane-2x .author-pane-contact,
+.author-pane-2x .author-pane-admin {
+  float: right;
+  display: block;
+  margin-right: 5px;
+}
+
 /* Post text area */
 /* Note: Changes from Naked in this section */
 
@@ -285,3 +328,4 @@ ul.forum-links {
   padding: 0px 5px;  
   margin-left: 150px;
 }
+

@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+August 9, 2010
+-------------
+#821744 by Michelle: Initial work on Author Pane 2.x integration. Needs more testing.
+
 July 14, 2010
 -------------
 #714332 by Ddorda: Added Hebrew translation.

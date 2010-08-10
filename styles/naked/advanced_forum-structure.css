@@ -223,6 +223,23 @@ ul.forum-links {
   margin: 0 0 10px 0;
 }
 
+
+/* Author information pane */
+.forum-post-panel-sub .author-pane .picture {
+  float: none;
+  padding-left: 0px;
+  margin: 2px 0 10px 0;
+}
+
+.forum-post-panel-sub .author-pane .author-pane-section {
+  margin-bottom: 10px;
+}
+
+.forum-post-panel-sub .author-pane .author-pane-line {
+  padding-bottom: 5px;
+}
+
+
 /* Post text area */
 .forum-post-panel-main {
   margin-left: 150px; /*Set left margin to LeftColumnWidth*/
