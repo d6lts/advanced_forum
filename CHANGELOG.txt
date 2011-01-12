@@ -5,6 +5,7 @@ $Id$
 January 12, 2011
 ----------------
 NOISSUE by Michelle: Minor template changes to keep all three modules in synch.
+#654718 by Michelle: Check if Panels is enabled before trying to build the forum displays to avoid errors when Page Manager is used without Panels.
 
 January 1, 2011
 ---------------
