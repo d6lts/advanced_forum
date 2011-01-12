@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+January 12, 2011
+----------------
+NOISSUE by Michelle: Minor template changes to keep all three modules in synch.
+
 January 1, 2011
 ---------------
 #868942 by Michelle: Copied new image handling to other styles.
