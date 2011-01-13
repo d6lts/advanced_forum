@@ -42,10 +42,10 @@
       </tbody></table>
     <?php endif; ?>
 
-    <table id="container-<?php print $container_number; ?>" class="forum-table forum-table-forums">
+    <table id="container-<?php print $container_number; ?>" class="forum-table forum-table-forums ctools-collapsible-remember ctools-no-container ctools-collapsible-container">
       <thead class="forum-header">
         <tr>
-          <th class="forum-icon"></th>
+          <th class="forum-icon ctools-collapsible-handle"></th>
 
           <?php if ($use_taxonomy_image): ?>
           <th class="forum-image"></th>
@@ -58,7 +58,7 @@
         </tr>
       </thead>
 
-      <tbody>
+      <tbody id="container-<?php print $container_number; ?>-content" class="ctools-collapsible-content">
         <?php if ($forum->description): ?>
           <tr class="container-description">
             <td colspan="5">

@@ -110,6 +110,25 @@ td.forum-last-reply {
   width: 20%;
 }
 
+/* Collapsable containers */
+table.ctools-collapsible-container thead {
+  cursor: pointer;
+}
+
+.ctools-toggle + table.ctools-collapsible-container th.forum-name {
+  background-image: url('images/container_collapse.png');
+  background-repeat: no-repeat;
+  background-position: 3px center;
+  padding-left: 15px;
+}
+
+.ctools-toggle-collapsed + table.ctools-collapsible-container th.forum-name {
+  background-image: url('images/container_expand.png');
+  background-repeat: no-repeat;
+  background-position: 3px center;
+  padding-left: 15px;
+}
+
 /**** Topic listing ****/
 
 /* Set column widths */
@@ -405,7 +424,3 @@ td.forum-last-reply {
 .forum-search-result {
   margin-bottom: 10px;
 }
-
-
-
-

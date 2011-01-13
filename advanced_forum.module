@@ -440,7 +440,11 @@ function advanced_forum_link_alter(&$links, $node, $comment = NULL) {
     $object_type = 'comment';
   }
   
-  if (advanced_forum_is_styled($object, FALSE, $object_type)) {
+  // Check if we are altering links on a node that is displayed in a teaser.
+  // @TODO: Find out if there's a better way to tell if this is a teaser.
+  $teaser = !(arg(0) == 'node' && arg(1) > 0);
+  
+  if (advanced_forum_is_styled($object, $teaser, $object_type)) {
     // Change first post from "add comment" to "reply" if it isn't already.
     if (!empty($links['comment_add'])) {
       $links['comment_add']['title'] = t('reply');

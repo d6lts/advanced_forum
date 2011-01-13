@@ -8,6 +8,7 @@
  */
 
 function _advanced_forum_preprocess_forum_list(&$variables) {
+  ctools_add_js("collapse-div");
   advanced_forum_add_template_suggestions("forum-list", $variables['template_files']);
 
   // Determine if we want to use taxonomy image here so we don't need to keep
@@ -158,7 +159,7 @@ function _advanced_forum_preprocess_forum_list(&$variables) {
       $variables['forums'][$id]->forum_image = taxonomy_image_display($forum->tid);
     }
 
-    if ($variables['forums'][$id]->depth > 1) {
+    if (isset($variables['forums'][$id]->depth) > 1) {
       // This is a subforum. Add it to the list for the compact listing.
       $parent_id = $id;
       for ($count = $variables['forums'][$id]->depth; $count > 1; $count--) {

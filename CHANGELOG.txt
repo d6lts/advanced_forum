@@ -2,6 +2,11 @@ $Id$
 
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+January 13, 2011
+----------------
+#291084 by WorldFallz: Collapsed containers patch.
+#868942 by Michelle: Fixed link alter to respect style teaser setting.
+
 January 12, 2011
 ----------------
 NOISSUE by Michelle: Minor template changes to keep all three modules in synch.
