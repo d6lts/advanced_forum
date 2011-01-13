@@ -52,7 +52,8 @@ Colors used:
 .forum-pager .pager a:hover,
 #forum-comments .pager-current,
 #forum-comments .pager a:hover {
-  color: #333333; 
+  background: #333333;
+  color: #FFFFFF !important; 
 }
 
 .forum-pager .pager a.active,
@@ -91,6 +92,11 @@ Colors used:
   background: #EFEFEF;
   background: -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#EFEFEF));
   background: -moz-linear-gradient(top, #F5F5F5, #EFEFEF);
+}
+
+.forum-table tr.even td.active,
+.forum-table tr.odd td.active{
+  background-color: #FFFFFF;
 }
 
 .forum-table td {
