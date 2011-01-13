@@ -7,6 +7,9 @@ January 12, 2011
 NOISSUE by Michelle: Minor template changes to keep all three modules in synch.
 #654718 by Michelle: Check if Panels is enabled before trying to build the forum displays to avoid errors when Page Manager is used without Panels.
 #866562 by Michelle, vladgur: Don't show any create content links if Forum Access doesn't allow it.
+#1012238 by Michelle: Removed Boxy and Boxy stacked as they were too close to Silver Bells and not as nice.
+#1012238 by Michelle: Added stacked version of Silver Bells.
+#1012238 by Michelle: Updated Cloudless Day with new style changes.
 
 January 1, 2011
 ---------------
