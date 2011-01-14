@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+January 14, 2011
+----------------
+#291084 by WorldFallz: Corrected wrong js file name.
+
 January 13, 2011
 ----------------
 #291084 by WorldFallz: Collapsed containers patch.

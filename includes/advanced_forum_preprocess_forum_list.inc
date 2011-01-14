@@ -8,7 +8,7 @@
  */
 
 function _advanced_forum_preprocess_forum_list(&$variables) {
-  ctools_add_js("collapse-div");
+  ctools_add_js("collapsible-div");
   advanced_forum_add_template_suggestions("forum-list", $variables['template_files']);
 
   // Determine if we want to use taxonomy image here so we don't need to keep
