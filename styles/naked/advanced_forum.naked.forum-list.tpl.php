@@ -45,13 +45,20 @@
     <table id="container-<?php print $container_number; ?>" class="forum-table forum-table-forums ctools-collapsible-remember ctools-no-container ctools-collapsible-container">
       <thead class="forum-header">
         <tr>
-          <th class="forum-icon ctools-collapsible-handle"></th>
-
-          <?php if ($use_taxonomy_image): ?>
-          <th class="forum-image"></th>
+          <?php if ($forum->is_container): ?>
+            <?php if ($use_taxonomy_image): ?>
+              <th colspan="3" class="forum-name ctools-collapsible-handle"><a href="<?php print $forum->link; ?>"><?php print $forum->name; ?></a></th>
+            <?php else: ?>
+              <th colspan="2" class="forum-name ctools-collapsible-handle"><a href="<?php print $forum->link; ?>"><?php print $forum->name; ?></a></th>
+            <?php endif; ?>
+          <?php else: ?>
+            <th class="forum-icon"></th>
+            <?php if ($use_taxonomy_image): ?>
+              <th class="forum-image"></th>
+            <?php endif; ?>
+          <th class="forum-name"><a href="<?php print $forum->link; ?>"><?php print $forum->name; ?></a></th>
           <?php endif; ?>
 
-          <th class="forum-name"><a href="<?php print $forum->link; ?>"><?php print $forum->name; ?></a></th>
           <th class="forum-number-topics"><?php print t('Topics');?></th>
           <th class="forum-posts"><?php print t('Posts'); ?></th>
           <th class="forum-last-post"><?php print t('Last post'); ?></th>

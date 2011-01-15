@@ -96,17 +96,18 @@ td.forum-details .forum-subforums a {
   padding-left: 10px;
 }
 
-td.forum-number-topics {
-  width: 10%;
-  text-align: center;
-}
-
+td.forum-number-topics,
 td.forum-number-posts {
+  text-align: center;
+}
+
+th.forum-number-topics,
+th.forum-posts {
   width: 10%;
   text-align: center;
 }
 
-td.forum-last-reply {
+th.forum-last-post {
   width: 20%;
 }
 
@@ -115,14 +116,14 @@ table.ctools-collapsible-container thead {
   cursor: pointer;
 }
 
-.ctools-toggle + table.ctools-collapsible-container th.forum-name {
+.ctools-toggle + table.ctools-collapsible-container th.forum-name a{
   background-image: url('images/container_collapse.png');
   background-repeat: no-repeat;
   background-position: 3px center;
   padding-left: 15px;
 }
 
-.ctools-toggle-collapsed + table.ctools-collapsible-container th.forum-name {
+.ctools-toggle-collapsed + table.ctools-collapsible-container th.forum-name a{
   background-image: url('images/container_expand.png');
   background-repeat: no-repeat;
   background-position: 3px center;

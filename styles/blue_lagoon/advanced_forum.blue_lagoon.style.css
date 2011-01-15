@@ -51,7 +51,7 @@ Colors used: (copied from silver bells... need to update)
 }
 
 /* Headers */
-.forum-table th {
+.forum-table thead tr {
   border-top: 1px solid #1659AC;
   background: #2587C4;
   background: -webkit-gradient(linear, left top, left bottom, from(#2587C4), to(#58B3ED));
@@ -60,9 +60,9 @@ Colors used: (copied from silver bells... need to update)
   border-bottom: 1px solid #1659AC;
 }
 
-.forum-table th a,
-.forum-table th a:visited,
-.forum-table th a:link {
+.forum-table thead tr a,
+.forum-table thead tr a:visited,
+.forum-table thead tr a:link {
   color: #ffffff;
 }
 

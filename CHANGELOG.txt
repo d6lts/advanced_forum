@@ -4,6 +4,10 @@ $Id$
 
 January 14, 2011
 ----------------
+#291084 by WorldFallz: More tweaks to collapsable containers.
+
+January 14, 2011
+----------------
 #291084 by WorldFallz: Corrected wrong js file name.
 
 January 13, 2011

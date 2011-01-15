@@ -51,7 +51,7 @@ Colors used:
 }
 
 /* Headers */
-.forum-table th {
+.forum-table thead tr {
   border-top: 1px solid #FFFFFF;
   background: #EDF5FA;
   background: -webkit-gradient(linear, left top, left bottom, from(#EDF5FA), to(#C8DBEA));
@@ -61,9 +61,9 @@ Colors used:
   padding: 2px 5px;
 }
 
-.forum-table th a,
-.forum-table th a:visited,
-.forum-table th a:link {
+.forum-table thead tr a,
+.forum-table thead tr a:visited,
+.forum-table thead tr a:link {
   color: #3C78A7;
 }
 

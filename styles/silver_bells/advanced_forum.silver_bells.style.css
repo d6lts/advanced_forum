@@ -69,7 +69,7 @@ Colors used:
 }
 
 /* Headers */
-.forum-table th {
+.forum-table thead tr {
   border-top: 1px solid #C1C1C1;
   background: #DDDDDD;
   background: -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#DDDDDD));
@@ -79,9 +79,9 @@ Colors used:
   border-bottom: none;
 }
 
-.forum-table th a,
-.forum-table th a:visited,
-.forum-table th a:link {
+.forum-table thead tr a,
+.forum-table thead tr a:visited,
+.forum-table thead tr a:link {
   color: #333333;
   font-weight: bold;
 }
