@@ -597,6 +597,24 @@ function advanced_forum_views_post_render(&$view, &$output) {
       }
     }
 
+    // Replace the posted by viewer tokens with class if appropriate.
+    if (preg_match_all('/<!--post:poster-id-([\d]+)-->/us', $output, $matches)) {
+      foreach ($matches[1] as $match => $uid) {
+        $token = $matches[0][$match]; // This is the exact string that matched.
+        if (!isset($tokens[$token])) {
+          global $user;
+          
+          if ($user->uid > 0 && $uid == $user->uid) {
+            // This post is by current user.
+            $tokens[$token] = " post-by-viewer";
+          }
+          else {
+            $tokens[$token] = "";
+          }
+        }
+      }
+    }
+    
     // Perform replacements.
     $output = strtr($output, $tokens);
   }

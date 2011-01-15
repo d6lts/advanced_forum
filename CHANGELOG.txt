@@ -2,9 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
-January 14, 2011
+January 15, 2011
 ----------------
 #291084 by WorldFallz: More tweaks to collapsable containers.
+#982604 by Michelle: Made 'post-by-viewer' class work with caching.
 
 January 14, 2011
 ----------------

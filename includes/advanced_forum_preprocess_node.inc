@@ -62,24 +62,17 @@ function _advanced_forum_preprocess_node(&$variables) {
    // Add the poster's UID
   $classes[] = "posted-by-$node->uid";
 
-  //@TODO: These need to be moved into the cache avoiding tokens. They are
-  // not usable as is because of the caching.
-  // Add class if the poster is the viewer.
-  global $user;
-  if ($user->uid > 0 && $user->uid == $node->uid) {
-    $classes[] = "post-by-viewer";
-  }
-
   // Add class if the poster is the topic starter. This is only applicable
   // on Node Comment reply nodes as core comments are handled in the comment
   // template.
   if ($node_parent_id && $node->uid > 0 && $node->uid == $parent_node->uid) {
     $classes[] = "post-by-starter";
   }
-
+    
   // Create the template variable.
   $variables['advanced_forum_classes'] = implode(' ', $classes);
 
+  /* Post ID */
   // Set the post ID for theming / targetting
   $variables['post_id'] = "post-$node->nid";
 
@@ -187,6 +180,10 @@ function _advanced_forum_preprocess_node(&$variables) {
       // if enabled.
       $variables['signature'] =  '<!--post:signature-core-' . $node->uid . '-->';
     }
+    
+    /* User specific node theming class */   
+    // Add class if the poster is the viewer.
+    $variables['advanced_forum_classes'] .= ' <!--post:poster-id-' . $node->uid . '-->';
   }
   else {
     // Create variables normally.
@@ -205,6 +202,12 @@ function _advanced_forum_preprocess_node(&$variables) {
       if ($variables['account']->signature) {
         $variables['signature'] = check_markup($variables['account']->signature, $variables['account']->signature_format, FALSE);
       }
+    }
+    
+    /* Viewer is poster class */   
+    global $user;
+    if ($user->uid > 0 && $user->uid == $node->uid) {
+      $variables['advanced_forum_classes'] .= " post-by-viewer";
     }
   }
 }
