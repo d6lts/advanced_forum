@@ -6,6 +6,9 @@ January 15, 2011
 ----------------
 #291084 by WorldFallz: More tweaks to collapsable containers.
 #982604 by Michelle: Made 'post-by-viewer' class work with caching.
+NOISSUE by Michelle: Changed edit by theming so the Reason label doesn't print when no reason given.
+#892248 by Michelle, rodrigoaguilera: Added class for new comments. Node Comments already handles this.
+NOISSUE by Michelle: Simplified 'new marker' handling in the template by moving the logic to the preprocess.
 
 January 14, 2011
 ----------------

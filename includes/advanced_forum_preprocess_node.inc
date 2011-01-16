@@ -71,6 +71,11 @@ function _advanced_forum_preprocess_node(&$variables) {
     
   // Create the template variable.
   $variables['advanced_forum_classes'] = implode(' ', $classes);
+  
+  /* New marker */
+  // This is dealt with in the caching section. Initialized here to avoid
+  // notices on the top post.
+  $variables['new_marker'] = '';
 
   /* Post ID */
   // Set the post ID for theming / targetting
@@ -184,6 +189,10 @@ function _advanced_forum_preprocess_node(&$variables) {
     /* User specific node theming class */   
     // Add class if the poster is the viewer.
     $variables['advanced_forum_classes'] .= ' <!--post:poster-id-' . $node->uid . '-->';
+    
+    /* New marker */
+    // This is handled by Node Comments. Just make sure the tokens are printed.
+    $variables['new_marker'] = $variables['first_new'] . ' ' . $variables['new_output'];  
   }
   else {
     // Create variables normally.
@@ -208,6 +217,6 @@ function _advanced_forum_preprocess_node(&$variables) {
     global $user;
     if ($user->uid > 0 && $user->uid == $node->uid) {
       $variables['advanced_forum_classes'] .= " post-by-viewer";
-    }
-  }
+    }   
+   }
 }

@@ -56,29 +56,13 @@
   <div class="forum-post-info clear-block">
     <div class="forum-posted-on">
       <?php print $date ?>
-      
-      <?php 
-      // This whole section is for printing the "new" marker. With core comment
-      // we just need to check a variable. With Node Comment, we need to do 
-      // extra work to keep the views caching used for Node Comment from 
-      //caching the new markers. 
-      ?>
-      <?php if (!$top_post): ?>
-        <?php if (!module_exists('nodecomment') && !empty($comment->new)): ?>
-          <a id="new"><span class="new">(<?php print $new ?>)</span></a>
-        <?php endif; ?>	  
-      
-        <?php if (!empty($first_new)): ?>
-          <?php print $first_new; ?>
-        <?php endif; ?>
-        
-        <?php if (!empty($new_output)): ?>
-          <?php print $new_output; ?>
-        <?php endif; ?>
-      <?php endif; ?>
-    </div>  <?php // End of posted on div ?>
+     
+      <?php print $new_marker ?>         
+    </div> 
 
-    <span class="forum-in-reply-to"><?php print $in_reply_to; ?></span>
+    <?php if (!empty($in_reply_to)): ?>
+      <span class="forum-in-reply-to"><?php print $in_reply_to; ?></span>
+    <?php endif; ?>
     
     <?php // Add a note when a post is unpublished so it doesn't rely on theming. ?>    
     <?php if (!$node->status): ?>

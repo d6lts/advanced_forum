@@ -32,12 +32,6 @@ function _advanced_forum_preprocess_comment(&$variables) {
   // Add our general classes.
   $classes[] = 'forum-post clear-block';
 
-  // Add the current language to the classes for image handling.
-  global $language;
-  if (!empty($language->language)) {
-    $classes[] = $language->language;
-  }
-
   // Add the poster's UID
   $classes[] = "posted-by-$comment->uid";
 
@@ -51,10 +45,31 @@ function _advanced_forum_preprocess_comment(&$variables) {
   if ($node->uid > 0 && $node->uid == $comment->uid) {
     $classes[] = "post-by-starter";
   }
+  
+  // Add class if post is new. Comment is used here instead of post for
+  // consistency with Node Comments.
+  if (!empty($comment->new)) {
+    $classes[] = "comment-new";
+  }  
 
   // Create the template variable.
   $variables['advanced_forum_classes'] = implode(' ', $classes);
+  
+  /* New marker */
+  $variables['new_marker'] = '';
+  static $new_anchor_shown = FALSE;
+  
+  if (!empty($comment->new)) {
+    if ($new_anchor_shown) {   
+      $variables['new_marker'] = '<span class="new">' . t('(new)') . '</span>';
+    }
+    else {
+      $new_anchor_shown = TRUE;
+      $variables['new_marker'] = '<a id="new"></a><span class="new">' . t('(new)') . '</span>';
+    }
+  }
 
+  /* Post ID */
   // Set the post ID for theming / targetting
   $variables['post_id'] = "post-$comment->cid";
 

@@ -59,7 +59,11 @@ function theme_advanced_forum_post_edited($who, $when, $why) {
 
   $datetime = format_date($when, 'custom', variable_get('date_format_short', 'm/d/Y - H:i'));
 
-  return t('<span class="post-edit-label">Edited by:</span> !editor <span class="post-edit-label">on</span> !datetime. <span class="post-edit-label">Reason:</span> !reason', array('!editor' => $editor_name, '!datetime' => $datetime, '!reason' => $why));    
+  $edited_by = t('<span class="post-edit-label">Edited by</span> !editor', array('!editor' => $editor_name));
+  $edited_on = t('<span class="post-edit-label">on</span> !datetime', array('!datetime' => $datetime));
+  $edit_reason = (empty($why)) ? "" : t('<span class="post-edit-label">Reason:</span> !reason', array('!reason' => $why));
+  
+  return $edited_by . ' ' . $edited_on . '<br />' . $edit_reason; 
 }
 
 /**
