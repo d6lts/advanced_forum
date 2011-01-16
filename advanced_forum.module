@@ -556,6 +556,7 @@ function advanced_forum_views_post_render(&$view, &$output) {
     $tokens['<span class="new">' . t('new') . '</span>'] = '<span class="new">(' . t('new') . ')</span>';
 
     // Replace the Author Pane token with the actual Author Pane.
+    // Note that this token will only exist if Author Pane is enabled.
     if (preg_match_all('/<!--post:author-pane-([\d]+)-->/us', $output, $matches)) {
       foreach ($matches[1] as $match => $uid) {
         $token = $matches[0][$match]; // This is the exact string that matched.
