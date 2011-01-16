@@ -11,6 +11,8 @@ NOISSUE by Michelle: Changed edit by theming so the Reason label doesn't print w
 NOISSUE by Michelle: Simplified 'new marker' handling in the template by moving the logic to the preprocess.
 #525194 by Michelle: Added a note about why AP's existence isn't checked for in the views cache token rendering.
 #492794 by Michelle: Added teaser template to be used when the setting to style teasers is on.
+#1015118 by paolomainardi: Fixed hardcoded column span that was incompatable with taxonomy image.
+#291084 by Michelle: Did some clean up of the forum list template.
 
 January 14, 2011
 ----------------
