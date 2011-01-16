@@ -13,6 +13,7 @@ NOISSUE by Michelle: Simplified 'new marker' handling in the template by moving 
 #492794 by Michelle: Added teaser template to be used when the setting to style teasers is on.
 #1015118 by paolomainardi: Fixed hardcoded column span that was incompatable with taxonomy image.
 #291084 by Michelle: Did some clean up of the forum list template.
+#291084 by Michelle: Found and fixed bug introduced by collapsible containers patch that killed subforums.
 
 January 14, 2011
 ----------------
