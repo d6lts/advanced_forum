@@ -9,6 +9,8 @@ January 15, 2011
 NOISSUE by Michelle: Changed edit by theming so the Reason label doesn't print when no reason given.
 #892248 by Michelle, rodrigoaguilera: Added class for new comments. Node Comments already handles this.
 NOISSUE by Michelle: Simplified 'new marker' handling in the template by moving the logic to the preprocess.
+#525194 by Michelle: Added a note about why AP's existence isn't checked for in the views cache token rendering.
+#492794 by Michelle: Added teaser template to be used when the setting to style teasers is on.
 
 January 14, 2011
 ----------------

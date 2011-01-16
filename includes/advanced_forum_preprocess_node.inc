@@ -30,7 +30,11 @@ function _advanced_forum_preprocess_node(&$variables) {
     // 'node/add' is when previewing a new forum post.
     advanced_forum_add_template_suggestions("post-preview", $variables['template_files']);
   }
-  else {
+  elseif (arg(0) != 'node' || arg(1) < 1) {
+    // We aren't on the node page so use the teaser template.
+    advanced_forum_add_template_suggestions("post-teaser", $variables['template_files']);    
+  }
+  else {  
     // Use our combined node/comment template file
     advanced_forum_add_template_suggestions("post", $variables['template_files']);
   }
