@@ -639,9 +639,10 @@ function advanced_forum_preprocess_forums($variables) {
     }
   }
 
-  // Add in the mark as read link if user has access
-  if (advanced_forum_markasread_access()) {
-    $tid = $variables['tid'];
+  $tid = $variables['tid'];
+  
+  // Add in the mark as read link if user has access and we're not on a container.
+  if (advanced_forum_markasread_access() && !in_array($tid, variable_get('forum_containers', array()))) {
     if ($tid) {
       $title = t('Mark all topics read');
       $link = "forum/markasread/$tid";
