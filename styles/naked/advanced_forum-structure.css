@@ -222,6 +222,7 @@ ul.forum-links {
   float: none;
   padding-left: 0px;
   margin: 2px 0 10px 0;
+  padding-left: 0;
 }
 
 .forum-post-panel-sub .author-pane .author-pane-section {

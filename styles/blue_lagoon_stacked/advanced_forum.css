@@ -162,7 +162,7 @@ Images used:
 }
 
 /* Author information pane */
-.forum-post-panel-sub .author-pane {
+.forum-post-panel-sub .author-pane .author-name a {
   font-size: 120%;
   font-weight: bold;
 }

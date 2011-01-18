@@ -11,6 +11,8 @@ January 17, 2011
 #738074 by yaslama: Fixed incorrect forum post counts when using access control modules.
 #787454 by Michelle: Backported fix to new post count when topic is moved to a new forum.
 #821744 by Michelle: Switched to Author Pane 2.x dependency.
+#821744 by Michelle: Fixed goof with template file suggestion that caused it to use old AP template.
+#821744 by Michelle: Fixed a few more style issues.
 
 August 9, 2010
 -------------
