@@ -310,7 +310,7 @@ function advanced_forum_preprocess_author_pane(&$variables) {
   // Author pane is used in various places. The only way to be sure to only
   // hit it when we are using it is to check the template suggestion.
   if (!empty($variables['caller']) && $variables['caller'] == 'advanced_forum') {
-    $variables['template_files'][] = "advanced_forum-author-pane";
+    $variables['template_files'][] = "advf-author-pane";
   }
 }
 
