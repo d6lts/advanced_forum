@@ -1738,23 +1738,26 @@ function _advanced_forum_get_topic_views_count($nid) {
 }
 
 /**
- * Returns the number of unread posts in a given forum for a given user
+ * Calculates the number of unread replies for each forum and returns the
+ * count for the requested forum.
  */
 function advanced_forum_unread_comments_in_forum($tid, $uid) {
   static $result_cache = NULL;
 
   if (is_NULL($result_cache)) {
     $result_cache = array();
-    $vid = variable_get('forum_nav_vocabulary', '');
-    $sql = "SELECT COUNT(c.cid) AS count, tn.tid
+
+    $sql = "SELECT COUNT(c.cid) AS count, f.tid
             FROM {comments} c
-            INNER JOIN {term_node} tn ON c.nid = tn.nid
-            INNER JOIN {term_data} td ON td.tid = tn.tid AND td.vid = %d
+            INNER JOIN {forum} f ON c.nid = f.nid
+            INNER JOIN {node} n ON f.vid = n.vid
             LEFT JOIN {history} h ON c.nid = h.nid AND h.uid = %d
             WHERE c.status = 0 AND c.timestamp > %d AND (c.timestamp > h.timestamp OR h.timestamp IS NULL)
-            GROUP BY tn.tid";
+            GROUP BY f.tid";
+
     $sql = db_rewrite_sql($sql, 'c', 'cid');
-    $result = db_query($sql, $vid, $uid, NODE_NEW_LIMIT);
+
+    $result = db_query($sql, $uid, NODE_NEW_LIMIT);
     while ($row = db_fetch_array($result)) {
         $result_cache[$row['tid']] = $row['count'];
     }
