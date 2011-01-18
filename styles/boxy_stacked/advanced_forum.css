@@ -87,17 +87,17 @@ Colors used:
 
 /* Author information pane */
 /* Note: Changes from Naked in this section */
-.author-pane .author-name {
+.forum-post-panel-sub.author-pane .author-name {
   font-size: 120%;
   font-weight: bold;
 }
 
-.author-pane .picture img {
+.forum-post-panel-sub.author-pane .picture img {
   border: 1px solid #CCCCCC;
 	background: #ffffff;
 }
 
-.author-pane .author-pane-label {
+.forum-post-panel-sub.author-pane .author-pane-label {
   font-weight: bold;
 }
 

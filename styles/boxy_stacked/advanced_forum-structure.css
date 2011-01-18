@@ -212,82 +212,39 @@ ul.forum-links {
 }
 
 /* Author information pane */
-/* Note: more CSS in the author pane css file */
-.forum-post-panel-sub {
-  line-height: 110%;
-}
-
-.forum-post-panel-sub .author-pane {
-  padding: 10px 0 5px 10px;
-}
-
-.author-pane-top {
-  overflow: auto;
-  height: 100px;
-}
-
-.forum-post-panel-sub .author-pane-picture,
-.forum-post-panel-sub .author-pane-name-status,
-.forum-post-panel-sub .author-pane-admin,
-.forum-post-panel-sub .author-pane-stats {
-  float: left;
-  display: block;
-  width: 145px;
-  margin-right: 5px;
-}
-
-.forum-post-panel-sub .author-pane-stats {
-  float: right;
-}
-
-.forum-post-panel-sub .author-pane-name-groups {
-
-  margin: 5px;
-}
-
-.author-pane-picture .picture {
-  float: none;
-  padding-left: 0pt;
-}
-
-/* Author information pane - 2.x */
 .forum-post-panel-sub {
   float: none; /* Reset */
   line-height: 110%;
   width: auto; /* Reset */
 }
 
-.author-pane-2x {
+.forum-post-panel-sub .author-pane {
   margin: 0; /* Reset */
   padding: 10px 0 5px 10px;
 }
 
-.author-pane-2x .author-pane-line {
-  padding-bottom:5px;
-}
-
-.author-pane-2x .author-pane-top {
+.forum-post-panel-sub .author-pane-top {
   overflow: auto;
   height: 100px;
 }
 
-.author-pane-2x .picture {
+.forum-post-panel-sub .author-pane .picture {
   float: left;
   display: block;
   margin: 2px 10px 2px 2px;
   padding-left: 0px;
 }
 
-.author-pane-2x .author-pane-section-1,
-.author-pane-2x .author-pane-section-2,
-.author-pane-2x .author-pane-stats {
+.forum-post-panel-sub .author-pane-section-1,
+.forum-post-panel-sub .author-pane-section-2,
+.forum-post-panel-sub .author-pane-stats {
   float: left;
   display: block;
   margin-right: 10px;
 }
 
-.author-pane-2x .author-pane-contact,
-.author-pane-2x .author-pane-admin {
+.forum-post-panel-sub .author-pane-contact,
+.forum-post-panel-sub .author-pane-admin {
   float: right;
   display: block;
   margin-right: 5px;

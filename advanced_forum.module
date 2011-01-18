@@ -309,20 +309,8 @@ function advanced_forum_settings_page() {
 function advanced_forum_preprocess_author_pane(&$variables) {
   // Author pane is used in various places. The only way to be sure to only
   // hit it when we are using it is to check the template suggestion.
-  if (function_exists('author_pane_api') && author_pane_api() == "2") {
-    // Author Pane 2.x
-    if (!empty($variables['caller']) && $variables['caller'] == 'advanced_forum') {
-      $variables['template_files'][] = "advanced_forum-author-pane";
-    }
-  }
-  else {
-    if ($variables['template_suggestion'] == 'advf-author-pane') {
-      // Attempt to override the user picture fetched by Author Pane from core.
-      $sized_picture = theme('advanced_forum_user_picture', $variables['account']);
-      if (!empty($sized_picture)) {
-        $variables['picture'] = $sized_picture;
-      }
-    }
+  if (!empty($variables['caller']) && $variables['caller'] == 'advanced_forum') {
+    $variables['template_files'][] = "advanced_forum-author-pane";
   }
 }
 
@@ -455,14 +443,7 @@ function advanced_forum_preprocess_node(&$variables) {
   // User information / author pane
   $variables['account'] = user_load(array('uid' => $variables['node']->uid));
 
-  if (function_exists('author_pane_api') && author_pane_api() == "2") {
-    // Author Pane 2.x
-    $variables['author_pane'] = theme('author_pane', $variables['account'], 'advanced_forum', variable_get('advanced_forum_user_picture_preset', ''), $variables['node'], TRUE);
-  }
-  else {
-    // Author Pane 1.x
-    $variables['author_pane'] = theme('author_pane', $variables['account'], advanced_forum_path_to_images(), 'advf-author-pane');
-  }
+  $variables['author_pane'] = theme('author_pane', $variables['account'], 'advanced_forum', variable_get('advanced_forum_user_picture_preset', ''), $variables['node'], TRUE);
 
   // Load the signature.
   if (module_exists('signature_forum')) {
@@ -514,15 +495,7 @@ function advanced_forum_preprocess_comment(&$variables) {
     }
 
     // Create the author pane
-    if (function_exists('author_pane_api') && author_pane_api() == "2") {
-      // Author Pane 2.x
-      $variables['author_pane'] = theme('author_pane', $variables['account'], 'advanced_forum', variable_get('advanced_forum_user_picture_preset', ''), $variables['comment'], TRUE);
-    }
-    else {
-      // Author Pane 1.x
-    $variables['author_pane'] = theme('author_pane', $variables['account'], advanced_forum_path_to_images(), 'advf-author-pane');
-    }
-
+    $variables['author_pane'] = theme('author_pane', $variables['account'], 'advanced_forum', variable_get('advanced_forum_user_picture_preset', ''), $variables['comment'], TRUE);
 
     if (arg(1) != 'reply') {
       // Because the $links array isn't available here, we recreate it

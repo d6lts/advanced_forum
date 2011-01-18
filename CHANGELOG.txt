@@ -10,6 +10,7 @@ January 17, 2011
 #992428 by Michelle: Don't show mark read link on containers.
 #738074 by yaslama: Fixed incorrect forum post counts when using access control modules.
 #787454 by Michelle: Backported fix to new post count when topic is moved to a new forum.
+#821744 by Michelle: Switched to Author Pane 2.x dependency.
 
 August 9, 2010
 -------------
