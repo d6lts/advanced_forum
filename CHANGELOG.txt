@@ -5,6 +5,7 @@ $Id$
 January 17, 2011
 ----------------
 #901904 by donquixote: Updated drupal_alter call to pass in new comment parameter added in 6.16.
+#738912 by mr.j: Added variable to hold table sorting in topic list.
 
 August 9, 2010
 -------------

@@ -885,6 +885,7 @@ function advanced_forum_preprocess_forum_topic_list(&$variables) {
 
   // Create the tablesorting header.
   $ts = tablesort_init($forum_topic_list_header);
+  $variables['sort'] = $ts['name'];
   $header = '';
   foreach ($forum_topic_list_header as $cell) {
     $cell = tablesort_header($cell, $forum_topic_list_header, $ts);
