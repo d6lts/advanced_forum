@@ -8,6 +8,7 @@ January 17, 2011
 #738912 by mr.j: Added variable to hold table sorting in topic list.
 #767742 by miro_dietiker: Removed redundant comment ID from post template.
 #992428 by Michelle: Don't show mark read link on containers.
+#738074 by yaslama: Fixed incorrect forum post counts when using access control modules.
 
 August 9, 2010
 -------------
