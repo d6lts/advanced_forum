@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+January 17, 2011
+----------------
+#901904 by donquixote: Updated drupal_alter call to pass in new comment parameter added in 6.16.
+
 August 9, 2010
 -------------
 #821744 by Michelle: Initial work on Author Pane 2.x integration. Needs more testing.

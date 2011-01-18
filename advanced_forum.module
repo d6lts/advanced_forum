@@ -528,7 +528,7 @@ function advanced_forum_preprocess_comment(&$variables) {
       // Because the $links array isn't available here, we recreate it
       $node = node_load($variables['comment']->nid);
       $links = module_invoke_all('link', 'comment', $variables['comment']);
-      drupal_alter('link', $links, $node);
+      drupal_alter('link', $links, $node, $variables['comment']);
       unset($links['comment_parent']);
 
       // Iconify common links (optional to avoid translation issues)
