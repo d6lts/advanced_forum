@@ -250,6 +250,10 @@ ul.forum-links {
   margin-right: 5px;
 }
 
+.forum-post-panel-sub .author-pane .author-pane-line {
+  margin-bottom: 7px;
+}
+
 /* Post text area */
 /* Note: Changes from Naked in this section */
 

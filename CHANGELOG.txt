@@ -2,6 +2,11 @@ $Id$
 
 ****************************** DRUPAL 6 BRANCH ********************************
 
+January 19, 2011
+----------------
+#821744 by Michelle: Added all of the images to Boxy and Boxy Stacked since adding the AP images made it no longer default to Naked.
+#821744 by Michelle: More CSS adjustments.
+
 January 17, 2011
 ----------------
 #901904 by donquixote: Updated drupal_alter call to pass in new comment parameter added in 6.16.
