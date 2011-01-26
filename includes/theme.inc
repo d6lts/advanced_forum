@@ -298,8 +298,10 @@ function advanced_forum_preprocess_views_view__advanced_forum_topic_list(&$varia
   advanced_forum_add_template_suggestions("topic-list-outer-view", $variables['template_files']);
   
   // @TODO: This is messy tying it to the URL. Need to find a better way.
+  $variables['node_create_list'] = '';
+  $variables['forum_tools'] = '';
   $tid = arg(1);
-  if (arg(0) == 'forum' && $tid > 0) {
+  if (arg(0) == 'forum' && $tid > 0 && variable_get('advanced_forum_forum_disabled', TRUE)) {
     $variables['node_create_list'] = theme('advanced_forum_node_type_create_list', $tid);
     $variables['forum_tools'] = advanced_forum_forum_tools($tid);
   }

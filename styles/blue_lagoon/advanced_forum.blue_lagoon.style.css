@@ -76,6 +76,10 @@ Colors used: (copied from silver bells... need to update)
 }
 
 /* Topic listings */
+.view-advanced-forum-topic-list .view-empty {
+  border: border: 3px solid #1659AC;
+}
+
 .forum-table tr.sticky {
   background-color: #E6EDEC;
 }
