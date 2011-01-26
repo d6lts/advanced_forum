@@ -42,32 +42,6 @@ $handler->override_option('fields', array(
     'field' => 'teaser',
     'relationship' => 'none',
   ),
-  'topic_icon' => array(
-    'label' => '',
-    'alter' => array(
-      'alter_text' => 0,
-      'text' => '',
-      'make_link' => 0,
-      'path' => '',
-      'link_class' => '',
-      'alt' => '',
-      'prefix' => '',
-      'suffix' => '',
-      'help' => '',
-      'trim' => 0,
-      'max_length' => '',
-      'word_boundary' => 1,
-      'ellipsis' => 1,
-      'strip_tags' => 0,
-      'html' => 0,
-    ),
-    'hot_topic_threshold' => '15',
-    'exclude' => 0,
-    'id' => 'topic_icon',
-    'table' => 'node',
-    'field' => 'topic_icon',
-    'relationship' => 'none',
-  ),
   'title' => array(
     'label' => 'Topic',
     'alter' => array(
@@ -217,31 +191,6 @@ $handler->override_option('fields', array(
     'id' => 'sticky',
     'table' => 'node',
     'field' => 'sticky',
-    'relationship' => 'none',
-  ),
-  'comment' => array(
-    'label' => 'Comment status',
-    'alter' => array(
-      'alter_text' => 0,
-      'text' => '',
-      'make_link' => 0,
-      'path' => '',
-      'link_class' => '',
-      'alt' => '',
-      'prefix' => '',
-      'suffix' => '',
-      'help' => '',
-      'trim' => 0,
-      'max_length' => '',
-      'word_boundary' => 1,
-      'ellipsis' => 1,
-      'strip_tags' => 0,
-      'html' => 0,
-    ),
-    'exclude' => 1,
-    'id' => 'comment',
-    'table' => 'node',
-    'field' => 'comment',
     'relationship' => 'none',
   ),
   'name' => array(
@@ -457,6 +406,13 @@ $handler->override_option('style_options', array(
   'default' => 'created',
   'tid' => 'filter.term_node_tid_depth',
 ));
+
+// Get rid of the views counter if statistics not enabled.
+if (!module_exists('statistics')) {
+  unset($handler->display->display_options['fields']['totalcount']);
+  unset($handler->display->display_options['style_options']['columns']['totalcount']);
+}
+
 $handler = $view->new_display('page', 'Page', 'page_1');
 $handler->override_option('path', 'forum/unanswered');
 

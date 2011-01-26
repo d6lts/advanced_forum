@@ -660,6 +660,13 @@ $handler->override_option('style_options', array(
   'default' => 'last_updated',
   'tid' => 'filter.term_node_tid_depth',
 ));
+
+// Get rid of the views counter if statistics not enabled.
+if (!module_exists('statistics')) {
+  unset($handler->display->display_options['fields']['totalcount']);
+  unset($handler->display->display_options['style_options']['columns']['totalcount']);
+}
+
 $handler = $view->new_display('page', 'Page', 'page_1');
 $handler->override_option('path', 'forum/new');
 

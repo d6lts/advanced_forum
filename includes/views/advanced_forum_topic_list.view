@@ -648,3 +648,9 @@ $handler->override_option('style_options', array(
   'default' => 'last_comment_timestamp',
   'tid' => 'argument.tid',
 ));
+
+// Get rid of the views counter if statistics not enabled.
+if (!module_exists('statistics')) {
+  unset($handler->display->display_options['fields']['totalcount']);
+  unset($handler->display->display_options['style_options']['columns']['totalcount']);
+}
