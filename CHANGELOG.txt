@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+January 27, 2011
+----------------
+#992428 by Michelle: Fixed mark as read so it's not displayed on containers and also made jump list use existing function to ensure access control maintained.
+
 January 25, 2011
 ----------------
 #935778 by troky, Michelle: Remove 'views' column when statistics not enabled.

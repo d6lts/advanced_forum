@@ -11,7 +11,7 @@
  * Either fill a $links array or return a string version of the link to mark read.
  */
 function advanced_forum_get_mark_read_link($tid = 0, &$links = array()) {
-  if (advanced_forum_markasread_access()) {
+  if (advanced_forum_markasread_access() && !in_array($tid, variable_get('forum_containers', array()))) {
     if ($tid) {
       $links['mark-read']['title'] = t('Mark all topics read');
       $links['mark-read']['href'] = "forum/markasread/$tid";
