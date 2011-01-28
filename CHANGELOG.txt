@@ -5,6 +5,7 @@ $Id$
 January 27, 2011
 ----------------
 #992428 by Michelle: Fixed mark as read so it's not displayed on containers and also made jump list use existing function to ensure access control maintained.
+#1042664 by troky: Fixed wrong variable in statistics caching.
 
 January 25, 2011
 ----------------
