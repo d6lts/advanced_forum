@@ -7,6 +7,7 @@ January 27, 2011
 #992428 by Michelle: Fixed mark as read so it's not displayed on containers and also made jump list use existing function to ensure access control maintained.
 #1042664 by troky: Fixed wrong variable in statistics caching.
 #1031712 by troky: Improved CSS to give structure to empty forums.
+#1041426 by __Sander__: Wrapped forum tools menu items in t().
 
 January 25, 2011
 ----------------

@@ -1118,26 +1118,26 @@ function advanced_forum_forum_tools($tid=0) {
   global $user;
   
   if ($tid > 0) {
-    $targets[url("forum/active", array('query' => "forum[]=$tid"))] = "View active posts in this forum";
-    $targets[url("forum/unanswered", array('query' => "forum[]=$tid"))] = "View unanswered posts in this forum";
+    $targets[url("forum/active", array('query' => "forum[]=$tid"))] = t('View active posts in this forum');
+    $targets[url("forum/unanswered", array('query' => "forum[]=$tid"))] = t('View unanswered posts in this forum');
     
     if ($user->uid) {
-      $targets[url("forum/new", array('query' => "forum[]=$tid"))] = "View new posts in this forum";
+      $targets[url("forum/new", array('query' => "forum[]=$tid"))] = t('View new posts in this forum');
       
       if (module_exists('nodecomment')) {
-        $targets[url("forum/user", array('query' => "forum[]=$tid"))] = "View your posts in this forum";
+        $targets[url("forum/user", array('query' => "forum[]=$tid"))] = t('View your posts in this forum');
       }    
     }    
   }
   else {
-    $targets[url("forum/active")] = "View active forum posts";
-    $targets[url("forum/unanswered")] = "View unanswered forum posts";
+    $targets[url("forum/active")] = t('View active forum posts');
+    $targets[url("forum/unanswered")] = t('View unanswered forum posts');
     
     if ($user->uid) {
-      $targets[url("forum/new")] = "View new forum posts";
+      $targets[url("forum/new")] = t('View new forum posts');
       
       if (module_exists('nodecomment')) {
-        $targets[url("forum/user")] = "View your forum posts";
+        $targets[url("forum/user")] = t('View your forum posts');
       }
     }      
   }
