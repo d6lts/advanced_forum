@@ -134,8 +134,6 @@ table.ctools-collapsible-container thead {
 
 .view-advanced-forum-topic-list .view-empty {
   clear: both;
-  height: 100px;
-  width: 100%;
   margin: 20px 0 20px 0;
   padding: 10px;
 }
