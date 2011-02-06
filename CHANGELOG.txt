@@ -2,6 +2,11 @@ $Id$
 
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+Feburary 5, 2011
+----------------
+#868942 by Michelle: Changed forum-folder and forum-icon to forum-list-icon to reflect the fact that the icon is not necessarily a folder.
+#1012238 by Michelle: Removed undead boxy and boxy_stacked that came back to life.
+
 January 27, 2011
 ----------------
 #992428 by Michelle: Fixed mark as read so it's not displayed on containers and also made jump list use existing function to ensure access control maintained.

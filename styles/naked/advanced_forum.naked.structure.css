@@ -214,11 +214,11 @@ table.ctools-collapsible-container thead {
 
 /*** ICONS LEGEND ***********************************************************/
 
-.forum-folder-legend {
+.forum-list-icon-legend {
   margin-bottom: 30px;
 }
 
-.forum-folder-legend div {
+.forum-list-icon-legend div {
   float: left;
   padding: 15px 0 15px 52px;
   margin-right: 10px;
