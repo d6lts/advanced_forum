@@ -7,6 +7,7 @@ Feburary 5, 2011
 #868942 by Michelle: Changed forum-folder and forum-icon to forum-list-icon to reflect the fact that the icon is not necessarily a folder.
 #1012238 by Michelle: Removed undead boxy and boxy_stacked that came back to life.
 #868942 by Michelle: Fixed lack of background behind forum list icon legend.
+#868942 by __Sander__: Added Comment Mover node links to list affected by AF's buttonizing.
 
 January 27, 2011
 ----------------

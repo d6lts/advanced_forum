@@ -451,7 +451,7 @@ function advanced_forum_link_alter(&$links, $node, $comment = NULL) {
     }
    
     // List the keys we are interested in.
-    $affected_keys = array('post_edit', 'comment_edit', 'post_delete', 'comment_delete', 'quote', 'comment_add', 'comment_reply');
+    $affected_keys = array('post_edit', 'comment_edit', 'post_delete', 'comment_delete', 'quote', 'comment_add', 'comment_reply', 'comment_mover_node_prune', 'comment_mover_comment_prune');
     
     // Add extra span tags for image replacement.
     foreach ($links AS $key => $link) {
