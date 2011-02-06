@@ -218,10 +218,9 @@ table.ctools-collapsible-container thead {
   margin-bottom: 30px;
 }
 
-.forum-list-icon-legend div {
+.forum-list-legend-item {
   float: left;
-  padding: 15px 0 15px 52px;
-  margin-right: 10px;
+  margin-right: 30px;
 }
 
 .forum-topic-legend div {

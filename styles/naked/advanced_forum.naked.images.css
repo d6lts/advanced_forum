@@ -21,14 +21,13 @@ tr.odd td.forum-list-icon-new-posts .forum-list-icon-wrapper span {
   background: transparent url(images/forum_list_new_posts.png) no-repeat center center;
 }
 
-
 /* FORUM LIST ICON LEGEND ***************************************************/
 .forum-list-icon-legend .forum-list-icon-default {
-  background: transparent url(images/forum_list_default.png) no-repeat top left;
+  background: transparent url(images/forum_list_default.png) no-repeat center center;
 }
 
 .forum-list-icon-legend .forum-list-icon-new-posts {
-  background: transparent url(images/forum_list_new_posts.png) no-repeat top left;
+  background: transparent url(images/forum_list_new_posts.png) no-repeat center center;
 }
 
 /* TOPIC LIST ICONS *********************************************************/

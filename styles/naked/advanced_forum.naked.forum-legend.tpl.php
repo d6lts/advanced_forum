@@ -9,6 +9,25 @@
 ?>
 
 <div class="forum-list-icon-legend clear-block">
-  <div class="forum-list-icon-new-posts"><?php print t('Forum contains new posts'); ?></div>
-  <div class="forum-list-icon-default"><?php print t('Forum contains no new posts'); ?></div>
+  <div class="forum-list-legend-item">
+    <span class="forum-list-icon-wrapper">
+      <span class="forum-list-icon-new-posts">
+      </span>
+    </span>
+    
+    <span class="forum-list-text-legend-new-posts">
+      <?php print t('New posts'); ?>
+    </span>
+  </div>
+  
+  <div class="forum-list-legend-item">
+    <span class="forum-list-icon-wrapper">
+      <span class="forum-list-icon-default">
+      </span>
+    </span>
+    
+    <span class="forum-list-text-legend-default">
+      <?php print t('No new posts'); ?>
+    </span>
+  </div>
 </div>
