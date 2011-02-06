@@ -8,6 +8,7 @@ Feburary 5, 2011
 #1012238 by Michelle: Removed undead boxy and boxy_stacked that came back to life.
 #868942 by Michelle: Fixed lack of background behind forum list icon legend.
 #868942 by __Sander__: Added Comment Mover node links to list affected by AF's buttonizing.
+#1041402 by troky: Fixed table display on wide resolutions.
 
 January 27, 2011
 ----------------

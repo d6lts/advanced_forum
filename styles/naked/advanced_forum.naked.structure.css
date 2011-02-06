@@ -83,10 +83,6 @@ th.forum-name {
   text-align: left;
 }
 
-td.forum-details {
-  width: 50%;
-}
-
 td.forum-details .forum-description {
   margin: 0;
 }
@@ -141,10 +137,6 @@ table.ctools-collapsible-container thead {
 /* Set column widths */
 .forum-table-topics td.views-field-topic-icon {
   width: 26px;
-}
-
-.forum-table-topics td.views-field-title {
-  width: 50%;
 }
 
 .forum-table-topics td.views-field-comment-count,
