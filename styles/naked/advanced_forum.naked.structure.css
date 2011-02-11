@@ -107,25 +107,6 @@ th.forum-last-post {
   width: 20%;
 }
 
-/* Collapsable containers */
-table.ctools-collapsible-container thead {
-  cursor: pointer;
-}
-
-.ctools-toggle + table.ctools-collapsible-container th.forum-name a{
-  background-image: url('images/container_collapse.png');
-  background-repeat: no-repeat;
-  background-position: 3px center;
-  padding-left: 15px;
-}
-
-.ctools-toggle-collapsed + table.ctools-collapsible-container th.forum-name a{
-  background-image: url('images/container_expand.png');
-  background-repeat: no-repeat;
-  background-position: 3px center;
-  padding-left: 15px;
-}
-
 /**** Topic listing ****/
 
 .view-advanced-forum-topic-list .view-empty {

@@ -19,6 +19,7 @@ function advanced_forum_uninstall() {
   variable_del('advanced_forum_topic_pager_max');
   variable_del('advanced_forum_get_new_comments');
   variable_del('advanced_forum_use_topic_navigation');
+  variable_del('advanced_forum_collapsible_containers');
 }
 
 function advanced_forum_update_5000() {

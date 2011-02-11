@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+February 11, 2011
+-----------------
+#291084 by WorldFallz: Fixed most issues with collapsible containers.
+
 Feburary 5, 2011
 ----------------
 #868942 by Michelle: Changed forum-folder and forum-icon to forum-list-icon to reflect the fact that the icon is not necessarily a folder.

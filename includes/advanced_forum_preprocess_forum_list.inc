@@ -8,7 +8,11 @@
  */
 
 function _advanced_forum_preprocess_forum_list(&$variables) {
-  ctools_add_js("collapsible-div");
+  $variables['collapsible'] = variable_get('advanced_forum_collapsible_containers', 'toggle');
+  if ($variables['collapsible'] != 'none') {
+    drupal_add_js(drupal_get_path('module', 'advanced_forum') . '/js/advanced_forum.js','module');
+    drupal_add_js(array('advanced_forum' => array('effect' => $variables['collapsible'])), 'setting');
+  }
   advanced_forum_add_template_suggestions("forum-list", $variables['template_files']);
 
   // Determine if we want to use taxonomy image here so we don't need to keep

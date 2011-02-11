@@ -43,10 +43,10 @@
       </tbody></table>
     <?php endif; ?>
 
-    <table id="container-<?php print $container_number; ?>" class="forum-table forum-table-forums ctools-collapsible-remember ctools-no-container ctools-collapsible-container">
+    <table id="container-<?php print $container_number; ?>" class="forum-table forum-table-forums">
       <thead class="forum-header">
         <tr>
-          <th colspan="<?php print ($use_taxonomy_image ? 3 : 2) ?>" class="forum-name ctools-collapsible-handle">
+          <th colspan="<?php print ($use_taxonomy_image ? 3 : 2) ?>" class="forum-name">
             <a href="<?php print $forum->link; ?>"><?php print $forum->name; ?></a>
           </th>
 
@@ -56,7 +56,7 @@
         </tr>
       </thead>
 
-      <tbody id="container-<?php print $container_number; ?>-content" class="ctools-collapsible-content">
+      <tbody id="container-<?php print $container_number; ?>-content">
         <?php if ($forum->description): ?>
           <tr class="container-description">
             <td colspan="<?php print ($use_taxonomy_image ? 6 : 5) ?>">
@@ -68,7 +68,7 @@
   <?php else: ?> <?php // *** Start forum row *** ?>
     <?php if ($forum->depth == 1): ?>
     
-      <tr id="forum-<?php print $forum_id; ?>" class="forum-row <?php print $forum->zebra; ?>  container-<?php print $container_number; ?>-child">
+      <tr id="forum-<?php print $forum_id; ?>" class="forum-row <?php print $forum->zebra; ?>  container-<?php print $forum_id; ?>-child">
         
         <td class="<?php print $forum->icon_classes ?>">
           <span class="forum-list-icon-wrapper"><span><?php print $forum->icon_text ?></span></span>
