@@ -2,6 +2,10 @@ $Id$
 
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+February 14, 2011
+-----------------
+#868942 by __Sander__, Michelle: Added CSS for missed icon on first unread link.
+
 February 11, 2011
 -----------------
 #291084 by WorldFallz: Fixed most issues with collapsible containers.
