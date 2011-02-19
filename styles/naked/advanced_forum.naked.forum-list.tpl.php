@@ -52,7 +52,12 @@
 
           <th class="forum-number-topics"><?php print t('Topics');?></th>
           <th class="forum-posts"><?php print t('Posts'); ?></th>
-          <th class="forum-last-post"><?php print t('Last post'); ?></th>
+          <th class="forum-last-post">
+            <?php print t('Last post'); ?>
+            <?php if ($collapsible): ?>
+              <span id="forum-collapsible-<?php print $forum_id;?>" class="advanced-forum-toggle">&nbsp;</span>
+            <?php endif; ?>
+          </th>
         </tr>
       </thead>
 

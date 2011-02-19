@@ -1,184 +1,105 @@
 //$Id$
 (function ($) {
-  if (!Drupal.advanced_forum) {
-    Drupal.advanced_forum = {};
-  }
+  Drupal.advanced_forum = Drupal.advanced_forum || {};
 
-  /**
-   * Object to store state.
-   *
-   * This object will remember the state of collapsible containers. The first
-   * time a state is requested, it will check the cookie and set up the variable.
-   * If a state has been changed, when the window is unloaded the state will be
-   * saved.
-   */
-  Drupal.advanced_forum.Collapsible = {
-    state: {},
-    stateLoaded: false,
-    stateChanged: false,
-    cookieString: 'advanced_forum-collapsible-state=',
-
-    /**
-     * Get the current collapsed state of a container.
-     *
-     * If set to 1, the container is open. If set to -1, the container is
-     * collapsed. If unset the state is unknown, and the default state should
-     * be used.
-     */
-    getState: function (id) {
-      if (!this.stateLoaded) {
-        this.loadCookie();
-      }
-
-      return this.state[id];
-    },
-
-    /**
-     * Set the collapsed state of a container for subsequent page loads.
-     *
-     * Set the state to 1 for open, -1 for collapsed.
-     */
-    setState: function (id, state) {
-      if (!this.stateLoaded) {
-        this.loadCookie();
-      }
-
-      this.state[id] = state;
-
-      if (!this.stateChanged) {
-        this.stateChanged = true;
-        $(window).unload(this.unload);
-      }
-    },
-
-    /**
-     * Check the cookie and load the state variable.
-     */
-    loadCookie: function () {
-      // If there is a previous instance of this cookie
-      if (document.cookie.length > 0) {
-        // Get the number of characters that have the list of values
-        // from our string index.
-        offset = document.cookie.indexOf(this.cookieString);
-
-        // If its positive, there is a list!
-        if (offset != -1) {
-          offset += this.cookieString.length;
-          var end = document.cookie.indexOf(';', offset);
-          if (end == -1) {
-            end = document.cookie.length;
-          }
-
-          // Get a list of all values that are saved on our string
-          var cookie = unescape(document.cookie.substring(offset, end));
-
-          if (cookie != '') {
-            var cookieList = cookie.split(',');
-            for (var i = 0; i < cookieList.length; i++) {
-              var info = cookieList[i].split(':');
-              this.state[info[0]] = info[1];
-            }
-          }
+  Drupal.behaviors.advanced_forum = function(context) {
+    // Retrieve collapsed status from stored cookie.
+    // cookie format is: "/page1=1,2,3/page2=1,4,5/page3=5,6,1"
+    var cookieString = 'Drupal.advanced_forum.collapsed=';
+    if (document.cookie.length > 0) {
+      offset = document.cookie.indexOf(cookieString);
+      if (offset != -1) {
+        offset += cookieString.length;
+        var end = document.cookie.indexOf(';', offset);
+        if (end == -1) {
+          end = document.cookie.length;
         }
+        var cookie = unescape(document.cookie.substring(offset, end));
       }
-
-      this.stateLoaded = true;
-    },
-
-    /**
-     * Turn the state variable into a string and store it in the cookie.
-     */
-    storeCookie: function () {
-      var cookie = '';
-
-      // Get a list of IDs, saparated by comma
-      for (i in this.state) {
-        if (cookie != '') {
-          cookie += ',';
-        }
-        cookie += i + ':' + this.state[i];
-      }
-
-      // Save this values on the cookie
-      document.cookie = this.cookieString + escape(cookie) + ';path=/';
-    },
-
-    /**
-     * Respond to the unload event by storing the current state.
-     */
-    unload: function() {
-      Drupal.advanced_forum.Collapsible.storeCookie();
     }
+    var pages = cookie ? cookie.split('/') : new Array();
+
+    // Create associative array where key=page path and value=comma-separated list of collapsed forum ids
+    Drupal.advanced_forum.collapsed_page = new Array();
+    if (pages) {
+      for (x in pages) {
+        tmp = pages[x].split('=');
+        Drupal.advanced_forum.collapsed_page[tmp[0]] = tmp[1].split(',');
+      }
+    }
+
+    // Get data for current page
+    Drupal.advanced_forum.collapsed_current = Drupal.advanced_forum.collapsed_page[encodeURIComponent(window.location.pathname)];
+    if (!Drupal.advanced_forum.collapsed_current) Drupal.advanced_forum.collapsed_current = new Array();
+    var handleSpan = $('span.advanced-forum-toggle', context);
+
+    // Set initial collapsed state
+    handleSpan.not('.advanced-forum-collapsible-processed').addClass('advanced-forum-collapsible-processed').each(Drupal.advanced_forum.init);
+
+    // Set click handler
+    handleSpan.addClass('clickable').click(function() {
+
+      // Get forum id
+      var id = $(this).attr('id').split('-')[2];
+
+      if ($(this).hasClass('advanced-forum-collapsed')) {
+        Drupal.advanced_forum.expand(id);
+        Drupal.advanced_forum.collapsed_current.splice(Drupal.advanced_forum.collapsed_current.indexOf(id),1);
+      }
+      else {
+        Drupal.advanced_forum.collapse(id);
+        Drupal.advanced_forum.collapsed_current.push(id);
+      }
+
+      // Store updated status
+      Drupal.advanced_forum.collapsed_page[encodeURIComponent(window.location.pathname)] = Drupal.advanced_forum.collapsed_current;
+
+      // Build cookie string
+      cookie = '';
+      for(x in Drupal.advanced_forum.collapsed_page) {
+        cookie += '/' + x + '=' + Drupal.advanced_forum.collapsed_page[x];
+      }
+      // Save new cookie
+      var exp_date = new Date(2020, 0, 1);
+      document.cookie = cookieString + encodeURIComponent(cookie.substr(1)) + '; expires=' + exp_date.toUTCString() + '; path=/';
+    });
   };
 
-  // Set up an array for callbacks.
-  Drupal.advanced_forum.CollapsibleCallbacks = [];
-  Drupal.advanced_forum.CollapsibleCallbacksAfterToggle = [];
-
   /**
-   * Bind collapsible behavior to a given container.
+   * Initialize and set collapsible status
    */
-  Drupal.advanced_forum.bindCollapsible = function () {
-    var $container = $(this);
-    var handle = $container.children('.forum-table thead');
-    var content = $container.children('.forum-table tbody');
+  Drupal.advanced_forum.init = function() {
+    // get forum id
+    var id = $(this).attr('id').split('-')[2];
 
-    if (content.length) {
-      var toggle = $('<span class="advanced-forum-toggle">&nbsp;</span>');
-      handle.find('th:last-child').append(toggle);
-      var state = Drupal.advanced_forum.Collapsible.getState($container.attr('id'));
-      if (state == 1) {
-        $container.removeClass('advanced-forum-collapsed');
-      }
-      else if (state == -1) {
-        $container.addClass('advanced-forum-collapsed');
-      }
-
-      // If we should start collapsed, do so:
-      if ($container.hasClass('advanced-forum-collapsed')) {
-        toggle.toggleClass('advanced-forum-toggle-collapsed');
-        content.hide();
-      }
-
-      var afterToggle = function () {
-        if (Drupal.advanced_forum.CollapsibleCallbacksAfterToggle) {
-          for (i in Drupal.advanced_forum.CollapsibleCallbacksAfterToggle) {
-            Drupal.advanced_forum.CollapsibleCallbacksAfterToggle[i]($container, handle, content, toggle);
-          }
-        }
-      }
-
-      var clickMe = function () {
-        if (Drupal.advanced_forum.CollapsibleCallbacks) {
-          for (i in Drupal.advanced_forum.CollapsibleCallbacks) {
-            Drupal.advanced_forum.CollapsibleCallbacks[i]($container, handle, content, toggle);
-          }
-        }
-
-        if (Drupal.settings.advanced_forum.effect == 'toggle') {
-          content.toggle(0, afterToggle);
-        } else {
-          //content.fadeToggle(0, afterToggle); // jquery 1.4.4 and up only
-          content.animate({opacity: 'toggle'}, 150, afterToggle);
-        }
-
-        toggle.toggleClass('advanced-forum-toggle-collapsed');
-
-        var state = toggle.hasClass('advanced-forum-toggle-collapsed') ? -1 : 1;
-        Drupal.advanced_forum.Collapsible.setState($container.attr('id'), state);
-      }
-
-      // Make toggle clickable.
-      toggle.click(clickMe);
+    // Check if item is collapsed
+    if (Drupal.advanced_forum.collapsed_current.indexOf(id) != -1) {
+      $('#forum-collapsible-' + id).addClass('advanced-forum-collapsed').closest('table').children('tbody').hide();
+    } else {
+      $('#forum-collapsible-' + id).removeClass('advanced-forum-collapsed').closest('table').children('tbody').show();
     }
   };
 
   /**
-   * Support Drupal's 'behaviors' system for binding.
+   * Collapse forum.
    */
-  Drupal.behaviors.advanced_forumCollapsible = function(context) {
-    $('.forum-table:not(.advanced-forum-collapsible-processed)', context)
-      .each(Drupal.advanced_forum.bindCollapsible)
-      .addClass('advanced-forum-collapsible-processed');
-  }
+  Drupal.advanced_forum.collapse = function(id) {
+    if (Drupal.settings.advanced_forum.effect == 'toggle') {
+      $('#forum-collapsible-' + id).addClass('advanced-forum-collapsed').closest('table').children('tbody').hide();
+    } else {
+      $('#forum-collapsible-' + id).addClass('advanced-forum-collapsed').closest('table').children('tbody').fadeOut(150);
+    }
+  };
+
+  /**
+   * Expand forum.
+   */
+  Drupal.advanced_forum.expand = function(id) {
+    if (Drupal.settings.advanced_forum.effect == 'toggle') {
+      $('#forum-collapsible-' + id).removeClass('advanced-forum-collapsed').closest('table').children('tbody').show();
+    } else {
+      $('#forum-collapsible-' + id).removeClass('advanced-forum-collapsed').closest('table').children('tbody').fadeIn(150);
+    }
+  };
+
 })(jQuery);
