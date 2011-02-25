@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * @file
  * Theme implementation to display information about the post/profile author.
