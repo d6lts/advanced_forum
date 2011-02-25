@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @file advanced_forum.naked.topic-navigation.tpl.php

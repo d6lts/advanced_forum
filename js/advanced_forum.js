@@ -1,4 +1,3 @@
-//$Id$
 (function ($) {
   Drupal.advanced_forum = Drupal.advanced_forum || {};
 
