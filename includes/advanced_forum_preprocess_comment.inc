@@ -44,22 +44,22 @@ function _advanced_forum_preprocess_comment(&$variables) {
   if ($node->uid > 0 && $node->uid == $comment->uid) {
     $classes[] = "post-by-starter";
   }
-  
+
   // Add class if post is new. Comment is used here instead of post for
   // consistency with Node Comments.
   if (!empty($comment->new)) {
     $classes[] = "comment-new";
-  }  
+  }
 
   // Create the template variable.
   $variables['advanced_forum_classes'] = implode(' ', $classes);
-  
+
   /* New marker */
   $variables['new_marker'] = '';
   static $new_anchor_shown = FALSE;
-  
+
   if (!empty($comment->new)) {
-    if ($new_anchor_shown) {   
+    if ($new_anchor_shown) {
       $variables['new_marker'] = '<span class="new">' . t('(new)') . '</span>';
     }
     else {
@@ -107,11 +107,11 @@ function _advanced_forum_preprocess_comment(&$variables) {
   if ($comment->pid > 0) {
     // Find the display position of the parent post;.
     $post_position = advanced_forum_post_position($node->nid, $comment->pid);
-   
+
     // This extra if test is a sanity check in case the comment being replied
     // to no longer exists.
     if ($post_position > 0) {
-      // Find the page the post is on. We need to compensate for the topic node 
+      // Find the page the post is on. We need to compensate for the topic node
       // being #1 which puts an extra post on the first page but not on the rest.
       $page_number = floor(($post_position - 2) / $posts_per_page);
 
@@ -170,7 +170,7 @@ function _advanced_forum_preprocess_comment(&$variables) {
       $variables['signature'] = check_markup($variables['account']->signature, $variables['account']->signature_format, FALSE);
     }
   }
-  
+
   /* Post edited */
   $variables['post_edited'] = (isset($variables['comment_edited'])) ? $variables['comment_edited'] : "";
 }

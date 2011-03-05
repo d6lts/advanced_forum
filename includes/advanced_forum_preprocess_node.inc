@@ -12,7 +12,7 @@ function _advanced_forum_preprocess_node(&$variables) {
 
   $node_parent_id = '';
   if (!empty($variables['node']->comment_target_nid)) {
-    // This is a Node Comments reply node so grab the parent id and load the 
+    // This is a Node Comments reply node so grab the parent id and load the
     // parent node for use below.
     $node_parent_id = $variables['node']->comment_target_nid;
     $parent_node = node_load($node_parent_id);
@@ -31,9 +31,9 @@ function _advanced_forum_preprocess_node(&$variables) {
   }
   elseif (arg(0) != 'node' || arg(1) < 1) {
     // We aren't on the node page so use the teaser template.
-    advanced_forum_add_template_suggestions("post-teaser", $variables['template_files']);    
+    advanced_forum_add_template_suggestions("post-teaser", $variables['template_files']);
   }
-  else {  
+  else {
     // Use our combined node/comment template file
     advanced_forum_add_template_suggestions("post", $variables['template_files']);
   }
@@ -71,10 +71,10 @@ function _advanced_forum_preprocess_node(&$variables) {
   if ($node_parent_id && $node->uid > 0 && $node->uid == $parent_node->uid) {
     $classes[] = "post-by-starter";
   }
-    
+
   // Create the template variable.
   $variables['advanced_forum_classes'] = implode(' ', $classes);
-  
+
   /* New marker */
   // This is dealt with in the caching section. Initialized here to avoid
   // notices on the top post.
@@ -122,11 +122,11 @@ function _advanced_forum_preprocess_node(&$variables) {
   if (!empty($node->comment_target_cid)) {
     // Find the display position of the parent post;.
     $post_position = advanced_forum_post_position($node_parent_id, $node->comment_target_cid);
-    
+
     // This extra if test is a sanity check in case the comment being replied
     // to no longer exists.
     if ($post_position > 0) {
-      // Find the page the post is on. We need to compensate for the topic node 
+      // Find the page the post is on. We need to compensate for the topic node
       // being #1 which puts an extra post on the first page but not on the rest.
       $page_number = floor(($post_position - 2) / $posts_per_page);
 
@@ -137,11 +137,11 @@ function _advanced_forum_preprocess_node(&$variables) {
       $linkpath = "node/$parent_node->nid";
       $variables['in_reply_to'] = l($linktext, $linkpath, array('query' => $query, 'fragment' => $fragment));
     }
-  }  
+  }
 
   /* User information / author pane */
   $variables['account'] = user_load(array('uid' => $node->uid));
-  
+
   if (!module_exists('author_pane')) {
     // If not using the Author Pane module, create a simple version with just
     // name and photo. If using AP, that's handled down in the
@@ -158,13 +158,13 @@ function _advanced_forum_preprocess_node(&$variables) {
 
   /* Signatures */
   if (module_exists('signature_forum')) {
-    // If Signatures for Forums is installed, use that. 
+    // If Signatures for Forums is installed, use that.
     // Note: we cannot get around the signature being cached because we would
     // need to do a full node load to get all the info SfF needs to replace
     // the token and that would counteract the caching.
     $variables['signature'] = signature_forum_get_signature($node);
   }
-  
+
   /* Uncached variables */
   // Node Comment caches the whole topic for performance reasons. This is
   // incompatable with any variables that change based on who's viewing the
@@ -176,26 +176,26 @@ function _advanced_forum_preprocess_node(&$variables) {
     if (module_exists('author_pane')) {
       $variables['author_pane'] = '<!--post:author-pane-' . $node->uid . '-->';
     }
-  
+
     /* Revisions */
     if ($variables['created'] != $variables['revision_timestamp']) {
-      $variables['post_edited'] = '<!--post:post-edited-' . $node->nid . '-->';    
+      $variables['post_edited'] = '<!--post:post-edited-' . $node->nid . '-->';
     }
-  
+
     /* Signatures */
     if (!module_exists('signature_forum') && variable_get('user_signatures', 0)) {
-      // Signature for Forums module not enabled; load Drupal's built in one, 
+      // Signature for Forums module not enabled; load Drupal's built in one,
       // if enabled.
       $variables['signature'] =  '<!--post:signature-core-' . $node->uid . '-->';
     }
-    
-    /* User specific node theming class */   
+
+    /* User specific node theming class */
     // Add class if the poster is the viewer.
     $variables['advanced_forum_classes'] .= ' <!--post:poster-id-' . $node->uid . '-->';
-    
+
     /* New marker */
     // This is handled by Node Comments. Just make sure the tokens are printed.
-    $variables['new_marker'] = $variables['first_new'] . ' ' . $variables['new_output'];  
+    $variables['new_marker'] = $variables['first_new'] . ' ' . $variables['new_output'];
   }
   else {
     // Create variables normally.
@@ -215,11 +215,11 @@ function _advanced_forum_preprocess_node(&$variables) {
         $variables['signature'] = check_markup($variables['account']->signature, $variables['account']->signature_format, FALSE);
       }
     }
-    
-    /* Viewer is poster class */   
+
+    /* Viewer is poster class */
     global $user;
     if ($user->uid > 0 && $user->uid == $node->uid) {
       $variables['advanced_forum_classes'] .= " post-by-viewer";
-    }   
-   }
+    }
+  }
 }

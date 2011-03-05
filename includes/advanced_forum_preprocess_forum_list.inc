@@ -14,7 +14,7 @@ function _advanced_forum_preprocess_forum_list(&$variables) {
   // Add needed items for the collapsible containers.
   $variables['collapsible'] = variable_get('advanced_forum_collapsible_containers', 'toggle');
   if ($variables['collapsible'] != 'none') {
-    drupal_add_js(drupal_get_path('module', 'advanced_forum') . '/js/advanced_forum.js','module');
+    drupal_add_js(drupal_get_path('module', 'advanced_forum') . '/js/advanced_forum.js', 'module');
     drupal_add_js(array('advanced_forum' => array('effect' => $variables['collapsible'])), 'setting');
   }
 
@@ -113,7 +113,7 @@ function _advanced_forum_preprocess_forum_list(&$variables) {
 
         // Set the variable to control the row striping.
         $item->zebra = advanced_forum_stripe();
-        
+
         // Add the container info to the table's item list.
         $tables[$table_counter]['items'][$id] = $item;
       }
@@ -136,7 +136,7 @@ function _advanced_forum_preprocess_forum_list(&$variables) {
         $item->icon_classes = "forum-list-icon forum-list-icon-default";
         $item->icon_text = t("No new");
       }
-      
+
       if ($item_depth == 0) {
         // This is a forum at the root. If it is the first or the first
         // since the last container, make a new table. Otherwise, put it in
@@ -156,7 +156,7 @@ function _advanced_forum_preprocess_forum_list(&$variables) {
 
         // Set the variable to control the row striping.
         $item->zebra = advanced_forum_stripe();
-        
+
         // Add the forum info to the table's item list.
         $tables[$table_counter]['items'][$id] = $item;
       }
@@ -187,7 +187,7 @@ function _advanced_forum_preprocess_forum_list(&$variables) {
       }
     }
   }
-  
+
   $variables['tables'] = $tables;
 
   // Remove unneeded variables.
@@ -267,15 +267,15 @@ function advanced_forum_process_forum($forum) {
   // have new content or even any content at all.
   $forum->total_topics = 0;
   $forum->child_total_topics = 0;
-  
+
   $forum->new_topics = 0;
   $forum->new_topics_text = '';
   $forum->new_topics_link = '';
   $forum->child_new_topics = 0;
-  
+
   $forum->total_posts = 0;
   $forum->child_total_posts = 0;
-  
+
   $forum->new_posts = 0;
   $forum->new_posts_text = '';
   $forum->new_posts_link = '';
@@ -284,17 +284,17 @@ function advanced_forum_process_forum($forum) {
   // Rename these to make them more descriptive.
   if (isset($forum->num_topics)) {
     $forum->total_topics = $forum->num_topics;
-    unset ($forum->num_topics);
+    unset($forum->num_topics);
   }
-  
+
   if (isset($forum->num_posts)) {
     $forum->total_posts = $forum->num_posts;
-    unset ($forum->num_posts);
+    unset($forum->num_posts);
   }
 
   // If the viewer is authenticated, check for new topics and posts.
   global $user;
-  if ($user->uid) { 
+  if ($user->uid) {
     // New topics.
     $forum->new_topics = _forum_topics_unread($forum->tid, $user->uid);
     if ($forum->new_topics) {

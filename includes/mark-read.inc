@@ -14,13 +14,13 @@ function advanced_forum_get_mark_read_link($tid = 0, &$links = array()) {
     if ($tid) {
       $links['mark-read']['title'] = t('Mark all topics read');
       $links['mark-read']['href'] = "forum/markasread/$tid";
-      
+
       return l(t('Mark all topics read') . '<span class="image-replace"></span>', "forum/markasread/$tid", array('html' => TRUE));
     }
     else {
       $links['mark-read']['title'] = t('Mark all forums read');
       $links['mark-read']['href'] = "forum/markasread";
-      
+
       return l(t('Mark all forums read') . '<span class="image-replace"></span>', "forum/markasread", array('html' => TRUE));
     }
   }

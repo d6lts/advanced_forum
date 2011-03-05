@@ -5,7 +5,7 @@
  * Field handler to display the topic icon.
  */
 
- class advanced_forum_handler_field_node_topic_icon extends views_handler_field{
+class advanced_forum_handler_field_node_topic_icon extends views_handler_field{
   function construct() {
     parent::construct();
     $this->additional_fields = array('nid' => 'nid', 'type' => 'type');

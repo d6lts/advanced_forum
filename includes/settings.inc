@@ -36,7 +36,7 @@ function advanced_forum_settings_page() {
   // Choose node types that are styled.
   $node_types = node_get_types();
   $options = array();
-  foreach($node_types as $node_machine_name => $node_type) {
+  foreach ($node_types as $node_machine_name => $node_type) {
     $options[$node_machine_name] = $node_type->name;
   }
 
@@ -72,25 +72,25 @@ function advanced_forum_settings_page() {
     '#default_value' => variable_get('advanced_forum_style_all_comments', 0),
     '#description' => t('If checked, every comment will be styled as if it were a forum reply. This only works on comments from the core comment module. Nodecomments can be selected in the node type selection.'),
   );
-  
+
   $form['advanced_forum_general']['advanced_forum_add_local_task'] = array(
     '#type' => 'checkbox',
     '#title' => t('Add a tab for forum view page.'),
     '#default_value' => variable_get('advanced_forum_add_local_task', TRUE),
     '#description' => t('If checked, this will add a local task tab for "View forums". Use this in conjunction with making the included views have local tasks. If you don\'t know what this means, leave it unchecked. You must clear the cache before this will take effect.'),
   );
-  
+
   $form['advanced_forum_general']['advanced_forum_views_as_tabs'] = array(
     '#type' => 'checkbox',
     '#title' => t('Add a tab for included views that have their own pages.'),
     '#default_value' => variable_get('advanced_forum_views_as_tabs', TRUE),
     '#description' => t('If checked, this will add a local task tab for "Active topics," "New posts," "My posts," and "Unanswered topics." If you don\'t know what this means, leave it unchecked. You must clear the cache before this will take effect.'),
   );
-  
+
   $form['advanced_forum_general']['advanced_forum_collapsible_containers'] = array(
     '#type' => 'select',
     '#title' => t('Collapsible Forum Containers'),
-    '#options' => array (
+    '#options' => array(
       'none' => t("None"),
       'toggle' => t("Toggle"),
       'fade' => t("Fade"),
@@ -117,7 +117,7 @@ function advanced_forum_settings_page() {
 
   // Taxonomy image on forum list
   if (function_exists('taxonomy_image_display')) {
-     $form['advanced_forum_lists']['advanced_forum_use_taxonomy_image'] = array(
+    $form['advanced_forum_lists']['advanced_forum_use_taxonomy_image'] = array(
       '#type' => 'checkbox',
       '#title' => t('Use taxonomy image in forum listing'),
       '#default_value' => variable_get('advanced_forum_use_taxonomy_image', TRUE),

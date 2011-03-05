@@ -28,7 +28,7 @@ function advanced_forum_menu() {
     'page arguments' => array('advanced_forum_settings_page'),
     'page callback' => 'drupal_get_form',
     'title' => 'Advanced Forum',
-    'file' => 'includes/settings.inc'    
+    'file' => 'includes/settings.inc'
   );
 
   $items['forum/markasread'] = array(
@@ -39,7 +39,7 @@ function advanced_forum_menu() {
 
   if (variable_get('advanced_forum_add_local_task', TRUE)) {
     $items['forum/view'] = array(
-      'title' => t('View Forums'),
+      'title' => 'View Forums',
       'page callback' => 'advanced_forum_page',
       'access arguments' => array('access content'),
       'type' => MENU_DEFAULT_LOCAL_TASK,
@@ -59,110 +59,111 @@ function advanced_forum_menu_alter(&$callbacks) {
 
   // Turn 'forum' into a normal menu item so it appears in navigation.
   $callbacks['forum']['type'] = MENU_NORMAL_ITEM;
- }
+}
 
 /**
  * Implementation of hook_theme().
  */
 function advanced_forum_theme() {
   $items['advanced_forum_l'] = array(
-      'arguments' => array(
-        'text' => NULL,
-        'path' => NULL,
-        'options' => array(),
-        'button_class' => NULL,
-      )
+    'arguments' => array(
+      'text' => NULL,
+      'path' => NULL,
+      'options' => array(),
+      'button_class' => NULL,
+    )
   );
 
   $items['advanced_forum_statistics'] = array(
-      'template' => 'advanced_forum-statistics',
+    'template' => 'advanced_forum-statistics',
   );
 
   $items['advanced_forum_topic_legend'] = array(
-      'template' => 'advanced_forum-topic-legend',
+    'template' => 'advanced_forum-topic-legend',
   );
 
   $items['advanced_forum_topic_header'] = array(
-      'template' => 'advanced_forum-topic-header',
-      'arguments' => array(
-        'node' => NULL,
-        'comment_count' => NULL,
-        )
+    'template' => 'advanced_forum-topic-header',
+    'arguments' => array(
+      'node' => NULL,
+      'comment_count' => NULL,
+    )
   );
+
   $items['advanced_forum_active_poster'] = array(
-      'template' => 'advanced_forum-active-poster',
-      'arguments' => array(
-        'forum' => NULL,
-        'account' => NULL,
-        'posts' => NULL,
-        'topics' => NULL,
-        'last_post' => NULL,
-        )
+    'template' => 'advanced_forum-active-poster',
+    'arguments' => array(
+      'forum' => NULL,
+      'account' => NULL,
+      'posts' => NULL,
+      'topics' => NULL,
+      'last_post' => NULL,
+    )
   );
 
   $items['advanced_forum_forum_legend'] = array(
-      'template' => 'advanced_forum-forum-legend',
+    'template' => 'advanced_forum-forum-legend',
   );
 
   $items['advanced_forum_user_picture'] = array(
-      'arguments' => array(
-        'account' => NULL,
-        )
+    'arguments' => array(
+      'account' => NULL,
+    )
   );
 
   $items['advanced_forum_reply_link'] = array(
-      'arguments' => array(
-        'node' => NULL,
-        )
+    'arguments' => array(
+      'node' => NULL,
+    )
   );
 
   $items['advanced_forum_topic_pager'] = array(
-      'arguments' => array(
-         'pagecount' => NULL,
-         'topic' => NULL,
-        )
+    'arguments' => array(
+       'pagecount' => NULL,
+       'topic' => NULL,
+    )
   );
 
   $items['advanced_forum_shadow_topic'] = array(
-      'arguments' => array(
-         'title' => NULL,
-         'nid' => NULL,
-         'new_forum' => NULL,
-        )
+    'arguments' => array(
+       'title' => NULL,
+       'nid' => NULL,
+       'new_forum' => NULL,
+    )
   );
 
   $items['advanced_forum_subforum_list'] = array(
-      'arguments' => array(
-         'subforum_list' => NULL,
-       )
+    'arguments' => array(
+      'subforum_list' => NULL,
+    )
   );
 
   $items['advanced_forum_subcontainer_list'] = array(
-      'arguments' => array(
-         'subcontainer_list' => NULL,
-       )
+    'arguments' => array(
+       'subcontainer_list' => NULL,
+    )
   );
-  
+
   $items['advanced_forum_simple_author_pane'] = array(
-      'arguments' => array(
-        'context' => NULL,
-        )
+    'arguments' => array(
+      'context' => NULL,
+    )
   );
-  
+
   $items['advanced_forum_post_edited'] = array(
-      'arguments' => array(
-        'who' => NULL,
-        'when' => NULL,
-        'why' => NULL,
-        )
+    'arguments' => array(
+      'who' => NULL,
+      'when' => NULL,
+      'why' => NULL,
+    )
   );
-  
+
   $items['advanced_forum_node_type_create_list'] = array(
-      'arguments' => array(
-        'forum_id' => NULL,
-        )
+    'arguments' => array(
+      'forum_id' => NULL,
+    )
   );
-  
+
   // These only exist if nodecomment is on.
   if (module_exists('nodecomment')) {
     $items['advanced_forum_search_forum'] = array(
@@ -215,7 +216,7 @@ function advanced_forum_theme() {
  */
 function advanced_forum_theme_registry_alter(&$theme_registry) {
   advanced_forum_load_style_includes();
-  
+
   // Garland's phptemplate_comment_wrapper really sucks. Chances are, a theme
   // does NOT want to control this on forum nodes anyway, so we're going to take
   // it over:
@@ -236,7 +237,7 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
   // Don't let core do its basic preprocess for forums, as we want to do
   // other stuff now.
   foreach ($theme_registry['forums']['preprocess functions'] as $key => $value) {
-     if ($value == 'template_preprocess_forums') {
+    if ($value == 'template_preprocess_forums') {
       unset($theme_registry['forums']['preprocess functions'][$key]);
     }
   }
@@ -246,9 +247,9 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
   foreach ($theme_registry['forum_list']['preprocess functions'] as $key => $value) {
     if ($value == 'template_preprocess_forum_list') {
       unset($theme_registry['forum_list']['preprocess functions'][$key]);
-    }    
+    }
   }
-  
+
   // Views handles the topic list pages so remove the core template preprocess.
   foreach ($theme_registry['forum_topic_list']['preprocess functions'] as $key => $value) {
     if ($value == 'template_preprocess_forum_topic_list') {
@@ -260,7 +261,7 @@ function advanced_forum_theme_registry_alter(&$theme_registry) {
   // --- for the given templates can be found first in the (sub)theme directory
   // --- then in ancestor themes, if any, then in the active style directory
   // --- for advanced forum or any ancestor styles.
- 
+
   // Affected templates
   $templates = array('node',
                      'comment',
@@ -390,12 +391,12 @@ function advanced_forum_comment(&$a1, $op) {
  */
 function advanced_forum_link($type, $node = NULL, $teaser = FALSE) {
   $links = array();
-  
+
   if (advanced_forum_is_styled($node, $teaser, $type)) {
     if ($type == 'node' && (!isset($node->comment_target_nid))) {
       // Add edit / delete links to the node links to match replies.
-       if (node_access('update', $node)) {
-         $links['post_edit'] = array(
+      if (node_access('update', $node)) {
+        $links['post_edit'] = array(
           'title' => t('edit'),
           'href' => 'node/'. $node->nid .'/edit',
           'query' => drupal_get_destination(),
@@ -426,7 +427,7 @@ function advanced_forum_link($type, $node = NULL, $teaser = FALSE) {
           }
         }
       }
-    }  
+    }
   }
 
   return $links;
@@ -444,20 +445,20 @@ function advanced_forum_link_alter(&$links, $node, $comment = NULL) {
     $object = $comment;
     $object_type = 'comment';
   }
-  
+
   // Check if we are altering links on a node that is displayed in a teaser.
   // @TODO: Find out if there's a better way to tell if this is a teaser.
   $teaser = !(arg(0) == 'node' && arg(1) > 0);
-  
+
   if (advanced_forum_is_styled($object, $teaser, $object_type)) {
     // Change first post from "add comment" to "reply" if it isn't already.
     if (!empty($links['comment_add'])) {
       $links['comment_add']['title'] = t('reply');
     }
-   
+
     // List the keys we are interested in.
     $affected_keys = array('post_edit', 'comment_edit', 'post_delete', 'comment_delete', 'quote', 'comment_add', 'comment_reply', 'comment_mover_node_prune', 'comment_mover_comment_prune');
-    
+
     // Add extra span tags for image replacement.
     foreach ($links AS $key => $link) {
       if (in_array($key, $affected_keys)) {
@@ -467,15 +468,15 @@ function advanced_forum_link_alter(&$links, $node, $comment = NULL) {
         $links[$key]['html'] = TRUE;
       }
     }
-   
+
     // Put the links in a consistent order.
-	  foreach ($affected_keys as $key) { 
+    foreach ($affected_keys as $key) {
       if (isset($links[$key])) {
-        $temp = $links[$key]; 
-        unset($links[$key]); 
-        $links[$key] = $temp; 
+        $temp = $links[$key];
+        unset($links[$key]);
+        $links[$key] = $temp;
       }
-    } 
+    }
   }
 }
 
@@ -490,10 +491,10 @@ function advanced_forum_form_alter(&$form, &$form_state, $form_id) {
     $form['body_field']['teaser_js']['#access'] = FALSE;
     $form['body_field']['teaser_include']['#access'] = FALSE;
   }
-  
+
   // Add our OG view as a potential RON for organic groups.
   if (!empty($form['og_settings']['group_details']['og_home_page_view'])) {
-     $form['og_settings']['group_details']['og_home_page_view']['#options']['advanced_forum_group_topic_list'] = 'advanced_forum_group_topic_list';
+    $form['og_settings']['group_details']['og_home_page_view']['#options']['advanced_forum_group_topic_list'] = 'advanced_forum_group_topic_list';
   }
 }
 
@@ -571,8 +572,8 @@ function advanced_forum_views_post_render(&$view, &$output) {
         }
       }
     }
-    
-    // Replace the Post edited token. 
+
+    // Replace the Post edited token.
     if (preg_match_all('/<!--post:post-edited-([\d]+)-->/us', $output, $matches)) {
       foreach ($matches[1] as $match => $nid) {
         $token = $matches[0][$match]; // This is the exact string that matched.
@@ -589,8 +590,8 @@ function advanced_forum_views_post_render(&$view, &$output) {
         }
       }
     }
-    
-    // Replace the core Signature token. 
+
+    // Replace the core Signature token.
     if (preg_match_all('/<!--post:signature-core-([\d]+)-->/us', $output, $matches)) {
       foreach ($matches[1] as $match => $uid) {
         $token = $matches[0][$match]; // This is the exact string that matched.
@@ -609,7 +610,7 @@ function advanced_forum_views_post_render(&$view, &$output) {
         $token = $matches[0][$match]; // This is the exact string that matched.
         if (!isset($tokens[$token])) {
           global $user;
-          
+
           if ($user->uid > 0 && $uid == $user->uid) {
             // This post is by current user.
             $tokens[$token] = " post-by-viewer";
@@ -620,7 +621,7 @@ function advanced_forum_views_post_render(&$view, &$output) {
         }
       }
     }
-    
+
     // Perform replacements.
     $output = strtr($output, $tokens);
   }
@@ -686,7 +687,7 @@ function advanced_forum_forum_topic_list_sort_form(&$form_state) {
   );
 
   $form['inline']['submit'] = array(
-    '#id' => 'sort-topic-submit',  
+    '#id' => 'sort-topic-submit',
     '#name' => '',
     '#type' => 'submit',
     '#value' => t('Sort'),
@@ -808,14 +809,14 @@ function advanced_forum_get_reply_link($node) {
         // so it's automatically corrected for Node Comments if needed.
         $reply_link['href'] = $node->links['comment_add']['href'];
         $reply_link['options']['fragment'] = $fragment;
-        
+
         $reply_link['class'] = 'reply-allowed';
         $reply_link['title'] = t('Post reply');
-        
+
         return $reply_link;
       }
       else {
-        // Reply form is on same page. The reply button should jump down to it 
+        // Reply form is on same page. The reply button should jump down to it
         // rather than going to a new page.
         $reply_link['href'] = $_GET['q'];
         $reply_link['options']['fragment'] = $fragment;
@@ -851,13 +852,13 @@ function advanced_forum_last_post_link($node) {
   $last_comment_id = advanced_forum_last_post_in_topic($node->nid);
   $last_page = advanced_forum_get_last_page($node);
   $query = ($last_page > 0) ? "page=$last_page" : '';
-  
+
   $options = array(
-    'html' => TRUE, 
-    'query' => $query, 
-    'fragment' => "comment-$last_comment_id", 
+    'html' => TRUE,
+    'query' => $query,
+    'fragment' => "comment-$last_comment_id",
   );
-  
+
   return theme('advanced_forum_l', t('Last post'), "node/$node->nid", $options, 'large');
 }
 
@@ -878,19 +879,19 @@ function advanced_forum_first_new_post_link($node, $comment_count) {
 
   if ($number_new_comments > 0) {
     $page_of_first_new = advanced_forum_page_first_new($comment_count, $number_new_comments, $node);
-    
+
     // Note that we are linking to the cid anchor rather than "new" because
     // the new links will be gone if we go to another page.
     $cid_of_first_new = advanced_forum_first_new_comment($nid);
 
     $number_new = t("(!new new)", array('!new' => $number_new_comments));
-    
+
     $options = array(
       'html' => TRUE,
-      'query' => $page_of_first_new, 
+      'query' => $page_of_first_new,
       'fragment' => "comment-$cid_of_first_new"
     );
-    
+
     return theme('advanced_forum_l', t('First unread'), "node/$nid", $options, 'large');
   }
 }
@@ -919,7 +920,7 @@ function advanced_forum_reply_num_new($nid, $timestamp = 0) {
   // Make a static cache because this function is called twice from the topic
   // header. Once to display the number and once to make the link to first new.
   static $number_new_for_node = array();
-  
+
   if (empty($number_new_for_node[$nid])) {
     $node = node_load($nid);
     $comment_type = module_invoke('nodecomment', 'get_comment_type', $node->type);
@@ -930,7 +931,7 @@ function advanced_forum_reply_num_new($nid, $timestamp = 0) {
       $number_new_for_node[$nid] = comment_num_new($nid, $timestamp);
     }
   }
- 
+
   return $number_new_for_node[$nid];
 }
 
@@ -999,22 +1000,23 @@ function advanced_forum_first_new_comment($nid, $timestamp = 0) {
     $timestamp = ($timestamp > NODE_NEW_LIMIT ? $timestamp : NODE_NEW_LIMIT);
 
     // Use the timestamp to retrieve the oldest new comment.
-    if (module_exists('nodecomment')){
+    if (module_exists('nodecomment')) {
       $query = "SELECT nc.cid
                 FROM {node_comments} nc
                 INNER JOIN {node} n ON nc.cid = n.nid
-                WHERE nc.nid = %d AND n.changed > %d AND n.status = 1 
+                WHERE nc.nid = %d AND n.changed > %d AND n.status = 1
                 ORDER BY nc.cid";
       $result = db_result(db_query_range($query, $nid, $timestamp, 0, 1));
-   
+
     }
     else {
       $query = "SELECT c.cid
                 FROM {comments} c
-                WHERE c.nid = %d AND c.timestamp > %d AND c.status = %d 
+                WHERE c.nid = %d AND c.timestamp > %d AND c.status = %d
                 ORDER BY c.cid";
       $result = db_result(db_query_range($query, $nid, $timestamp, COMMENT_PUBLISHED, 0, 1));
-   }
+    }
+
     return $result;
   }
   else {
@@ -1037,13 +1039,13 @@ function advanced_forum_allowed_node_types($tid=0, $vid=0) {
     // If it doesn't, send back an empty list.
     if (!forum_access_access($tid, 'create', NULL, TRUE)) {
       return array();
-    }   
+    }
   }
-  
+
   // If no vocabulary is passed in, assume it should be the forum vocab.
   $vid = (empty($vid)) ? variable_get('forum_nav_vocabulary', '') : $vid;
   $vocabulary = taxonomy_vocabulary_load($vid);
- 
+
   if (is_array($vocabulary->nodes)) {
     // There are some node types associated with this vocab so return them.
     return $vocabulary->nodes;
@@ -1089,7 +1091,7 @@ function advanced_forum_node_type_create_list($tid) {
       // @TODO: this is a little dodgy and may not work right with
       // translations. Should be replaced if there's a better way.
       $node_type = str_replace('Forum', '', $node_type);
-      
+
       // Push the link with title and url to the array.
       $forum_types[$type] = array(
         'name' => $node_type,
@@ -1120,32 +1122,32 @@ function advanced_forum_node_type_create_list($tid) {
  */
 function advanced_forum_forum_tools($tid=0) {
   global $user;
-  
+
   if ($tid > 0) {
     $targets[url("forum/active", array('query' => "forum[]=$tid"))] = t('View active posts in this forum');
     $targets[url("forum/unanswered", array('query' => "forum[]=$tid"))] = t('View unanswered posts in this forum');
-    
+
     if ($user->uid) {
       $targets[url("forum/new", array('query' => "forum[]=$tid"))] = t('View new posts in this forum');
-      
+
       if (module_exists('nodecomment')) {
         $targets[url("forum/user", array('query' => "forum[]=$tid"))] = t('View your posts in this forum');
-      }    
-    }    
+      }
+    }
   }
   else {
     $targets[url("forum/active")] = t('View active forum posts');
     $targets[url("forum/unanswered")] = t('View unanswered forum posts');
-    
+
     if ($user->uid) {
       $targets[url("forum/new")] = t('View new forum posts');
-      
+
       if (module_exists('nodecomment')) {
         $targets[url("forum/user")] = t('View your forum posts');
       }
-    }      
+    }
   }
-  
+
   // Add mark as read to the jump list.
   // This code is a little odd and needs explaining. The return value of
   // the mark_as_read function is already formed HTML and so is unsuitable
@@ -1285,10 +1287,10 @@ function advanced_forum_post_position($node_id, $post_id) {
   if (!isset($post_order[$node_id])) {
     // Initialize the spot for this node's list.
     $post_order[$node_id] = array();
-    
+
     // Make this work with either core comments or node comments.
     $table = (module_exists('nodecomment')) ? "node_comments" : "comments";
-    
+
     // Get the list of CIDs from the database in order of oldest first.
     // We are going to make that assumption for now for simplicity but may
     // revisit in the future if there are requests for newest first.
@@ -1307,9 +1309,9 @@ function advanced_forum_post_position($node_id, $post_id) {
     if (($index = array_search($post_id, $post_order[$node_id])) !== FALSE) {
       $post_position = $index;
 
-      // We need to add 2 because the array starts at 0 and also because the topic 
+      // We need to add 2 because the array starts at 0 and also because the topic
       // node is post #1 on display but is not included in the index.
-      $post_position = $post_position + 2;     
+      $post_position = $post_position + 2;
     }
   }
 

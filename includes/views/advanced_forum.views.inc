@@ -69,7 +69,7 @@ function advanced_forum_views_handlers() {
 }
 
 /**
- * Implementation of hook_views_plugins
+ * Implementation of hook_views_plugins().
  */
 function advanced_forum_views_plugins() {
   $path = drupal_get_path('module', 'advanced_forum') . '/includes/views';
@@ -94,13 +94,13 @@ function advanced_forum_views_plugins() {
 }
 
 /**
- * Implementation of hook_views_data()
+ * Implementation of hook_views_data().
  */
 function advanced_forum_views_data() {
   $data = array();
   // ----------------------------------------------------------------------
   // forum table
-  
+
   // Have not defined $data['forum']['table']['group'] since
   // no fields are defined here yet.
   $data['forum']['table']['join'] = array(
@@ -113,6 +113,6 @@ function advanced_forum_views_data() {
       'field' => 'vid',
     ),
   );
-  
+
   return $data;
 }

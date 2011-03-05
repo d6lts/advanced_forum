@@ -134,7 +134,7 @@ td.forum-number-posts {
 }
 
 th.forum-icon {
- width: 5%;
+ width: 70px;
 }
 
 th.forum-number-topics,
@@ -452,3 +452,13 @@ th.forum-last-post {
 .forum-search-result {
   margin-bottom: 10px;
 }
+
+/*** GENERAL ****************************************************************/
+
+/* Accessibly hide text. Copied from D7 core and so not needed in D7 AF */
+.element-invisible {
+  position: absolute !important;
+  clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+  clip: rect(1px, 1px, 1px, 1px);
+}
+  

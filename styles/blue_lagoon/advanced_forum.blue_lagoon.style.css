@@ -110,7 +110,7 @@ see advanced_forum-structure.css.
 
 /* Placeholder when there are no topics in the list */
 .view-advanced-forum-topic-list .view-empty {
-  border: border: 3px solid #2587C4;
+  border: 3px solid #2587C4;
 }
 
 /*** Sticky topics ***/

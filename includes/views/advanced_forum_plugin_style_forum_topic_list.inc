@@ -49,7 +49,7 @@ class advanced_forum_plugin_style_forum_topic_list extends views_plugin_style_ta
 
   /**
    * Figure out what the forum ID is. It could have come from an argument
-   * or a filter or nowhere. This source would be set by the user in the 
+   * or a filter or nowhere. This source would be set by the user in the
    * options.
    */
   function get_forum_ids() {

@@ -15,5 +15,4 @@
   <div class="topic-icon-sticky"><?php print t('Sticky topic'); ?></div>
   <div class="topic-icon-closed"><?php print t('Locked topic'); ?></div>
 </div>
- 
- 
+

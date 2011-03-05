@@ -27,7 +27,7 @@
       <?php print $admin_links; ?>
     </div>
   <?php endif; ?>
-  
+
   <?php if ($header): ?>
     <div class="view-header">
       <?php print $header; ?>
@@ -47,7 +47,7 @@
   <?php endif; ?>
 
   <div class="forum-node-create-links forum-node-create-links-top"><?php print $node_create_list ?></div>
-  
+
   <?php if ($pager): ?>
     <div class="forum-pager" id="forum-pager-top"><?php print $pager; ?></div>
   <?php endif; ?>
@@ -67,7 +67,7 @@
   <?php if ($pager): ?>
     <div class="forum-pager" id="forum-pager-bottom"><?php print $pager; ?></div>
   <?php endif; ?>
-  
+
   <?php if (!empty($view->sort_form)): ?>
      <div id="forum-sort"><?php print advanced_forum_forum_topic_list_sort(); ?></div>
   <?php endif; ?>

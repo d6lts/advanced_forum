@@ -32,7 +32,7 @@
   if (!empty($advanced_forum_classes)) {
     $all_classes = $advanced_forum_classes;
   }
-  
+
   if (!empty($classes)) {
     $all_classes .= ' ' . $classes;
   }
@@ -78,6 +78,6 @@
   </div>
 
   <div class="forum-post-footer clear-block">
-    <?php // Purposely empty on preview just to keep the structure intact. ?>    
+    <?php // Purposely empty on preview just to keep the structure intact. ?>
   </div>
 </div>

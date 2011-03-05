@@ -8,9 +8,9 @@
 
 function _advanced_forum_preprocess_forums(&$variables) {
   advanced_forum_add_template_suggestions("forums", $variables['template_files']);
-  
+
   $variables['forums_defined'] = count($variables['forums']) || count($variables['parents']);
- 
+
   $tid = intval($variables['tid']);
 
   if (!empty($variables['forums'])) {
@@ -24,10 +24,10 @@ function _advanced_forum_preprocess_forums(&$variables) {
 
   if (arg(1) == 0) {
     // We're on the front page of the forums.
-    
+
     // Remove forum description.
     $variables['forum_description'] = '';
-    
+
     // This is normally attached to the topic list so we need to create it
     // here as well since the main page has no topics.
     $variables['forum_tools'] = advanced_forum_forum_tools(0);
@@ -37,7 +37,7 @@ function _advanced_forum_preprocess_forums(&$variables) {
     if (user_access('view forum statistics')) {
       $variables['forum_statistics'] = theme('advanced_forum_statistics');
     }
-    
+
     // Fetch the forum legend.
     $variables['forum_legend'] = theme('advanced_forum_forum_legend');
   }

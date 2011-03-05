@@ -12,7 +12,7 @@ function advanced_forum_page($tid = 0) {
   if (!is_numeric($tid)) {
     return MENU_NOT_FOUND;
   }
-  
+
   $tid = (int)$tid;
 
   _advanced_forum_add_files();
@@ -22,7 +22,7 @@ function advanced_forum_page($tid = 0) {
   $sortby = variable_get('forum_order', 1);
 
   $forums = advanced_forum_get_forums($tid);
-  
+
   $parents = taxonomy_get_parents_all($tid);
   if ($tid && !in_array($tid, variable_get('forum_containers', array()))) {
     $topics = advanced_forum_get_topics($tid, $sortby, $forum_per_page);
@@ -54,7 +54,7 @@ function advanced_forum_page($tid = 0) {
   if (!variable_get('advanced_forum_disable_breadcrumbs', FALSE)) {
     drupal_set_breadcrumb($breadcrumb);
   }
-  
+
   drupal_set_title(check_plain($title));
 
   return theme('forums', $forums, $topics, $parents, $tid, $sortby, $forum_per_page);
@@ -109,11 +109,11 @@ function advanced_forum_get_forums($tid = 0) {
           FROM ($sql_rewritten) AS forum_content_list
           GROUP BY tid";
     }
-    
+
     $_counts = db_query($sql);
     while ($count = db_fetch_object($_counts)) {
       $counts[$count->tid] = $count;
-    }   
+    }
   }
 
   foreach ($_forums as $forum) {

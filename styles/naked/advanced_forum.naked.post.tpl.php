@@ -37,7 +37,7 @@
   if (!empty($advanced_forum_classes)) {
     $all_classes = $advanced_forum_classes;
   }
-  
+
   if (!empty($classes)) {
     $all_classes .= ' ' . $classes;
   }
@@ -55,15 +55,15 @@
   <div class="forum-post-info clear-block">
     <div class="forum-posted-on">
       <?php print $date ?>
-     
-      <?php print $new_marker ?>         
-    </div> 
+
+      <?php print $new_marker ?>
+    </div>
 
     <?php if (!empty($in_reply_to)): ?>
       <span class="forum-in-reply-to"><?php print $in_reply_to; ?></span>
     <?php endif; ?>
-    
-    <?php // Add a note when a post is unpublished so it doesn't rely on theming. ?>    
+
+    <?php // Add a note when a post is unpublished so it doesn't rely on theming. ?>
     <?php if (!$node->status): ?>
       <span class="unpublished-post-note"><?php print t("Unpublished post") ?></span>
     <?php endif; ?>
@@ -88,7 +88,7 @@
       <div class="forum-post-content">
         <?php print $content ?>
       </div>
-      
+
       <?php if (!empty($post_edited)): ?>
         <div class="post-edited">
           <?php print $post_edited ?>
@@ -116,9 +116,9 @@
   </div> <?php // End of footer div ?>
 </div> <?php // End of main wrapping div ?>
 
-<?php 
+<?php
 // Print the taxonomy terms for this node. This will print all terms,
-// including the term of the forum itself. If you don't use any other 
+// including the term of the forum itself. If you don't use any other
 // taxonomy on forum posts, you can safely delete this section.
 ?>
 <?php if ($top_post): ?>

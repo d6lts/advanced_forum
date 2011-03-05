@@ -31,7 +31,7 @@
  */
 ?>
 <?php global $language; ?>
- 
+
 <div id="forum-comments" class="<?php print $language->language; ?>">
   <?php print $content; ?>
   <?php print $reply_link; ?>

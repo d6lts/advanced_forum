@@ -33,7 +33,7 @@ function theme_advanced_forum_node_type_create_list($forum_id) {
   // Get the list of node types to display links for.
   $type_list = advanced_forum_node_type_create_list($forum_id);
   $output = '';
-  
+
   if (is_array($type_list)) {
     foreach ($type_list as $type => $item) {
       $output .= '<div class="forum-add-node forum-add-' . $type . '">';
@@ -46,7 +46,7 @@ function theme_advanced_forum_node_type_create_list($forum_id) {
     // we just return the denial text / login prompt.
     $output = $type_list;
   }
-  
+
   return $output;
 }
 
@@ -62,8 +62,8 @@ function theme_advanced_forum_post_edited($who, $when, $why) {
   $edited_by = t('<span class="post-edit-label">Edited by</span> !editor', array('!editor' => $editor_name));
   $edited_on = t('<span class="post-edit-label">on</span> !datetime', array('!datetime' => $datetime));
   $edit_reason = (empty($why)) ? "" : t('<span class="post-edit-label">Reason:</span> !reason', array('!reason' => $why));
-  
-  return $edited_by . ' ' . $edited_on . '<br />' . $edit_reason; 
+
+  return $edited_by . ' ' . $edited_on . '<br />' . $edit_reason;
 }
 
 /**
@@ -72,10 +72,10 @@ function theme_advanced_forum_post_edited($who, $when, $why) {
 function theme_advanced_forum_simple_author_pane($context) {
   // Sending the context rather than the account makes it work for anon comments.
   $name = theme('username', $context);
-  
+
   $account = user_load($context->uid);
   $picture = theme('user_picture', $account);
- 
+
   return '<div class="author-pane">' . $name . $picture . '</div>';
 }
 
@@ -123,7 +123,7 @@ function theme_advanced_forum_topic_pager($pagecount, $topic) {
   //  last_page_number: Linked number pointing to the last page.
   $topic_pager = advanced_forum_create_topic_pager($pagecount, $topic);
   $last_page = '';
-  
+
   if (!empty($topic_pager->initial_pages)) {
     if (!empty($topic_pager->last_page_text)) {
       // If you prefer to end with the number, replace
@@ -163,20 +163,20 @@ function theme_advanced_forum_shadow_topic($title, $nid, $new_forum) {
  */
 function theme_advanced_forum_subforum_list($subforum_list) {
   $subforums = array();
-  foreach($subforum_list AS $tid => $subforum) {
+  foreach ($subforum_list AS $tid => $subforum) {
     // Note: $subforum->name has not been run through check_plain because
     // it ends up going through there when l() is called without the HTML
     // option. If you change this to set HTML to TRUE, you must sanitize it.
     $text = l($subforum->name, "forum/$tid");
     $text .=  ' (' . $subforum->total_posts;
-    
+
     if (empty($subforum->new_posts)) {
       $text .= ')';
     }
     else {
-      $text .= ' - ' . l($subforum->new_posts_text, $subforum->new_posts_link) . ')'; 
+      $text .= ' - ' . l($subforum->new_posts_text, $subforum->new_posts_link) . ')';
     }
-    
+
     $subforums[] = $text;
   }
 
@@ -193,20 +193,20 @@ function theme_advanced_forum_subforum_list($subforum_list) {
  */
 function theme_advanced_forum_subcontainer_list($subcontainer_list) {
   $subcontainers = array();
-  foreach($subcontainer_list AS $tid => $subcontainer) {
+  foreach ($subcontainer_list AS $tid => $subcontainer) {
     // Note: $subcontainer->name has not been run through check_plain because
     // it ends up going through there when l() is called without the HTML
     // option. If you change this to set HTML to TRUE, you must sanitize it.
     $text = l($subcontainer->name, "container/$tid");
     $text .=  ' (' . $subcontainer->total_posts;
-    
+
     if (empty($subcontainer->new_posts)) {
       $text .= ')';
     }
     else {
-      $text .= ' - ' . l($subforum->new_posts_text, $subforum->new_posts_link) . ')';  
+      $text .= ' - ' . l($subforum->new_posts_text, $subforum->new_posts_link) . ')';
     }
-    
+
     $subcontainers[] = $text;
   }
 
@@ -222,8 +222,8 @@ function theme_advanced_forum_subcontainer_list($subcontainer_list) {
  * Preprocesses template variables for the forum template.
  */
 function advanced_forum_preprocess_forums(&$variables) {
-   include_once drupal_get_path('module', 'advanced_forum') . '/includes/advanced_forum_preprocess_forums.inc';
-   _advanced_forum_preprocess_forums($variables);
+  include_once drupal_get_path('module', 'advanced_forum') . '/includes/advanced_forum_preprocess_forums.inc';
+  _advanced_forum_preprocess_forums($variables);
 }
 
 /**
@@ -322,8 +322,8 @@ function advanced_forum_preprocess_advanced_forum_statistics(&$variables) {
  * Preprocesses template variables for the forum list template.
  */
 function advanced_forum_preprocess_forum_list(&$variables) {
-   include_once drupal_get_path('module', 'advanced_forum') . '/includes/advanced_forum_preprocess_forum_list.inc';
-   _advanced_forum_preprocess_forum_list($variables);
+  include_once drupal_get_path('module', 'advanced_forum') . '/includes/advanced_forum_preprocess_forum_list.inc';
+  _advanced_forum_preprocess_forum_list($variables);
 }
 
 
@@ -340,7 +340,7 @@ function advanced_forum_preprocess_views_view_forum_topic_list__advanced_forum_t
 function advanced_forum_preprocess_views_view__advanced_forum_topic_list(&$variables) {
   _advanced_forum_add_files();
   advanced_forum_add_template_suggestions("topic-list-outer-view", $variables['template_files']);
-  
+
   // @TODO: This is messy tying it to the URL. Need to find a better way.
   $variables['node_create_list'] = '';
   $variables['forum_tools'] = '';
@@ -400,7 +400,7 @@ function advanced_forum_preprocess_views_view_fields__advanced_forum_search_topi
  */
 function advanced_forum_preprocess_advanced_forum_topic_header(&$variables) {
   advanced_forum_add_template_suggestions("topic-header", $variables['template_files']);
-  
+
   $node = $variables['node'];
 
   // Form to search within the topic. (only works with nodecomment)
@@ -412,10 +412,10 @@ function advanced_forum_preprocess_advanced_forum_topic_header(&$variables) {
   // Total posts, including first post.
   $posts = (empty($variables['comment_count'])) ? 1 : $variables['comment_count'] + 1;
   $variables['total_posts_count'] = format_plural($posts, '1 post', '@count posts');
-  
+
   // Number of new posts on topic.
   $variables['new_posts_count'] = advanced_forum_reply_num_new($node->nid);
-  
+
   // Link to first new post.
   $variables['first_new_post_link'] = advanced_forum_first_new_post_link($variables['node'], $variables['comment_count']);
 
@@ -464,10 +464,10 @@ function advanced_forum_preprocess_page(&$variables) {
  * Preprocesses template variables for the node template.
  */
 function advanced_forum_preprocess_node(&$variables) {
- if (advanced_forum_is_styled($variables['node'], $variables['teaser'], 'node')) {
-   include_once drupal_get_path('module', 'advanced_forum') . '/includes/advanced_forum_preprocess_node.inc';
-   _advanced_forum_preprocess_node($variables);
- }
+  if (advanced_forum_is_styled($variables['node'], $variables['teaser'], 'node')) {
+    include_once drupal_get_path('module', 'advanced_forum') . '/includes/advanced_forum_preprocess_node.inc';
+    _advanced_forum_preprocess_node($variables);
+  }
 }
 
 function advanced_forum_preprocess_comment_wrapper(&$variables) {
@@ -499,10 +499,10 @@ function advanced_forum_preprocess_comment_wrapper(&$variables) {
  * Preprocesses template variables for the comment template.
  */
 function advanced_forum_preprocess_comment(&$variables) {
- if (advanced_forum_is_styled($variables['comment'], FALSE, 'comment')) {
-   include_once drupal_get_path('module', 'advanced_forum') . '/includes/advanced_forum_preprocess_comment.inc';
-   _advanced_forum_preprocess_comment($variables);
- }
+  if (advanced_forum_is_styled($variables['comment'], FALSE, 'comment')) {
+    include_once drupal_get_path('module', 'advanced_forum') . '/includes/advanced_forum_preprocess_comment.inc';
+    _advanced_forum_preprocess_comment($variables);
+  }
 }
 
 function advanced_forum_preprocess_forum_topic_navigation(&$variables) {
