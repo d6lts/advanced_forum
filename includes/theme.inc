@@ -17,7 +17,8 @@ function theme_advanced_forum_l($text, $path, $options = array(), $button_class 
     $current_classes = (empty($options['attributes']['class'])) ? '' : $options['attributes']['class'];
     $options['attributes']['class'] = "$current_classes af-button-$button_class";
     $options['html'] = TRUE;
-    return l('<span>' . $text . '</span>', $path, $options);
+    $l = l('<span>' . $text . '</span>', $path, $options);
+    return $l;
   }
   else {
     // Standard link: just send it through l().
@@ -163,11 +164,55 @@ function theme_advanced_forum_shadow_topic($title, $nid, $new_forum) {
 function theme_advanced_forum_subforum_list($subforum_list) {
   $subforums = array();
   foreach($subforum_list AS $tid => $subforum) {
-    $subforums[] = l($subforum->name, "forum/$tid");
+    // Note: $subforum->name has not been run through check_plain because
+    // it ends up going through there when l() is called without the HTML
+    // option. If you change this to set HTML to TRUE, you must sanitize it.
+    $text = l($subforum->name, "forum/$tid");
+    $text .=  ' (' . $subforum->total_posts;
+    
+    if (empty($subforum->new_posts)) {
+      $text .= ')';
+    }
+    else {
+      $text .= ' - ' . l($subforum->new_posts_text, $subforum->new_posts_link) . ')'; 
+    }
+    
+    $subforums[] = $text;
   }
 
   return implode(', ', $subforums);
 }
+
+/**
+ * Theme function to a formatted list of subcontainers.
+ *
+ * @param $subcontainer_list
+ *   Array of subcontainers.
+ * @return
+ *   Formatted list of subcontainers.
+ */
+function theme_advanced_forum_subcontainer_list($subcontainer_list) {
+  $subcontainers = array();
+  foreach($subcontainer_list AS $tid => $subcontainer) {
+    // Note: $subcontainer->name has not been run through check_plain because
+    // it ends up going through there when l() is called without the HTML
+    // option. If you change this to set HTML to TRUE, you must sanitize it.
+    $text = l($subcontainer->name, "container/$tid");
+    $text .=  ' (' . $subcontainer->total_posts;
+    
+    if (empty($subcontainer->new_posts)) {
+      $text .= ')';
+    }
+    else {
+      $text .= ' - ' . l($subforum->new_posts_text, $subforum->new_posts_link) . ')';  
+    }
+    
+    $subcontainers[] = $text;
+  }
+
+  return implode(', ', $subcontainers);
+}
+
 
 // TEMPLATE PREPROCESS ******************************************************/
 

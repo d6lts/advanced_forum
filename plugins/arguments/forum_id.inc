@@ -84,7 +84,7 @@ function advanced_forum_forum_id_breadcrumb($conf, $context) {
     $breadcrumb[] = l($vocabulary->name, 'forum');
   }
 
-  if ($context->parents) {
+  if (isset($context->parents)) {
     $parents = array_reverse($context->parents);
     foreach ($parents as $p) {
       if ($p->tid != $context->data->tid) {

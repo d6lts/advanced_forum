@@ -39,7 +39,10 @@ function advanced_forum_forum_list_content_type_render($subtype, $conf, $panel_a
   $forums = advanced_forum_get_forums($tid);
 
   if ($forums) {
-    $block->content = theme('forum_list', $forums, $context->parents, $tid);
+    // No parents on the main forum page.
+    $parents = isset($context->parents) ? $context->parents : array();
+    
+    $block->content = theme('forum_list', $forums, $parents, $tid);
 
     if (user_access('administer forums')) {
       $block->admin_links['administer_forums'] = array(

@@ -6,6 +6,22 @@ floats.
 
 /*** PAGER ******************************************************************/
 
+/* This is the pager on the topics in the list */
+.topic-pager {
+  font-size: 90%;
+  font-style: italic;
+}
+
+/* Other pagers in the forum */
+#forum-comments .pager {
+  text-align: right;
+}
+
+#forum-comments .pager li {
+  padding: 3px;
+  margin: 0;
+}
+
 .forum-pager .pager,
 .forum-comment-wrapper .pager {
   text-align: right;
@@ -68,8 +84,29 @@ ul.forum-links li {
 /*** FORUM & TOPIC LIST TABLES **********************************************/
 
 .forum-table {
+  margin: 0px;
+}
+
+.forum-table-wrap,
+.forum-table-topics {
+  margin-bottom: 15px;
   clear: both;
-  width: 100%;
+}
+
+.forum-table-superheader {
+  padding: 10px;
+}
+
+.forum-table-superheader .forum-table-name {
+  margin: 5px 0 3px 5px;
+  width: 90%;
+  display: inline;
+  font-size: 1.2em;
+}
+
+.forum-table-superheader .forum-table-description {
+  margin: 0 0 3px 5px;
+  width: 90%;
 }
 
 /* Header, both tables */
@@ -87,13 +124,17 @@ td.forum-details .forum-description {
 }
 
 td.forum-details .forum-subforums,
-td.forum-details .forum-subforums a {
-  padding-left: 10px;
+td.forum-details .forum-subcontainers {
+  margin-left: 10px;
 }
 
 td.forum-number-topics,
 td.forum-number-posts {
   text-align: center;
+}
+
+th.forum-icon {
+ width: 5%;
 }
 
 th.forum-number-topics,
@@ -254,6 +295,7 @@ th.forum-last-post {
 .forum-posted-on {
   padding: 0 5px;
   float: left;
+  font-size: .8em;
 }
 
 .forum-post .new {
@@ -280,10 +322,18 @@ th.forum-last-post {
   margin: 10px;
 }
 
+.forum-post-panel-sub .author-pane .author-name {
+  font-size: 120%;
+}
+
 .forum-post-panel-sub .author-pane .picture {
   float: none;
   padding-left: 0px;
   margin: 2px 0 10px 0;
+}
+
+.forum-post-panel-sub .author-pane .picture img {
+  padding: 5px;
 }
 
 .forum-post-panel-sub .author-pane .author-pane-section {

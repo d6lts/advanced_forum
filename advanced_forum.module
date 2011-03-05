@@ -136,6 +136,12 @@ function advanced_forum_theme() {
          'subforum_list' => NULL,
        )
   );
+
+  $items['advanced_forum_subcontainer_list'] = array(
+      'arguments' => array(
+         'subcontainer_list' => NULL,
+       )
+  );
   
   $items['advanced_forum_simple_author_pane'] = array(
       'arguments' => array(
@@ -938,8 +944,7 @@ function advanced_forum_reply_num_new($nid, $timestamp = 0) {
  */
 function advanced_forum_last_post_in_topic($nid) {
   $node = node_load($nid);
-  $comment_type = module_invoke('nodecomment', 'get_comment_type', $node->type);
-  if (isset($comment_type)) {
+  if (module_exists('nodecomment') && nodecomment_get_comment_type($node->type)) {
     // Nodecomment module version
     $query = 'SELECT nc.cid
               FROM {node_comments} nc
