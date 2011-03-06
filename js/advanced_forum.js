@@ -55,7 +55,7 @@
 
       // Build cookie string
       cookie = '';
-      for(x in Drupal.advanced_forum.collapsed_page) {
+      for (x in Drupal.advanced_forum.collapsed_page) {
         cookie += '/' + x + '=' + Drupal.advanced_forum.collapsed_page[x];
       }
       // Save new cookie
@@ -73,9 +73,11 @@
 
     // Check if item is collapsed
     if (Drupal.advanced_forum.collapsed_current.indexOf(id) != -1) {
-      $('#forum-collapsible-' + id).addClass('advanced-forum-collapsed').closest('table').children('tbody').hide();
+      $(this).addClass('advanced-forum-collapsed');
+      $('#forum-table-' + id).hide();
     } else {
-      $('#forum-collapsible-' + id).removeClass('advanced-forum-collapsed').closest('table').children('tbody').show();
+      $(this).removeClass('advanced-forum-collapsed');
+      $('#forum-table-' + id).show();
     }
   };
 
@@ -83,10 +85,11 @@
    * Collapse forum.
    */
   Drupal.advanced_forum.collapse = function(id) {
+    $('#forum-collapsible-' + id).addClass('advanced-forum-collapsed');
     if (Drupal.settings.advanced_forum.effect == 'toggle') {
-      $('#forum-collapsible-' + id).addClass('advanced-forum-collapsed').closest('table').children('tbody').hide();
+      $('#forum-table-' + id).hide();
     } else {
-      $('#forum-collapsible-' + id).addClass('advanced-forum-collapsed').closest('table').children('tbody').fadeOut(150);
+      $('#forum-table-' + id).fadeOut(150);
     }
   };
 
@@ -94,10 +97,11 @@
    * Expand forum.
    */
   Drupal.advanced_forum.expand = function(id) {
+    $('#forum-collapsible-' + id).removeClass('advanced-forum-collapsed');
     if (Drupal.settings.advanced_forum.effect == 'toggle') {
-      $('#forum-collapsible-' + id).removeClass('advanced-forum-collapsed').closest('table').children('tbody').show();
+      $('#forum-table-' + id).show();
     } else {
-      $('#forum-collapsible-' + id).removeClass('advanced-forum-collapsed').closest('table').children('tbody').fadeIn(150);
+      $('#forum-table-' + id).fadeIn(150);
     }
   };
 
