@@ -86,10 +86,16 @@
    */
   Drupal.advanced_forum.collapse = function(id) {
     $('#forum-collapsible-' + id).addClass('advanced-forum-collapsed');
-    if (Drupal.settings.advanced_forum.effect == 'toggle') {
-      $('#forum-table-' + id).hide();
-    } else {
-      $('#forum-table-' + id).fadeOut(150);
+    switch (Drupal.settings.advanced_forum.effect) {
+      case 'slide':
+        $('#forum-table-' + id).slideUp();
+        break;
+      case 'fade':
+        $('#forum-table-' + id).fadeOut(150);
+        break;
+      case 'toggle':
+        $('#forum-table-' + id).hide();
+        break;
     }
   };
 
@@ -98,10 +104,16 @@
    */
   Drupal.advanced_forum.expand = function(id) {
     $('#forum-collapsible-' + id).removeClass('advanced-forum-collapsed');
-    if (Drupal.settings.advanced_forum.effect == 'toggle') {
-      $('#forum-table-' + id).show();
-    } else {
-      $('#forum-table-' + id).fadeIn(150);
+    switch (Drupal.settings.advanced_forum.effect) {
+      case 'slide':
+        $('#forum-table-' + id).slideDown();
+        break;
+      case 'fade':
+        $('#forum-table-' + id).fadeIn(150);
+        break;
+      case 'toggle':
+        $('#forum-table-' + id).show();
+        break;
     }
   };
 

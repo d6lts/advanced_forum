@@ -12,7 +12,7 @@ function _advanced_forum_preprocess_forum_list(&$variables) {
   advanced_forum_add_template_suggestions("forum-list", $variables['template_files']);
 
   // Add needed items for the collapsible containers.
-  $variables['collapsible'] = variable_get('advanced_forum_collapsible_containers', 'toggle');
+  $variables['collapsible'] = variable_get('advanced_forum_collapsible_containers', 'slide');
   if ($variables['collapsible'] != 'none') {
     drupal_add_js(drupal_get_path('module', 'advanced_forum') . '/js/advanced_forum.js', 'module');
     drupal_add_js(array('advanced_forum' => array('effect' => $variables['collapsible'])), 'setting');

@@ -4,6 +4,8 @@
 March 6, 2011
 -------------
 #291084 by a.ross: Made collapsible containers work with new HTML and with core jquery version.
+#291084 by WorldFallz: Added slide option to collapsible effects.
+#291084 by Michelle: Moved collapsible containers option to correct fieldset and fixed capitalization.
 
 March 4, 2011
 -------------
