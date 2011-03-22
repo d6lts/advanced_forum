@@ -7,7 +7,6 @@
  */
 
 function _advanced_forum_preprocess_forum_list(&$variables) {
-//dsm($variables);
   // Tell Drupal to use our forum list template file.
   advanced_forum_add_template_suggestions("forum-list", $variables['template_files']);
 
@@ -92,6 +91,7 @@ function _advanced_forum_preprocess_forum_list(&$variables) {
         // Top level container always starts a new table.
         $table_counter++;
         $tables[$table_counter]['table_info'] = $item;
+        $tables[$table_counter]['items'] = array();
 
         // Reset the striping.
         advanced_forum_stripe(TRUE);
@@ -193,8 +193,6 @@ function _advanced_forum_preprocess_forum_list(&$variables) {
   // Remove unneeded variables.
   unset($variables['zebra']);
   unset($variables['forums']);
-
- // dsm($variables);
 }
 
 

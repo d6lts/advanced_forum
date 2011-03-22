@@ -1,6 +1,10 @@
 
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+March 22, 2011
+--------------
+#1096090 by Michelle: Initialized items property of $tables to avoid notices when a container is empty.
+
 March 6, 2011
 -------------
 #291084 by a.ross: Made collapsible containers work with new HTML and with core jquery version.
