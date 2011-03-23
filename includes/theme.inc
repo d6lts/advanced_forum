@@ -197,7 +197,7 @@ function theme_advanced_forum_subcontainer_list($subcontainer_list) {
     // Note: $subcontainer->name has not been run through check_plain because
     // it ends up going through there when l() is called without the HTML
     // option. If you change this to set HTML to TRUE, you must sanitize it.
-    $text = l($subcontainer->name, "container/$tid");
+    $text = l($subcontainer->name, "forum/$tid");
     $text .=  ' (' . $subcontainer->total_posts;
 
     if (empty($subcontainer->new_posts)) {

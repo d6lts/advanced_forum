@@ -1,6 +1,10 @@
 
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+March 23, 2011
+--------------
+#720118 by a.ross: Fixed bad search/replace that led to bad link on sub-subcontainers.
+
 March 22, 2011
 --------------
 #1096090 by Michelle: Initialized items property of $tables to avoid notices when a container is empty.
