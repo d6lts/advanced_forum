@@ -8,7 +8,7 @@
  */
 $view = new view;
 $view->name = 'advanced_forum_unanswered_topics';
-$view->description = 'Shows unaswered topics in a given forum';
+$view->description = 'Shows unanswered topics in a given forum';
 $view->tag = 'Advanced Forum';
 $view->view_php = '';
 $view->base_table = 'node';

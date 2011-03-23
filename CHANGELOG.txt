@@ -4,6 +4,7 @@
 March 23, 2011
 --------------
 #720118 by a.ross: Fixed bad search/replace that led to bad link on sub-subcontainers.
+#1096984 by Magilla: Fixed typo in description of unanswered posts view.
 
 March 22, 2011
 --------------
