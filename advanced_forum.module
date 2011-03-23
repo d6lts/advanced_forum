@@ -392,8 +392,8 @@ function advanced_forum_comment(&$a1, $op) {
 function advanced_forum_link($type, $node = NULL, $teaser = FALSE) {
   $links = array();
 
-  if (advanced_forum_is_styled($node, $teaser, $type)) {
-    if ($type == 'node' && (!isset($node->comment_target_nid))) {
+  if ($type == 'node' && (!isset($node->comment_target_nid))) {
+    if (advanced_forum_is_styled($node, $teaser, $type)) {
       // Add edit / delete links to the node links to match replies.
       if (node_access('update', $node)) {
         $links['post_edit'] = array(
