@@ -6,6 +6,7 @@ March 23, 2011
 #720118 by a.ross: Fixed bad search/replace that led to bad link on sub-subcontainers.
 #1096984 by Magilla: Fixed typo in description of unanswered posts view.
 #1094542 by thedavidmeister: Added sanity check for edge case that shouldn't happen where views_post_render is called without a style plugin present.
+#1098542 by lasac, troky: Fixed js bug with collapsible containers that broke in IE.
 
 March 22, 2011
 --------------
