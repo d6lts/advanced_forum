@@ -416,8 +416,11 @@ function advanced_forum_preprocess_advanced_forum_topic_header(&$variables) {
   // Number of new posts on topic.
   $variables['new_posts_count'] = advanced_forum_reply_num_new($node->nid);
 
-  // Link to first new post.
-  $variables['first_new_post_link'] = advanced_forum_first_new_post_link($variables['node'], $variables['comment_count']);
+  // Link to first new post only if the new post isn't the topic starter.
+  $variables['first_new_post_link'] = '';
+  if ($posts > 1) {
+    $variables['first_new_post_link'] = advanced_forum_first_new_post_link($variables['node'], $variables['comment_count']);
+  }
 
   // Link to last post in topic.
   $variables['last_post_link'] = advanced_forum_last_post_link($node);

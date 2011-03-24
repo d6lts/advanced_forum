@@ -1,6 +1,10 @@
 
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+March 24, 2011
+--------------
+#1044322 by rcurtin, Michelle: Fixed topic listing icon not showing new posts on brand new topics.
+
 March 23, 2011
 --------------
 #720118 by a.ross: Fixed bad search/replace that led to bad link on sub-subcontainers.
