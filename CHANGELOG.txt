@@ -1,5 +1,10 @@
+$Id: CHANGELOG.txt,v 1.3.2.133 2011/01/19 18:04:13 michellec Exp $
 
 ****************************** DRUPAL 6 BRANCH ********************************
+
+March 28, 2011
+--------------
+#1070792 by Michelle: Fixed notices.
 
 January 19, 2011
 ----------------
@@ -528,7 +533,7 @@ March 22, 2008
 --------------
 Fixed remaining issues with advanced_forum_get_all_last_topics (I hope!)
 Updated README.txt and CHANGELOG.txt
-Fixed $Id$ at the tops of all the files.
+Fixed $Id: CHANGELOG.txt,v 1.3.2.133 2011/01/19 18:04:13 michellec Exp $ at the tops of all the files.
 
 March 18, 2008
 --------------
