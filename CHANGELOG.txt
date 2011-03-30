@@ -1,7 +1,11 @@
 
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
-March 24, 2011
+March 29, 2011
+--------------
+#1109820 by troky: Fixed broken link to new posts in subforums.
+
+March 24, 2011 -- ALPHA 4
 --------------
 #1044322 by rcurtin, Michelle: Fixed topic listing icon not showing new posts on brand new topics.
 

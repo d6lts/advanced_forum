@@ -174,7 +174,7 @@ function theme_advanced_forum_subforum_list($subforum_list) {
       $text .= ')';
     }
     else {
-      $text .= ' - ' . l($subforum->new_posts_text, $subforum->new_posts_link) . ')';
+      $text .= ' - ' . l($subforum->new_posts_text, $subforum->new_posts_path, array('fragment' => 'new')) . ')';
     }
 
     $subforums[] = $text;
@@ -204,7 +204,7 @@ function theme_advanced_forum_subcontainer_list($subcontainer_list) {
       $text .= ')';
     }
     else {
-      $text .= ' - ' . l($subforum->new_posts_text, $subforum->new_posts_link) . ')';
+      $text .= ' - ' . l($subcontainer->new_posts_text, $subcontainer->new_posts_path, array('fragment' => 'new')) . ')';
     }
 
     $subcontainers[] = $text;
