@@ -131,7 +131,7 @@ function theme_advanced_forum_topic_pager($pagecount, $topic) {
       $last_page = ' &hellip; ' . $topic_pager->last_page_text;
     }
 
-    return '<span class="topic-pager">(Page: ' . implode(", ", $topic_pager->initial_pages) . $last_page . ')</span>';
+    return '<span class="topic-pager">(' . t('Page') . ': ' . implode(", ", $topic_pager->initial_pages) . $last_page . ')</span>';
   }
 }
 
