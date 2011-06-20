@@ -164,8 +164,8 @@ function advanced_forum_theme() {
     )
   );
 
-  // These only exist if nodecomment is on.
-  if (module_exists('nodecomment')) {
+  // These only exist if both search and nodecomment are on.
+  if (module_exists('search') && module_exists('nodecomment')) {
     $items['advanced_forum_search_forum'] = array(
       'arguments' => array('tid' => NULL),
       'template' => 'advanced_forum-search-forum',
