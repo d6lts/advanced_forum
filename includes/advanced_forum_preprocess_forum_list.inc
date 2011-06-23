@@ -16,6 +16,9 @@ function _advanced_forum_preprocess_forum_list(&$variables) {
     drupal_add_js(drupal_get_path('module', 'advanced_forum') . '/js/advanced_forum.js', 'module');
     drupal_add_js(array('advanced_forum' => array('effect' => $variables['collapsible'])), 'setting');
   }
+  else {
+    $variables['collapsible'] = FALSE;
+  }
 
   // The tid is the ID of the container or forum we are in. Assign it to
   // $parent_id for easy reference, assign it to the forum_id template variable
