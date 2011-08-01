@@ -28,13 +28,14 @@ function advanced_forum_menu() {
     'page arguments' => array('advanced_forum_settings_page'),
     'page callback' => 'drupal_get_form',
     'title' => 'Advanced Forum',
-    'file' => 'includes/settings.inc'
+    'file' => 'includes/settings.inc',
   );
 
   $items['forum/markasread'] = array(
     'access callback' => 'advanced_forum_markasread_access',
     'page callback' => 'advanced_forum_markasread',
     'type' => MENU_CALLBACK,
+    'file' => 'includes/mark-read.inc',
   );
 
   if (variable_get('advanced_forum_add_local_task', TRUE)) {
@@ -44,6 +45,7 @@ function advanced_forum_menu() {
       'access arguments' => array('access content'),
       'type' => MENU_DEFAULT_LOCAL_TASK,
       'weight' => -100,
+      'file' => 'includes/core-overrides.inc'
     );
   }
 
