@@ -936,8 +936,14 @@ function advanced_forum_reply_num_new($nid, $timestamp = 0) {
     $viewed = 0; // If not told otherwise, it has been viewed before
     if ($user->uid) {
       $viewed = node_last_viewed($nid);
-      // Set it to 1 if it has not been viewed before.
-      $viewed = ($viewed == 0 ? 1 : 0);
+      // Set it to 1 if it has not been viewed before, but only if it has been
+      // modified after NODE_NEW_LIMIT; that is, it wouldn't have been purged
+      // from {history}.
+      if ($viewed == 0) {
+        if (node_last_changed($nid) > NODE_NEW_LIMIT) {
+          $viewed = 1;
+        }
+      }
     }
 
     $comment_type = module_invoke('nodecomment', 'get_comment_type', $node->type);
