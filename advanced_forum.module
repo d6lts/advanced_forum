@@ -795,6 +795,17 @@ function advanced_forum_statistics_online_users() {
 
 // CALCULATING LINKS - New, Last, Etc *****************************************/
 
+function advanced_forum_user_can_reply($node) {
+  if (module_exists('nodecomment') && !empty($node->node_comment) && !empty($node->comment_type)) {
+    $access = user_access('create ' . $node->comment_type . ' content');
+  }
+  else {
+    $access = user_access('post comments');
+  }
+  return $access;
+}
+
+
 function advanced_forum_get_reply_link($node) {
   $reply_link = array();
 
@@ -805,7 +816,7 @@ function advanced_forum_get_reply_link($node) {
   $fragment = (empty($node->node_comment)) ? 'comment-form'  : 'node-form';
 
   if ($comment_setting == COMMENT_NODE_READ_WRITE) {
-    if (user_access('post comments')) {
+    if (advanced_forum_user_can_reply($node)) {
       if (variable_get('comment_form_location_'. $node->type, COMMENT_FORM_SEPARATE_PAGE) == COMMENT_FORM_SEPARATE_PAGE) {
         // Reply form is on separate page. Grab the href from the node links
         // so it's automatically corrected for Node Comments if needed.
