@@ -944,6 +944,11 @@ function advanced_forum_reply_num_new($nid, $timestamp = 0) {
           $viewed = 1;
         }
       }
+      else {
+        // seems counterintuitive, but set to zero as node_last_viewed gave us a timestamp
+        //  indicating that the node has been viewed before
+        $viewed = 0;
+      }
     }
 
     $comment_type = module_invoke('nodecomment', 'get_comment_type', $node->type);
