@@ -1293,7 +1293,7 @@ function advanced_forum_unread_replies_in_forum($tid, $uid) {
               WHERE n.status = 1 AND n.changed > %d AND (n.changed > h.timestamp OR h.timestamp IS NULL)
               GROUP BY f.tid";
 
-      $sql = db_rewrite_sql($sql);
+      $sql = db_rewrite_sql($sql, 'nc', 'cid');
     }
     else {
       $sql = "SELECT COUNT(c.cid) AS count, f.tid
