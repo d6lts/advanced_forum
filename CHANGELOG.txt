@@ -3,6 +3,8 @@
 Nov 16, 2011
 ------------
 #1337412 by salvis: Fixed hook_menu specifies access arguments but not access callback, so can break if something other than user_access is inherited as the callback.
+#1328152 by RedRat, mcdruid: fixed table header have unsufficient columns if Taxonomy Images integration is on.
+#1337412 by salvis: Fixed hook_menu doesn't need to specify access callback / argument for a local task.
 
 Nov 14, 2011
 ------------
@@ -1161,4 +1163,4 @@ Notable recent changes:
 
 Nov 18, 2007
 ------------
-Created project for advanced forum and uploaded some early code
+Created project for advanced forum and uploaded some early alvis: Fixed hook_menu doesn't need to specify access callback / argument for a local task.ode
