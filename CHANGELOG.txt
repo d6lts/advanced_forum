@@ -1,5 +1,12 @@
-
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
+
+Nov 16, 2011
+------------
+#1337412 by salvis: Fixed hook_menu specifies access arguments but not access callback, so can break if something other than user_access is inherited as the callback.
+
+Nov 14, 2011
+------------
+#1193484 by Scyther: fixed label 'None' changed to '- None -' to be consistent with other modules including taxonomy and CCK.
 
 Nov 7, 2011
 -----------
