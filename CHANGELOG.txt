@@ -1163,4 +1163,4 @@ Notable recent changes:
 
 Nov 18, 2007
 ------------
-Created project for advanced forum and uploaded some early alvis: Fixed hook_menu doesn't need to specify access callback / argument for a local task.ode
+Created project for advanced forum and uploaded some early code
