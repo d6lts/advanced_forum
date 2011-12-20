@@ -71,7 +71,7 @@ and will display under their parents.
             <?php $colspan = ($use_taxonomy_image) ? 2 : 1 ?>
             <th class="forum-icon" colspan="<?php print $colspan; ?>"><span class="element-invisible"><?php print t('Icon');?></span></th>
             <th class="forum-name"><?php print t('Forum');?></th>
-            <th class="forum-number-topics"><?php print t('Topics');?></th>
+            <th class="forum-topics"><?php print t('Topics');?></th>
             <th class="forum-posts"><?php print t('Posts'); ?></th>
             <th class="forum-last-post"><?php print t('Last post'); ?></th>
           </tr>
