@@ -1,5 +1,9 @@
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+Dec 20, 2011
+------------
+#1369468 by bf2mad: fix forum topic class name on table headings.
+
 Nov 16, 2011
 ------------
 #1337412 by salvis: Fixed hook_menu specifies access arguments but not access callback, so can break if something other than user_access is inherited as the callback.
