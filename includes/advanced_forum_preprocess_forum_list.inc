@@ -319,6 +319,9 @@ function advanced_forum_process_forum($forum) {
   // Process the "last post" object into a printable string.
   // Trying to copy the string back into the variable directly caused odd bugs
   // so we move it to a temp variable then unset the original.
+  // Before doing so, however, we make a copy in case another module implementing
+  // hook_TYPE_alter() needs access to the raw data.
+  $forum->last_post_obj = $forum->last_post;
   $last_post = (empty($forum->last_post)) ? '' : $forum->last_post;
   unset($forum->last_post);
   $forum->last_post = theme('forum_submitted', $last_post);
@@ -328,5 +331,6 @@ function advanced_forum_process_forum($forum) {
     $forum->forum_image = taxonomy_image_display($forum->tid);
   }
 
+  drupal_alter('advanced_forum', $forum);
   return $forum;
 }
