@@ -1,5 +1,9 @@
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+Feb 28, 2012
+------------
+#1351392 by aidanlis: Added drupal_alter to forum_get_forums.
+
 Jan 18, 2012
 ------------
 #1309104 by Bill Choy: fixed table header CSS which clashes with sticky-header.
