@@ -3,6 +3,7 @@
 Feb 28, 2012
 ------------
 #1351392 by aidanlis: Added drupal_alter to forum_get_forums.
+#413494 by mcdruid: Fixed support for comment_edited module.
 
 Jan 18, 2012
 ------------
