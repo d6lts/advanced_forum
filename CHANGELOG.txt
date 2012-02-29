@@ -1,5 +1,9 @@
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+Feb 29, 2012
+------------
+#687196 by mcdruid: Fixed (well, avoided) fatal error when views_get_view fails to return AF's own view object.
+
 Feb 28, 2012
 ------------
 #1351392 by aidanlis: Added drupal_alter to forum_get_forums.
