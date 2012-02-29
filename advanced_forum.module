@@ -648,6 +648,9 @@ function advanced_forum_forum_topic_list_sort() {
 
 function advanced_forum_forum_topic_list_sort_form(&$form_state) {
   $view = views_get_view('advanced_forum_topic_list');
+  if (!is_object($view)) {
+    return;
+  }
   $view->set_display('default');
   $view->init_handlers();
   $view->init_style();
