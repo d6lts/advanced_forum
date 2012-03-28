@@ -1,5 +1,9 @@
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+Mar 28, 2012
+------------
+#868942 by mcdruid: Fixed now-outdated CSS image replacement (text-indent) technique.
+
 Feb 29, 2012
 ------------
 #687196 by mcdruid: Fixed (well, avoided) fatal error when views_get_view fails to return AF's own view object.
