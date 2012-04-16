@@ -1,5 +1,9 @@
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+Apr 16, 2012
+------------
+#1361526 by mcdruid: Fixed (or rather worked around) bug in views which can cause character encoding errors in AF's topic list default view.
+
 Mar 28, 2012
 ------------
 #868942 by mcdruid: Fixed now-outdated CSS image replacement (text-indent) technique.
