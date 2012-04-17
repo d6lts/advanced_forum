@@ -8,7 +8,7 @@
  * If the problem is fixed in views, this can be removed.
  */
 
-class advanced_forum_handler_field_node_title extends views_handler_field {
+class advanced_forum_handler_field_node_title extends views_handler_field_node {
 
   /**
    * Render this field as a link, with the info from a fieldset set by
@@ -96,3 +96,4 @@ class advanced_forum_handler_field_node_title extends views_handler_field {
   }
 
 }
+

@@ -71,7 +71,7 @@ function advanced_forum_views_handlers() {
         'parent' => 'views_handler_field',
       ),
       'advanced_forum_handler_field_node_title' => array(
-        'parent' => 'views_handler_field',
+        'parent' => 'views_handler_field_node',
       ),
     ),
   );
