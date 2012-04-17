@@ -1,5 +1,9 @@
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+Apr 17, 2012
+------------
+#1361526 by mcdruid: Fixed bug introduced by addition of views field handler for node title, whereby 'Link this field to its node' no longer worked.
+
 Apr 16, 2012
 ------------
 #1361526 by mcdruid: Fixed (or rather worked around) bug in views which can cause character encoding errors in AF's topic list default view.
