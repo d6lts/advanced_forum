@@ -1,5 +1,9 @@
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+May 2, 2012
+-----------
+#5939382 by carteriii: Fixed advanced_forum_topic_list's 'Last post' field should use 'Node: Updated/commented date' rather than 'Node: Last comment time'.
+
 Apr 17, 2012
 ------------
 #1361526 by mcdruid: Fixed bug introduced by addition of views field handler for node title, whereby 'Link this field to its node' no longer worked.
