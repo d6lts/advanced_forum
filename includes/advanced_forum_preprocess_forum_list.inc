@@ -233,7 +233,7 @@ function advanced_forum_process_container($container) {
 
   // Add in the taxonomy image, if any.
   if (function_exists('taxonomy_image_display') && variable_get('advanced_forum_use_taxonomy_image', TRUE)) {
-    $container->forum_image = taxonomy_image_display($container->tid);
+    $container->forum_image = taxonomy_image_display($container->tid, NULL, variable_get('advanced_forum_use_taxonomy_image_preset', ''));
   }
 
   // Initialize these variables to avoid notices later.
@@ -328,7 +328,7 @@ function advanced_forum_process_forum($forum) {
 
   // Add in the taxonomy image, if any
   if (function_exists('taxonomy_image_display') && variable_get('advanced_forum_use_taxonomy_image', TRUE)) {
-    $forum->forum_image = taxonomy_image_display($forum->tid);
+    $forum->forum_image = taxonomy_image_display($forum->tid, NULL, variable_get('advanced_forum_use_taxonomy_image_preset', ''));
   }
 
   drupal_alter('advanced_forum', $forum);

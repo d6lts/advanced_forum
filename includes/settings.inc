@@ -9,6 +9,13 @@
  * Defines the Advanced Forum settings form.
  */
 function advanced_forum_settings_page() {
+  if (module_exists('imagecache')) {
+    $imagecache_presets = array('' => '');
+    foreach (imagecache_presets() AS $preset) {
+      $imagecache_presets[$preset['presetname']] = $preset['presetname'];
+    }
+  }
+
   /* General settings */
   $form['advanced_forum_general'] = array(
     '#type' => 'fieldset',
@@ -124,6 +131,16 @@ function advanced_forum_settings_page() {
       '#default_value' => variable_get('advanced_forum_use_taxonomy_image', TRUE),
       '#description' => t('If this is checked, Advanced Forum will add a new column to the forum listing for the image associated with the forum term.'),
     );
+
+    if (module_exists('imagecache')) {
+      $form['advanced_forum_lists']['advanced_forum_use_taxonomy_image_preset'] = array(
+        '#type' => 'select',
+        '#title' => t('Taxonomy image preset'),
+        '#options' => $imagecache_presets,
+        '#description' => t('Imagecache preset to use for taxonomy images. Leave blank to not use this feature.'),
+        '#default_value' => variable_get('advanced_forum_use_taxonomy_image_preset', ''),
+      );
+    }
   }
 
   // Retrieve new comments on forum listing
@@ -160,16 +177,10 @@ function advanced_forum_settings_page() {
   );
 
   if (module_exists('imagecache')) {
-    $options = array('' => '');
-    $presets = imagecache_presets();
-    foreach ($presets AS $preset) {
-      $options[$preset['presetname']] = $preset['presetname'];
-    }
-
     $form['advanced_forum_topics']['advanced_forum_user_picture_preset'] = array(
       '#type' => 'select',
       '#title' => t('User picture preset'),
-      '#options' => $options,
+      '#options' => $imagecache_presets,
       '#description' => t('Imagecache preset to use for forum avatars. Leave blank to not use this feature.'),
       '#default_value' => variable_get('advanced_forum_user_picture_preset', ''),
     );
