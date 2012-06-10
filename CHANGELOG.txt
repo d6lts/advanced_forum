@@ -3,6 +3,7 @@
 June 10, 2012
 -------------
 #1621956 by samsouk: Fixed AF's advanced_forum_topic_list view ignores core Forum settings for 'Topics per page'.
+#1071220 by Scyther: Added support for imagecache preset setting for forum (taxonomy) images.
 
 May 2, 2012
 -----------
