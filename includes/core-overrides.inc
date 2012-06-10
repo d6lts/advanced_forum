@@ -188,6 +188,7 @@ function advanced_forum_get_topics($tid, $sortby, $forum_per_page, $sort_form = 
   $view->set_display('default');
   $view->set_arguments(array($tid));
   $view->sort_form = $sort_form;
+  // apply the 'Topics per page' setting from core Forum
   $view->display['default']->handler->options['items_per_page'] = $forum_per_page;
   return $view->preview();
 }
