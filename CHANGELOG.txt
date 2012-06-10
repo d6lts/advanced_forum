@@ -1,5 +1,9 @@
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+June 10, 2012
+-------------
+#1621956 by samsouk: Fixed AF's advanced_forum_topic_list view ignores core Forum settings for 'Topics per page'.
+
 May 2, 2012
 -----------
 #5939382 by carteriii: Fixed advanced_forum_topic_list's 'Last post' field should use 'Node: Updated/commented date' rather than 'Node: Last comment time'.
