@@ -10,11 +10,16 @@ function _advanced_forum_preprocess_forum_list(&$variables) {
   // Tell Drupal to use our forum list template file.
   advanced_forum_add_template_suggestions("forum-list", $variables['template_files']);
 
+  // Added variable for default collapsed configuration
+  $variables['collapsed_main_list'] = variable_get('advanced_forum_default_collapsed_list', '');
+
   // Add needed items for the collapsible containers.
   $variables['collapsible'] = variable_get('advanced_forum_collapsible_containers', 'toggle');
   if ($variables['collapsible'] != 'none') {
     drupal_add_js(drupal_get_path('module', 'advanced_forum') . '/js/advanced_forum.js', 'module');
     drupal_add_js(array('advanced_forum' => array('effect' => $variables['collapsible'])), 'setting');
+    // Add JS setting for default collapsed config so that intial display for this list will be collapsed
+    drupal_add_js(array('advanced_forum' => array('default_collapsed_list' => $variables['collapsed_main_list'])), 'setting');
   }
   else {
     $variables['collapsible'] = FALSE;
