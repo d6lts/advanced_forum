@@ -124,7 +124,7 @@ function advanced_forum_settings_page() {
   );
 
   // For default collapsed state configuration
-  $collapsed_list_name = variable_get('forum_containers', '');
+  $collapsed_list_name = variable_get('forum_containers', array());
   $collapsed_list_description = array();
   foreach ($collapsed_list_name as $id) {
     $collapsed_list_description[$id] = taxonomy_get_term($id)->name;

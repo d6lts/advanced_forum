@@ -1,5 +1,9 @@
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
 
+June 16, 2012
+-------------
+#1121208 by mcdruid: Fixed default for variable_get 'forum_containers' should be an empty array as the return value will be used in a foreach.
+
 June 10, 2012
 -------------
 #1621956 by samsouk: Fixed AF's advanced_forum_topic_list view ignores core Forum settings for 'Topics per page'.
