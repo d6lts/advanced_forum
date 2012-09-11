@@ -1,4 +1,7 @@
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
+Sep 11, 2012
+------------
+#1287512 by troky: Fixed topic list view to display 0 replies and / or views instead of empty string.
 
 June 16, 2012
 -------------
