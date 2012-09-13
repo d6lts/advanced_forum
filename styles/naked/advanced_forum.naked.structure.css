@@ -165,7 +165,8 @@ th.forum-last-post {
   width: 10%;
 }
 
-.forum-table-topics td.views-field-last-updated {
+.forum-table-topics td.views-field-last-updated,
+.forum-table-topics td.views-field-last-comment-timestamp {
   width: 30%;
 }
 
