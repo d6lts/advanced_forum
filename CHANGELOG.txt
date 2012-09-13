@@ -1,4 +1,8 @@
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
+Sep 13, 2012
+------------
+#1110816 by mcdruid: Fixed erroneous change to topic list view, and adjusted CSS for last updated column.
+
 Sep 11, 2012
 ------------
 #1287512 by troky: Fixed topic list view to display 0 replies and / or views instead of empty string.
