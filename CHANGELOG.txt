@@ -1,4 +1,8 @@
 ****************************** DRUPAL 6 - 2.x BRANCH ********************************
+Sep 27, 2012
+------------
+#1728770 by Funkymoses: Added comment linking to issue, for those wishing to try performance tweaks.
+
 Sep 26, 2012
 ------------
 #1668740 by deviantintegral, mcdruid: Fixed advanced_forum_forum_load() matches all node types instead of those able to be posted in forums.
