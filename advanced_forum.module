@@ -1051,6 +1051,7 @@ function advanced_forum_first_new_comment($nid, $timestamp = 0) {
 
     }
     else {
+      // If this query is appearing in your slow query log @see: http://drupal.org/node/1728770
       $query = "SELECT c.cid
                 FROM {comments} c
                 WHERE c.nid = %d AND c.timestamp > %d AND c.status = %d
