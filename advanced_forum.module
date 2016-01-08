@@ -858,7 +858,7 @@ function advanced_forum_get_reply_link($node) {
   $reply_link = array();
 
   $comment_setting = $node->comment;
-  $fragment = 'comment-form';
+  $fragment = $node->content['comments']['comment_form']['#id'];
 
   if ($comment_setting == COMMENT_NODE_OPEN) {
 
