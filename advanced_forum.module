@@ -858,7 +858,6 @@ function advanced_forum_get_reply_link($node) {
   $reply_link = array();
 
   $comment_setting = $node->comment;
-  $fragment = $node->content['comments']['comment_form']['#id'];
 
   if ($comment_setting == COMMENT_NODE_OPEN) {
 
@@ -881,6 +880,8 @@ function advanced_forum_get_reply_link($node) {
     }
 
     if ($allowed) {
+      $fragment = $node->content['comments']['comment_form']['#id'];
+
       if (variable_get('comment_form_location_' . $node->type, COMMENT_FORM_SEPARATE_PAGE) == COMMENT_FORM_SEPARATE_PAGE) {
         // Reply form is on separate page. Grab the href from the node links
         // so it's automatically corrected for Node Comments if needed.
