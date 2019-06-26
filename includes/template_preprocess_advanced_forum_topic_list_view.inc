@@ -75,7 +75,7 @@ function _template_preprocess_advanced_forum_topic_list_view(&$variables) {
     // Shadow (moved) topics.
     if ($forum && !in_array($row->topic_actual_forum, $forum)) {
       $term = taxonomy_get_term($row->topic_actual_forum);
-      $variables['shadow'][$count] = theme('advanced_forum_shadow_topic', $row->node_title, $row->nid, $term->name);
+      $variables['shadow'][$count] = theme('advanced_forum_shadow_topic', check_plain($row->node_title), $row->nid, empty($term->name) ? "" : check_plain($term->name));
     }
     else {
       $variables['shadow'][$count] = FALSE;
